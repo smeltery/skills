@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "name": "wrap-inject-memory",
+            "type": "command",
+            "command": "bash \"${CLAUDE_SKILL_DIR}/scripts/inject-memory.sh\"",
+            "timeout": 5,
+            "statusMessage": "Loading wrap memory..."
+          }
+        ]
+      }
+    ]
+  }
+}
