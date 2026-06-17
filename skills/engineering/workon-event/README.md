@@ -5,7 +5,7 @@ Event-driven companion to `/workon`: handles one ticket event per invocation and
 - Reactive model (dispatcher-driven), no internal polling loop
 - Strict event contract and validation
 - Idempotent state handling with PR-state pre-check routing
-- Scaffolded handlers for setup/watch/teardown events
+- Implemented handlers for setup, PR-comment, CI-failure, base-advanced, and teardown events (only `pr-push` and `convergence-check` remain stubs)
 
 ## Lifecycle
 
@@ -13,7 +13,7 @@ Event-driven companion to `/workon`: handles one ticket event per invocation and
 flowchart LR
   E[Incoming event] --> V[Validate event]
   V --> P[PR state pre-check<br/>for PR-keyed events]
-  P --> D[Dispatch handler stub]
+  P --> D[Dispatch handler]
   D --> S[Write state + exit]
 ```
 

@@ -1,7 +1,7 @@
 ---
 name: workon-event
 description: "Event-driven ticket driver — receives a single event (ticket-ready, PR comment, CI failure, base advanced, merge, close, convergence check) and dispatches to the matching handler. Same surface as /workon but reactive instead of polling. Triggers when the harness delivers an event payload referencing a Linear ticket."
-version: 1.0.0
+version: 1.1.0
 argument-hint: "<TICKET-ID> <EVENT-JSON>"
 user-invocable: false
 category: development
@@ -15,10 +15,10 @@ This file is the **scaffold**:
 
 - Event-input contract (§2)
 - State-file shape (§3)
-- Dispatch table that routes each event to a handler stub (§4)
+- Dispatch table that routes each event to a handler (§4)
 - §4.1-equivalent merge-state routing — every PR-keyed event re-verifies PR state from GitHub before its handler runs, and re-routes to teardown if the PR is already merged or closed (§5)
 
-The handler **bodies** are stubbed: each one logs the event it received and exits. Implementing real behavior is intentionally split into per-handler follow-up work — do not add behavior to the handler stubs in this file.
+Six handlers are fully implemented: `handle_ticket_ready` (§3.1), `handle_pr_comment` (§4.3), `handle_pr_ci_failure` (§4.4), `handle_pr_base_advanced` (§4.2), `handle_pr_merged` (§5), and `handle_pr_closed` (§5). Only `handle_pr_push` and `handle_convergence_check` remain stubs that emit one structured log line and return.
 
 ## 0. Parse argument
 
@@ -38,7 +38,7 @@ Both inputs are required. The skill never infers the event type from the ticket;
 
 ## 1. Scope of this scaffold
 
-This skill is deliberately small. The scaffold ships the contract + dispatch + routing only — every handler body in this file is a stub that emits one structured log line and returns. Real behavior for each handler (Setup, base-advanced resolution, CI failure, PR-comment processing, convergence, teardown) lands in follow-up work that ports the corresponding section of `skills/engineering/workon/SKILL.md`. The scaffold is invocable end-to-end before that work lands — invocations log "received event X for ticket Y" and exit zero.
+Six handler bodies are fully implemented: `handle_ticket_ready` (§3.1), `handle_pr_comment` (§4.3), `handle_pr_ci_failure` (§4.4), `handle_pr_base_advanced` (§4.2), `handle_pr_merged` (§5), and `handle_pr_closed` (§5). Only `handle_pr_push` and `handle_convergence_check` remain stubs. The scaffold is invocable end-to-end for all event types.
 
 The §9 reference table at the bottom of this file maps each `workon` section to the event(s) and handler(s) that subsume it.
 
@@ -164,7 +164,7 @@ If the file does not exist, the skill creates the directory and writes a default
 
 ## 4. Dispatch table
 
-Pseudocode for the top-level body of the skill. **All handler bodies are stubs in the scaffold** — they log and return. The merge-state pre-check in §5 runs before any handler that isn't `ticket-ready`.
+Pseudocode for the top-level body of the skill. Most handler bodies are stubs in the scaffold — they log and return. `handle_pr_comment`, `handle_pr_ci_failure`, and `handle_pr_base_advanced` are the exceptions: their full implementations live in §4.3, §4.4, and §4.2 respectively. The merge-state pre-check in §5 runs before any handler that isn't `ticket-ready`.
 
 The post-handler state-write block (`lastHandledEvent*` + `save_state`) is **mandatory on every dispatched code path**, including re-routed ones. Returning early from a re-route without writing state breaks the idempotency contract in §3 and §7 — the next invocation would treat the event as never handled and could re-run teardown on every retry.
 
@@ -319,7 +319,7 @@ The pseudocode below uses one helper per `result` value, and the mapping is part
 
 | Helper | `result` field value | Used by |
 | --- | --- | --- |
-| `log_event(...)` | `"stub"` | The eight in-taxonomy handler stubs (`handle_ticket_ready` … `handle_convergence_check`) |
+| `log_event(...)` | `"stub"` | The two remaining in-taxonomy handler stubs: `handle_pr_push` and `handle_convergence_check` |
 | `log_unknown(...)` | `"unknown"` | `handle_unknown` only — never `log_event` |
 | `log_rerouted(event, dest_type)` | `"rerouted"` | The §4 dispatch loop, before invoking a re-routed downstream handler |
 | `log_stale(event, live_state)` | `"stale"` | The §4/§5 stale-teardown guard |
@@ -330,32 +330,36 @@ The pseudocode below uses one helper per `result` value, and the mapping is part
 
 ### Handler stubs
 
-Each handler is a stub that emits one structured log line and returns. No side effects, no commits, no API writes. These signatures are the contract the per-handler implementations will fill in.
+`handle_pr_push` and `handle_convergence_check` are the two remaining stubs. All other in-taxonomy handlers are fully implemented.
 
 ```
 handle_ticket_ready(ticket_id, event, state):
-    log_event("ticket-ready", ticket_id, event.ts, "stub: setup handler not yet implemented")
+    # Real implementation — see "§3.1 ticket-ready handler" section below.
+    ticket_ready_handler(ticket_id, event, state)
 
 handle_pr_comment(ticket_id, event, state):
-    log_event("pr-comment", ticket_id, event.ts,
-              f"stub: pr-comment handler not yet implemented (commentId={event.payload.commentId})")
+    # Real implementation — see "§4.3 pr-comment handler" section below.
+    pr_comment_handler(ticket_id, event, state)
 
 handle_pr_push(ticket_id, event, state):
     log_event("pr-push", ticket_id, event.ts,
               f"stub: pr-push handler not yet implemented (sha={event.payload.sha})")
 
 handle_pr_ci_failure(ticket_id, event, state):
-    log_event("pr-ci-failure", ticket_id, event.ts,
-              f"stub: ci-failure handler not yet implemented (check={event.payload.checkName})")
+    # Real implementation — see "§4.4 pr-ci-failure handler" section below.
+    pr_ci_failure_handler(ticket_id, event, state)
 
 handle_pr_base_advanced(ticket_id, event, state):
-    log_event("pr-base-advanced", ticket_id, event.ts, "stub: base-advanced handler not yet implemented")
+    # Real implementation — see "§4.2 pr-base-advanced handler" section below.
+    pr_base_advanced_handler(ticket_id, event, state)
 
 handle_pr_merged(ticket_id, event, state):
-    log_event("pr-merged", ticket_id, event.ts, "stub: teardown handler not yet implemented")
+    # Real implementation — see "§5 Teardown handlers" section below.
+    teardown_merged_handler(ticket_id, event, state)
 
 handle_pr_closed(ticket_id, event, state):
-    log_event("pr-closed", ticket_id, event.ts, "stub: closed-without-merge teardown not yet implemented")
+    # Real implementation — see "§5 Teardown handlers" section below.
+    teardown_closed_handler(ticket_id, event, state)
 
 handle_convergence_check(ticket_id, event, state):
     log_event("convergence-check", ticket_id, event.ts, "stub: convergence handler not yet implemented")
@@ -373,6 +377,863 @@ handle_unknown(ticket_id, event, state):
     log_unknown(ticket_id, event.ts, event.type, f"unhandled event type: {event.type}")
     exit 1
 ```
+
+## 3.1 ticket-ready handler
+
+Ports `workon` §3 ("Setup") to the event-driven model. Invoked by the dispatch table when `event.type == "ticket-ready"`. There is no PR yet when this handler runs — it creates the branch and PR.
+
+### Inputs
+
+- `ticket_id`: Linear ticket identifier
+- `event.payload`: empty (the handler fetches the ticket body itself via the Linear MCP)
+- `state`: setup state loaded from `~/.claude/workon-event/<TICKET-ID>.json`; may be a fresh default skeleton on first run
+
+### Idempotency
+
+A true no-op requires all four responsibilities complete AND the PR is OPEN or MERGED with the `agentic` label. An OPEN PR without the `agentic` label is not a no-op — it must resume at the labeling step. The helper returns `nextStep` which identifies which responsibility to resume at; loop until `nextStep="complete"`.
+
+```
+result:"noop:already-set-up"
+```
+
+Emit that result line and return zero when the helper returns `nextStep="complete"` and `noop=true`.
+
+### Scope-budget check
+
+Before pushing or opening the PR, run the scope-budget gate described in §8.1. If the diff is over budget and no override is set, post the split-proposal as a Linear comment via `mcp__claude_ai_Linear__save_comment`, leave the worktree with WIP commits intact, do not push, do not open the PR, and exit non-zero. The proposal must carry (a) the actual diff summary, (b) the over-budget delta, (c) candidate seams derived from changed-file groupings, and (d) the three options (split / update the ticket budget / override). Measure the diff with `git fetch origin "$BASE_BRANCH" && git diff --shortstat "origin/$BASE_BRANCH"...HEAD` and `git diff --name-only "origin/$BASE_BRANCH"...HEAD | wc -l` (triple-dot range required; see §8.1 for why a bare shortstat returns zero).
+
+### Implementation
+
+```
+ticket_ready_handler(ticket_id, event, state):
+    REPO        = event.payload.repoSlug  # passed via event or derived from runner env
+    STATE_FILE  = "~/.claude/workon-event/{ticket_id}.json"
+
+    # ── 1. Call helper to determine next step ──
+    #
+    # bun run src/workflows/workon-event/main.ts setup <ticket-id> <repo> [state-file]
+    # Returns JSON: { nextStep, livePrState, liveHasAgenticLabel, noop }
+    # nextStep values: transition-in-progress | create-pr | apply-label |
+    #                  invite-codex | transition-in-review | complete
+    setup_result = shell("""
+      bun run src/workflows/workon-event/main.ts setup \
+        "$ticket_id" "$REPO" "$STATE_FILE"
+    """)
+
+    # ── 2. Idempotency guard ──
+    if setup_result.noop == true:
+        echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"ticket-ready","eventTs":"'"$event.ts"'","result":"noop:already-set-up","note":"all four responsibilities complete, PR open with agentic label"}'
+        return
+
+    # ── 3. Loop through each mandatory responsibility ──
+    #
+    # After each step, persist the updated flag, then call the helper again
+    # to get the next step. Repeat until nextStep="complete". Never stop after
+    # only one step — all four are mandatory.
+    while setup_result.nextStep != "complete":
+        match setup_result.nextStep:
+
+            case "transition-in-progress":
+                # Responsibility 1: move ticket to In Progress before any code exists.
+                mcp__claude_ai_Linear__save_issue(
+                    id=<linear-issue-id-for-ticket_id>,
+                    stateId=<in-progress-state-id>
+                )
+                state.ticketTransitionedToInProgress = true
+                persist(state, STATE_FILE)
+
+            case "create-pr":
+                # Responsibility 2: implement the ticket and open a draft PR.
+                #
+                # Read the ticket body via mcp__claude_ai_Linear__get_issue to understand scope.
+                # Create branch off main (naming: feat/<slug> or fix/<slug>).
+                # Work in GITHUB_WORKSPACE (the runner's checkout root — no sub-worktree
+                # for ticket-ready since there is no existing PR).
+                # Run quality gates before opening the PR (typecheck, lint, tests).
+                #
+                # Scope-budget check fires here, before gh pr create:
+                #   git fetch origin "$BASE_BRANCH"
+                #   read loc_ins loc_del < <(git diff --shortstat "origin/$BASE_BRANCH"...HEAD | grep -oP '\d+(?= insertion)' ; git diff --shortstat ... | grep -oP '\d+(?= deletion)')
+                #   LOC=$(( loc_ins + loc_del ))
+                #   files=$(git diff --name-only "origin/$BASE_BRANCH"...HEAD | wc -l)
+                #   if over_budget(LOC, files, budget): halt (post Linear comment, exit 1)
+                #
+                # If a previous PR was already in state (closed PR being replaced):
+                #   clear post-PR flags before persisting the new number:
+                #   state.agenticLabelApplied = false
+                #   state.codexReviewInvited = false
+                #   state.ticketTransitionedToInReview = false
+                gh pr create --draft --title "<title>" --body "<body>" --repo "$REPO"
+                state.prNumber = <new-pr-number>
+                persist(state, STATE_FILE)
+
+            case "apply-label":
+                # Responsibility 2b: label the PR so it's visible to watch loops.
+                gh pr edit "$state.prNumber" --add-label agentic --repo "$REPO"
+                state.agenticLabelApplied = true
+                persist(state, STATE_FILE)
+
+            case "invite-codex":
+                # Responsibility 3: invite Codex after label is confirmed.
+                gh pr comment "$state.prNumber" --body "@codex review" --repo "$REPO"
+                state.codexReviewInvited = true
+                persist(state, STATE_FILE)
+
+            case "transition-in-review":
+                # Responsibility 4: move ticket to In Review after label+comment confirmed.
+                mcp__claude_ai_Linear__save_issue(
+                    id=<linear-issue-id-for-ticket_id>,
+                    stateId=<in-review-state-id>
+                )
+                state.ticketTransitionedToInReview = true
+                persist(state, STATE_FILE)
+
+        # Re-query helper to get the next step.
+        setup_result = shell("""
+          bun run src/workflows/workon-event/main.ts setup \
+            "$ticket_id" "$REPO" "$STATE_FILE"
+        """)
+
+    # ── 4. Finalize ──
+    state.phase = "watch"
+    persist(state, STATE_FILE)
+
+    echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"ticket-ready","eventTs":"'"$event.ts"'","result":"acted","note":"setup complete, PR #'"$state.prNumber"' opened and handed to Codex"}'
+```
+
+### Logging and result classification
+
+Emit `result: "acted"` on successful completion. Emit `result: "noop:already-set-up"` when the helper returns noop. On scope-budget halt, emit `result: "halted:over-budget"` before exiting non-zero. Do NOT use `log_event` (which emits `result: "stub"`).
+
+### Cross-cutting constraints (from §8)
+
+- **One push per invocation.** Commit incrementally, push once before `gh pr create`.
+- **Never force-push** unless explicitly requested.
+- **Worktree is the source of truth for edits.** Work in GITHUB_WORKSPACE for ticket-ready (no sub-worktree before the PR exists).
+- **No speculative tickets.** Leave out-of-scope concerns as Open Questions on Linear.
+- **No internal jargon in external artifacts.** Commit messages, PR body, and Linear comments describe the change.
+- **Use project-preferred terminology** in any text that reaches a human.
+
+---
+
+## 4.3 pr-comment handler
+
+Ports `workon` §4.3 ("Address reviewer comments") to the event-driven model. Invoked by the dispatch table when `event.type == "pr-comment"` and the PR is OPEN. Handles automated-reviewer bots — Codex/ChatGPT and CodeRabbit.
+
+### Inputs
+
+- `ticket_id`: Linear ticket identifier
+- `event.payload.prNumber`, `event.payload.repoSlug`: PR identity
+- `event.payload.commentId`, `event.payload.commentKind` (`"issue"` or `"review"`), `event.payload.createdAt`: the triggering comment
+- `state.lastAddressedCommentISO`: ISO-8601 high-water mark — comments older than this timestamp have already been handled
+- `state.lastAddressedCommentIds`: set of `"issue:<id>"` / `"review:<id>"` namespaced keys for comments AT the high-water timestamp, to handle boundary-second deduplication
+
+### Implementation
+
+```
+pr_comment_handler(ticket_id, event, state):
+    PR   = event.payload.prNumber
+    REPO = event.payload.repoSlug
+    watermark_iso = state.lastAddressedCommentISO   # null on first run
+    watermark_ids = state.lastAddressedCommentIds   # [] on first run
+
+    # ── 1. Fetch all reviewer issue comments on the PR ──
+    #
+    # --paginate is required; --slurp cannot be combined with --jq
+    # (unsupported by gh); use external jq -s 'add // []' to merge pages.
+    # Filter to automated-reviewer authors with an anchored, case-insensitive
+    # regex covering both supported bots:
+    #   codex|chatgpt → Codex      (chatgpt-codex-connector, codex* logins)
+    #   coderabbit    → CodeRabbit (coderabbitai, coderabbitai[bot])
+    # (CodeRabbit added alongside the original codex|chatgpt filter.)
+    #
+    # CodeRabbit posts its summary, walkthrough, and status as PR *issue*
+    # comments carrying an auto-generated marker — an HTML comment naming
+    # `coderabbit.ai` (e.g. `<!-- This is an auto-generated comment: summarize
+    # by coderabbit.ai -->`) or a `walkthrough_start` marker. Those are
+    # informational, not actionable findings, so they are excluded here:
+    # replying to them only adds noise, and CodeRabbit's actionable findings
+    # arrive as review (inline) comments fetched in step 2. Codex issue
+    # comments carry no such marker and are kept.
+    issue_comments = shell("""
+      gh api "repos/$REPO/issues/$PR/comments" --paginate \
+        | jq -s 'add // [] | [.[] | select(
+            (.user.login | test("codex|chatgpt|coderabbit"; "i")) and
+            ((.body | test("<!--[^>]*coderabbit\\.ai|walkthrough_start"; "i")) | not)
+          )]'
+    """)
+
+    # ── 2. Fetch all reviewer review (inline/line-level) comments ──
+    #
+    # /pulls/$PR/comments returns review comments. Same reviewer-author regex
+    # (codex|chatgpt|coderabbit) — this is where CodeRabbit's actionable
+    # line-level findings live. Filter replies (in_reply_to_id != null) — only
+    # top-level comments are actionable findings; a reply to a prior reply is
+    # not an open question for this handler. Note: this endpoint uses
+    # snake_case, not camelCase.
+    review_comments = shell("""
+      gh api "repos/$REPO/pulls/$PR/comments" --paginate \
+        | jq -s 'add // [] | [.[] | select(
+            (.user.login | test("codex|chatgpt|coderabbit"; "i")) and
+            (.in_reply_to_id == null)
+          )]'
+    """)
+
+    # ── 3. Deduplicate against the watermark ──
+    #
+    # A comment is already-addressed when:
+    #   (a) its createdAt is strictly before watermark_iso, OR
+    #   (b) its createdAt equals watermark_iso AND its namespaced key is in
+    #       watermark_ids.
+    # Namespace: issue comments use "issue:<id>", review comments use "review:<id>".
+    # This prevents cross-endpoint ID collisions (GitHub issue IDs and review
+    # comment IDs share a numeric space).
+    new_issue_comments   = [c for c in issue_comments
+                            if not already_addressed(c.id, "issue", c.created_at,
+                                                     watermark_iso, watermark_ids)
+                            and not c.body.startswith("<!-- workon-event-reply -->")]
+
+    new_review_comments  = [c for c in review_comments
+                            if not already_addressed(c.id, "review", c.created_at,
+                                                     watermark_iso, watermark_ids)]
+
+    # Merge and sort oldest-first so comments are processed in the order
+    # they were written. Both endpoints use independent ordering; a global
+    # sort prevents a newer comment from the other stream from being
+    # processed before an older one, which would advance the watermark
+    # past the older one and drop it permanently.
+    all_new = sort_by_created_at(
+        [(c, "issue")  for c in new_issue_comments] +
+        [(c, "review") for c in new_review_comments]
+    )
+
+    if len(all_new) == 0:
+        log_event("pr-comment", ticket_id, event.ts,
+                  f"no new reviewer comments newer than watermark={watermark_iso}")
+        return  # state.lastHandledEvent* written by dispatch loop
+
+    # ── 4. Address each new reviewer comment ──
+    #
+    # Work in the PR's worktree. The worktree path is in state.worktreePath
+    # (set by the setup handler). Verify it exists before starting; if it
+    # doesn't, post a Linear escalation comment and exit non-zero so the
+    # dispatcher retries.
+    if not path_exists(state.worktreePath):
+        post_linear_comment(ticket_id,
+            f"pr-comment handler: worktree {state.worktreePath} not found. "
+            f"PR #{PR} in {REPO}. Manual intervention may be needed.")
+        exit 1
+
+    addressed_comments = []  # list of (id, namespace, createdAt) for watermark update
+
+    for (comment, ns) in all_new:
+        comment_id  = comment.id          # numeric GitHub ID
+        comment_iso = comment.created_at  # ISO-8601
+
+        if ns == "review":
+            # For review comments: fetch the thread node ID needed for
+            # resolveReviewThread mutation. Use the REST comment ID to
+            # look up the GraphQL node ID via the reviews endpoint:
+            #   gh api graphql -f query='
+            #     query($id: Int!, $repo: String!, $owner: String!) {
+            #       repository(owner: $owner, name: $repo) {
+            #         pullRequest(number: $id) {
+            #           reviewThreads(first: 100) {
+            #             nodes {
+            #               id
+            #               isResolved
+            #               comments(first: 1) { nodes { databaseId } }
+            #             }
+            #           }
+            #         }
+            #       }
+            #     }' -F id=$PR -f repo=<repo-name> -f owner=<owner>
+            # Match threads whose first comment's databaseId == comment.id.
+            # Store the thread node ID for later resolution.
+            thread_id = resolve_thread_id(REPO, PR, comment_id)
+
+        # Read the comment body and decide: fix or explain-and-resolve.
+        body = comment.body
+
+        # Valid criticism (code smell, bug, naming issue, missing test, etc.):
+        # fix it in the worktree, then commit.
+        # Wrong or out-of-scope (misreads intent, contradicts stated constraints,
+        # asks for something outside the ticket's scope): reply to explain why,
+        # then resolve the thread.
+
+        decision = judge_comment(body)  # "fix" | "explain"
+
+        if decision == "fix":
+            apply_fix_in_worktree(state.worktreePath, body)
+            # Commit message follows workon §4.3: descriptive when possible,
+            # generic fallback.
+            commit_message = derive_commit_message(body) or "fix: address reviewer feedback"
+            git_commit(state.worktreePath, commit_message)
+        else:
+            # Post a reply explaining the decision. The reply sentinel
+            # "<!-- workon-event-reply -->" must be the FIRST thing in the
+            # body so future fetches can exclude it from the reviewer-comment
+            # list and prevent self-reply loops.
+            reply_body = "<!-- workon-event-reply -->\n" + explanation(body)
+            if ns == "review":
+                # Reply to a review comment thread:
+                gh api "repos/$REPO/pulls/$PR/comments" \
+                    --method POST \
+                    -f body="$reply_body" \
+                    -F in_reply_to=$comment_id
+            else:
+                # Reply to an issue comment (general PR comment):
+                gh api "repos/$REPO/issues/$PR/comments" \
+                    --method POST \
+                    -f body="$reply_body"
+
+        addressed_comments.append((comment_id, ns, comment_iso))
+
+        # ── 5. Resolve the review thread ──
+        #
+        # REQUIRED after addressing a review comment, regardless of whether
+        # the fix was applied or the comment was replied to. Pushing a commit
+        # does NOT auto-resolve GitHub review threads — only calling
+        # resolveReviewThread does. Leaving threads open makes addressed
+        # findings look like open work to human reviewers.
+        if ns == "review" and thread_id is not None:
+            gh api graphql -f query='
+              mutation($id: ID!) {
+                resolveReviewThread(input: {threadId: $id}) {
+                  thread { id isResolved }
+                }
+              }' -F id="$thread_id"
+
+    # ── 6. Single push ──
+    #
+    # Push all commits accumulated in this handler invocation in one shot.
+    # Never push per-comment — each push resets the 30-minute convergence
+    # clock and burns a CI run. If there are no new commits (all comments
+    # were explain-and-resolve), skip the push.
+    if git_has_unpushed_commits(state.worktreePath, state.branchName):
+        git push origin HEAD  # from within state.worktreePath
+
+    # ── 7. Advance the watermark ──
+    #
+    # Boundary-second semantics (see watermark.ts for the full contract):
+    #   - Find the max createdAt among addressed_comments.
+    #   - If it is newer than watermark_iso → replace lastAddressedCommentIds.
+    #   - If it equals watermark_iso → merge (union) the ID sets.
+    #   - If it is older → no change (should not happen under normal operation).
+    new_iso = max(c.createdAt for c in addressed_comments)
+    if watermark_iso is None or new_iso > watermark_iso:
+        state.lastAddressedCommentISO = new_iso
+        state.lastAddressedCommentIds = [
+            f"{ns}:{cid}" for (cid, ns, created) in addressed_comments
+            if created == new_iso
+        ]
+    elif new_iso == watermark_iso:
+        new_keys = {f"{ns}:{cid}" for (cid, ns, created) in addressed_comments
+                    if created == new_iso}
+        state.lastAddressedCommentIds = list(
+            set(watermark_ids) | new_keys
+        )
+    # else: new_iso < watermark_iso → no change
+
+    log_event("pr-comment", ticket_id, event.ts,
+              f"addressed {len(addressed_comments)} reviewer comment(s) "
+              f"on PR #{PR}; pushed={git_has_unpushed_commits_was_true}")
+```
+
+### Logging and result classification
+
+This handler MUST emit `result: "acted"` (not `result: "stub"`) in its `log_event` call. The dispatcher runner reads the skill's stdout to distinguish real work from a no-op — a `stub` result is classified as `noop:stub` and flagged in the job summary. Use the logging contract in §6 but with `result: "acted"` (or an appropriate production value such as `"noop:nothing-actionable"` when the watermark already covers all comments).
+
+The `log_event` helper defined in §4 always emits `result: "stub"` — do NOT use it here. Emit the JSON line directly:
+
+```bash
+echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"pr-comment","eventTs":"'"$event_ts"'","result":"acted","note":"'"$summary"'"}'
+```
+
+Or when no actionable comments were found (watermark covers everything):
+
+```bash
+echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"pr-comment","eventTs":"'"$event_ts"'","result":"noop:nothing-actionable","note":"no new reviewer comments newer than watermark"}'
+```
+
+Both `"acted"` and `"noop:nothing-actionable"` are non-stub results that the dispatcher runner classifies correctly. Only `"stub"` triggers the `noop:stub` no-op classification.
+
+### Cross-cutting constraints (from §8)
+
+- **One push per invocation.** Commit incrementally, push once at the end.
+- **Never force-push** unless explicitly requested.
+- **Worktree is the source of truth for edits.** All fixes happen in `state.worktreePath`. Do not edit files in the repo root (this skill's own checkout).
+- **No speculative tickets.** Surface out-of-scope concerns as PR comments or Open Questions on Linear — do not create new tickets.
+- **No internal jargon in external artifacts.** Commit messages, PR replies, and Linear comments describe the change, not team-local labels.
+
+---
+
+## 4.4 pr-ci-failure handler
+
+Ports `workon` §4.4 ("Fix CI failures") to the event-driven model. Invoked by the dispatch table when `event.type == "pr-ci-failure"` and the PR is OPEN.
+
+### Inputs
+
+- `ticket_id`: Linear ticket identifier
+- `event.payload.prNumber`, `event.payload.repoSlug`: PR identity
+- `event.payload.checkRunId`: the GitHub Actions check-run ID for the failing check
+- `event.payload.checkName`: human-readable name of the failing check (e.g. `typecheck`, `lint`)
+- `event.payload.conclusion`: the check's terminal conclusion (`failure`, `timed_out`, `cancelled`, etc.)
+- `event.payload.runUrl` (optional): direct URL to the failing workflow run
+- `state.worktreePath`: filesystem path to the PR's worktree
+
+### Implementation
+
+```
+pr_ci_failure_handler(ticket_id, event, state):
+    PR         = event.payload.prNumber
+    REPO       = event.payload.repoSlug
+    check_id   = event.payload.checkRunId
+    check_name = event.payload.checkName
+    conclusion = event.payload.conclusion
+
+    # ── 1. Re-read current check state — the event may be stale ──
+    #
+    # The dispatcher fires this handler when a check turns red, but CI can
+    # self-recover (e.g. a transient outage clears, a re-run was manually
+    # triggered). Re-fetch the specific run's conclusion before doing any
+    # work; if it has since passed, no action is needed.
+    #
+    # GET /repos/{owner}/{repo}/check-runs/{check_run_id}
+    live_run = gh api "repos/$REPO/check-runs/$check_id"
+    if live_run.conclusion == "success":
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-ci-failure","eventTs":"' + event.ts + '","result":"noop:check-already-passed","note":"check ' + check_name + ' now passing — no fix needed"}')
+        return
+
+    # ── 2. Classify the failure: flaky vs. deterministic ──
+    #
+    # Flaky signals: `conclusion == "timed_out"`, or the check name matches
+    # known infra-noise patterns (e.g. "upload-artifact", "cache", network
+    # errors in logs). Also treat a fresh failure on a check that passed on
+    # the immediately prior run as a candidate flake.
+    #
+    # Strategy: rerun once if the failure looks flaky; if it fails again, or
+    # if the failure looks deterministic from the start, diagnose and fix.
+    #
+    # Avoid re-running the same run_id twice in a row — GitHub deduplicates
+    # re-run requests on the same check-run within a short window, so a
+    # double-rerun emits a 422 and wastes an API call. Guard with
+    # state.lastRetriedCheckRunId: if check_id == state.lastRetriedCheckRunId,
+    # skip straight to the diagnose-and-fix path. The state field is nil until
+    # first set here.
+
+    is_likely_flaky = (conclusion == "timed_out") or looks_infra_noise(live_run.output.text)
+
+    if is_likely_flaky and state.lastRetriedCheckRunId != check_id:
+        # Rerun once before diagnosing.
+        #
+        # `gh run rerun --failed` re-queues only the failed jobs, not the
+        # full workflow. Requires `actions:write`. The check-run belongs to a
+        # workflow run; extract the workflow run ID from the check-run object.
+        #
+        # GET /repos/{owner}/{repo}/check-runs/{id} returns
+        # check_suite.id — that is the check-suite, not the workflow run.
+        # Resolve the workflow run id via:
+        #   gh api "repos/$REPO/actions/runs?check_suite_id=<suite_id>"
+        #   and pick runs[0].id.
+        # Then rerun:
+        #   gh run rerun <workflow_run_id> --failed --repo "$REPO"
+        suite_id     = live_run.check_suite.id
+        runs_page    = gh api "repos/$REPO/actions/runs?check_suite_id=$suite_id"
+        workflow_run_id = runs_page.workflow_runs[0].id
+        gh run rerun "$workflow_run_id" --failed --repo "$REPO"
+
+        state.lastRetriedCheckRunId = check_id
+        # Emit a structured result so the dispatcher knows a rerun was issued
+        # and should re-evaluate when the rerun completes.
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-ci-failure","eventTs":"' + event.ts + '","result":"acted","note":"rerun issued for likely-flaky check ' + check_name + ' (run ' + str(workflow_run_id) + '); awaiting outcome"}')
+        return  # state.lastHandledEvent* + lastRetriedCheckRunId written by dispatch loop
+
+    # ── 3. Diagnose from failing logs ──
+    #
+    # Fetch the annotated log for the failed jobs only. This avoids pulling
+    # multi-megabyte success logs and focuses the diagnostic context.
+    #
+    #   gh run view <workflow_run_id> --log-failed --repo "$REPO"
+    #
+    # The log is streamed to stdout; capture it and scan for the first
+    # clearly actionable error region (compile error, lint failure, test
+    # assertion, type error). Trim to ≤200 lines of context around the first
+    # error — models and readers lose signal past that threshold.
+    if state.lastRetriedCheckRunId == check_id:
+        # Already retried once; we need the new workflow run id from the
+        # re-queued run, but since the re-run produces a new check_run_id,
+        # a re-delivery of pr-ci-failure from the dispatcher will carry the
+        # new check_id. If we're here with the same check_id post-rerun, the
+        # rerun itself failed — use the same run for diagnosis.
+        suite_id     = live_run.check_suite.id
+        runs_page    = gh api "repos/$REPO/actions/runs?check_suite_id=$suite_id"
+        workflow_run_id = runs_page.workflow_runs[0].id
+    # else: workflow_run_id was resolved in step 2 for the fresh-fail path
+
+    log_text = gh run view "$workflow_run_id" --log-failed --repo "$REPO"
+    failure_summary = extract_first_error_region(log_text, max_lines=200)
+
+    # ── 4. Decide: fixable vs. needs-human ──
+    #
+    # Fixable in this handler:
+    #   - TypeScript type errors in files we own (tsc output, jest type errors)
+    #   - Lint rule violations with a clear auto-fix path (eslint, prettier)
+    #   - Test failures caused by a deterministic assertion that matches the
+    #     current diff (i.e. the test was checking old behavior we changed)
+    #   - Missing generated file (e.g. a catalog regeneration step failed
+    #     because a source file changed but the generated output wasn't updated)
+    #
+    # Escalate if:
+    #   - The failure is in infrastructure we don't own (third-party service
+    #     calls, Docker build environment, external network timeouts on
+    #     non-flaky-patterned runs)
+    #   - The error message suggests a secret/permission problem
+    #   - The failure is in a different PR's check that was grouped into the
+    #     same workflow (rare but possible on mono-repo matrix builds)
+    #   - We've already attempted and pushed a fix for this exact check_id
+    #     in a prior invocation (state.lastFixedCheckRunId == check_id) —
+    #     to avoid infinite fix loops, escalate instead of retrying
+
+    unfixable = is_infra_failure(failure_summary) \
+                or is_permission_failure(failure_summary) \
+                or (state.lastFixedCheckRunId == check_id)
+
+    if unfixable:
+        reason = "already-attempted" if state.lastFixedCheckRunId == check_id else failure_summary[:120]
+        post_linear_comment(ticket_id,
+            f"pr-ci-failure handler: check '{check_name}' failed and cannot be fixed automatically. "
+            f"PR #{PR} in {REPO}. Reason: {reason}. Manual intervention needed.")
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-ci-failure","eventTs":"' + event.ts + '","result":"escalated:needs-human","note":"' + reason[:120] + '"}')
+        return
+
+    # ── 5. Apply the fix in the worktree ──
+    #
+    # Verify the worktree is present before touching anything.
+    if not path_exists(state.worktreePath):
+        post_linear_comment(ticket_id,
+            f"pr-ci-failure handler: worktree {state.worktreePath} not found. "
+            f"Cannot apply fix for check '{check_name}' on PR #{PR} in {REPO}. "
+            f"Manual intervention may be needed.")
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-ci-failure","eventTs":"' + event.ts + '","result":"error","note":"worktree missing: ' + state.worktreePath + '"}')
+        exit 1
+
+    # Work inside the worktree. Read the relevant source files identified by
+    # the failure_summary, then apply the minimal fix. Commit with a message
+    # that names the check so CI and reviewers can trace the commit to the
+    # failure.
+    apply_fix_in_worktree(state.worktreePath, failure_summary)
+    commit_message = f"fix(ci): resolve {check_name} failure"
+    git_commit(state.worktreePath, commit_message)
+
+    # ── 6. Single push ──
+    #
+    # One push per invocation — matches §8's "one push per handler" rule.
+    git push origin HEAD  # from within state.worktreePath
+
+    # Record that we pushed a fix for this check_run_id so a subsequent
+    # re-delivery of the same event (same check_id, same ts) is treated as
+    # already-attempted rather than triggering a second fix attempt.
+    state.lastFixedCheckRunId = check_id
+
+    summary = f"applied fix for check '{check_name}' on PR #{PR}; pushed commit"
+    print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-ci-failure","eventTs":"' + event.ts + '","result":"acted","note":"' + summary + '"}')
+```
+
+### Result classification
+
+This handler emits one of four `result` values via direct JSON — never `"stub"`:
+
+| Result | Condition |
+| --- | --- |
+| `"noop:check-already-passed"` | Live check state is `success` when re-read; nothing to do |
+| `"acted"` with note `"rerun issued…"` | Likely-flaky failure; a rerun was dispatched |
+| `"acted"` with note `"applied fix…"` | Deterministic fix pushed to the PR branch |
+| `"escalated:needs-human"` | Infra/permission failure, or same check_id already attempted once |
+| `"error"` | Worktree is missing; exit non-zero so dispatcher retries |
+
+The `"escalated:needs-human"` path also posts a Linear comment so the ticket owner sees it even if they're not watching the PR.
+
+### Retry budget and idempotency
+
+- `state.lastRetriedCheckRunId` guards the flake-rerun: at most one rerun per unique `checkRunId`. If the dispatcher re-delivers the same event after the rerun completes (same `checkRunId`, possibly different `ts`), the handler skips straight to diagnosis.
+- `state.lastFixedCheckRunId` guards the fix-push: at most one fix attempt per unique `checkRunId`. A second delivery with the same `checkRunId` (e.g. a duplicate from the dispatcher or a stale requeue) escalates rather than re-applying a fix, preventing fix-loop spirals.
+- Both state fields start as `nil` and are written to `state` before the dispatch loop records `lastHandledEvent*` on exit. Neither field is in the base state-file schema (§3) — implementations must treat a missing key as `nil`.
+
+### Cross-cutting constraints (from §8)
+
+- **One push per invocation.** Steps 5–6 commit all changes and push once.
+- **Never force-push.**
+- **Worktree is the source of truth for edits.** All fixes apply in `state.worktreePath`.
+- **No speculative tickets.** Surface unfixable failures as PR comments and Linear comments; do not create new tickets.
+
+---
+
+## 4.2 pr-base-advanced handler
+
+Ports `workon` §4.2 ("Fix merge conflicts") to the event-driven model. Invoked by the dispatch table when `event.type == "pr-base-advanced"` and the PR is OPEN. The event signals that the PR's base branch has advanced past its current merge-base, which may or may not have produced a conflict.
+
+### Inputs
+
+- `ticket_id`: Linear ticket identifier
+- `event.payload.prNumber`, `event.payload.repoSlug`: PR identity
+- `event.payload.mergeStateStatus` (optional): GitHub's cached `mergeStateStatus` at dispatch time (e.g. `CONFLICTING`, `CLEAN`, `UNKNOWN`)
+- `state.worktreePath`: filesystem path to the PR's worktree
+- `state.baseBranch`: the PR's base branch name (e.g. `main`)
+
+### Implementation
+
+```
+pr_base_advanced_handler(ticket_id, event, state):
+    PR          = event.payload.prNumber
+    REPO        = event.payload.repoSlug
+    BASE_BRANCH = state.baseBranch  # e.g. "main"
+
+    # ── 1. Re-read live merge state — the event may be stale ──
+    #
+    # `mergeStateStatus` in the event payload is an optional hint from the
+    # dispatcher, captured at dispatch time. GitHub's state can change by the
+    # time this handler runs (e.g. the conflict was resolved by another push,
+    # or the base advanced again). Re-fetch from the API to avoid acting on
+    # stale state.
+    #
+    # The §5 pre-check already called `gh pr view --json ... mergeable,mergeStateStatus`
+    # before dispatch; the handler receives a fresh event but not the live view
+    # result. Re-issue a targeted call here.
+    pr_view = gh pr view "$PR" --repo "$REPO" --json mergeable,mergeStateStatus,headRefOid
+    live_mergeable         = pr_view.mergeable           # "MERGEABLE" | "CONFLICTING" | "UNKNOWN"
+    live_merge_state       = pr_view.mergeStateStatus    # "CLEAN" | "CONFLICTING" | "UNKNOWN" | ...
+    current_head_sha       = pr_view.headRefOid
+
+    # ── 2. Verify the worktree is present ──
+    if not path_exists(state.worktreePath):
+        post_linear_comment(ticket_id,
+            f"pr-base-advanced handler: worktree {state.worktreePath} not found. "
+            f"Cannot merge base into PR #{PR} in {REPO}. Manual intervention may be needed.")
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-base-advanced","eventTs":"' + event.ts + '","result":"error","note":"worktree missing: ' + state.worktreePath + '"}')
+        exit 1
+
+    # ── 3. Fetch and check if merge is needed ──
+    #
+    # Always fetch to make sure the local clone sees the latest base tip.
+    git fetch origin "$BASE_BRANCH"  # from within state.worktreePath
+
+    # If GitHub reports the PR is already MERGEABLE (no conflict), the base
+    # advanced but did not produce a conflict — nothing to resolve. Still
+    # confirm the local branch tip matches the remote HEAD to rule out a
+    # local-only divergence.
+    if live_mergeable == "MERGEABLE" and live_merge_state not in ("CONFLICTING", "UNKNOWN"):
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-base-advanced","eventTs":"' + event.ts + '","result":"noop:no-conflict","note":"base advanced but PR is MERGEABLE; no merge required"}')
+        return
+
+    # ── 4. Attempt the merge ──
+    #
+    # Run `git merge origin/<base>` in the worktree. Capture exit code and
+    # stdout/stderr to distinguish clean merge from conflict.
+    merge_result = git merge "origin/$BASE_BRANCH"  # from within state.worktreePath
+
+    if merge_result.exit_code == 0:
+        # Clean merge — no conflicts. Commit was created by git merge.
+        # Push immediately.
+        git push origin HEAD  # from within state.worktreePath
+        summary = f"merged origin/{BASE_BRANCH} into PR #{PR} cleanly; pushed"
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-base-advanced","eventTs":"' + event.ts + '","result":"acted","note":"' + summary + '"}')
+        return
+
+    # ── 5. Conflict detected — attempt mechanical resolution ──
+    #
+    # Inspect `git status --porcelain` to identify conflicting files.
+    # "Mechanical" conflicts are those where:
+    #   (a) both sides modified the same file but in non-overlapping regions
+    #       and a standard merge driver can produce a deterministic result, OR
+    #   (b) one side deleted a file and the other modified it, and the deletion
+    #       aligns with the intent of this PR (no heuristic guessing here —
+    #       require that the deleted file is NOT in the PR's changed-file set;
+    #       if it is, treat it as semantic).
+    #
+    # For all other conflicts — overlapping edits to the same region, logic
+    # contradictions between the PR change and the incoming base change —
+    # the handler cannot reliably resolve without semantic understanding of
+    # both changes. Escalate rather than produce a broken merge.
+    conflicting_files = list_conflicting_files(state.worktreePath)  # git status --porcelain | grep "^UU\|^AA\|^DD"
+
+    # Check if git's standard 3-way merge left clean markers (no remaining
+    # conflict markers in files). Some merge drivers resolve automatically
+    # without producing conflict markers even on overlapping hunks.
+    if has_no_conflict_markers(state.worktreePath, conflicting_files):
+        # All conflicts were resolved by the merge driver automatically.
+        git add -A  # from within state.worktreePath
+        commit_message = f"chore: merge origin/{BASE_BRANCH} into branch (no conflicts)"
+        git_commit(state.worktreePath, commit_message)
+        git push origin HEAD
+        summary = f"merged origin/{BASE_BRANCH} into PR #{PR} (auto-resolved); pushed"
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-base-advanced","eventTs":"' + event.ts + '","result":"acted","note":"' + summary + '"}')
+        return
+
+    # Attempt to resolve mechanical (non-semantic) conflicts:
+    #   - files where both sides changed non-overlapping sections
+    #     (conflict markers only exist in distinct regions — resolve by
+    #     accepting both sides' changes in order: ours then theirs)
+    #   - files where this PR did not touch the conflicting region at all
+    #     (safe to accept "theirs" for that region)
+    resolved, unresolvable = attempt_mechanical_resolution(state.worktreePath, conflicting_files)
+
+    if len(unresolvable) > 0:
+        # ── 6. Semantic conflict — escalate ──
+        #
+        # Abort the merge so the worktree is left clean (no partial merge
+        # state). `git merge --abort` restores the pre-merge state. Then
+        # verify compilation/tests still pass on the unmerged branch — the
+        # worktree must remain in a shippable state so human intervention
+        # can pick up where we left off.
+        git merge --abort  # from within state.worktreePath
+
+        conflict_list = ", ".join(unresolvable[:5])  # cap at 5 for readability
+        if len(unresolvable) > 5:
+            conflict_list += f" … and {len(unresolvable) - 5} more"
+
+        post_linear_comment(ticket_id,
+            f"pr-base-advanced handler: base branch '{BASE_BRANCH}' advanced into a semantic conflict "
+            f"on PR #{PR} in {REPO}. Conflicting files require manual resolution: {conflict_list}. "
+            f"The merge was aborted; the PR branch is untouched. Please resolve and push.")
+        print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-base-advanced","eventTs":"' + event.ts + '","result":"escalated:needs-human","note":"semantic conflict in ' + str(len(unresolvable)) + ' file(s): ' + conflict_list + '"}')
+        return
+
+    # ── 7. Push resolved merge ──
+    #
+    # All conflicts were resolved mechanically. Stage, commit, push.
+    git add -A  # from within state.worktreePath
+    commit_message = f"chore: merge origin/{BASE_BRANCH} (resolve conflicts)"
+    git_commit(state.worktreePath, commit_message)
+    git push origin HEAD
+
+    summary = f"merged origin/{BASE_BRANCH} into PR #{PR}; resolved {len(resolved)} conflict(s); pushed"
+    print('{"skill":"workon-event","ticketId":"' + ticket_id + '","eventType":"pr-base-advanced","eventTs":"' + event.ts + '","result":"acted","note":"' + summary + '"}')
+```
+
+### Result classification
+
+This handler emits one of five `result` values via direct JSON — never `"stub"`:
+
+| Result | Condition |
+| --- | --- |
+| `"noop:no-conflict"` | Base advanced but PR is already MERGEABLE; no merge needed |
+| `"acted"` with note `"merged … cleanly"` | `git merge` succeeded without any conflict markers |
+| `"acted"` with note `"merged … (auto-resolved)"` | Merge driver resolved all conflicts automatically |
+| `"acted"` with note `"resolved N conflict(s)"` | Mechanical resolution succeeded; pushed |
+| `"escalated:needs-human"` | Semantic conflict detected; merge aborted; Linear comment posted |
+| `"error"` | Worktree is missing; exit non-zero so dispatcher retries |
+
+### Idempotency
+
+Re-delivery of the same `pr-base-advanced` event is safe. Step 1 re-reads live merge state; if a prior invocation already merged and pushed, the live `mergeStateStatus` will be `CLEAN` and the handler exits as `noop:no-conflict`. If the worktree was already merged but not pushed (rare crash case), `git merge` will fast-exit because the tree is already up to date, and the push will succeed normally.
+
+### Semantic-conflict escalation guarantee
+
+The handler never leaves the worktree in a partial-merge (conflict-marker) state. On the escalation path, `git merge --abort` is called before emitting the `"escalated:needs-human"` result, so the branch remains in its pre-merge state and a human can pick up from a clean base.
+
+### Cross-cutting constraints (from §8)
+
+- **One push per invocation.** Steps 4, 5, and 7 each push at most once; at most one push reaches the remote per handler call.
+- **Never force-push.** The merge commit is a regular fast-forwarded push.
+- **Worktree is the source of truth for edits.** All merge operations happen in `state.worktreePath`.
+- **No speculative tickets.** Semantic conflicts are surfaced as a Linear comment; no new tickets are created.
+
+---
+
+## §5 Teardown handlers (`pr-merged` / `pr-closed`)
+
+Ports `workon` §5 ("Teardown") to the event-driven model. Invoked by the dispatch table when `event.type == "pr-merged"` or `event.type == "pr-closed"`. The §4 merge-state pre-check ensures these handlers only run against PRs that GitHub confirms are actually in the corresponding terminal state.
+
+**Scope: Linear + state finalization only.** No worktree removal or branch deletion — those are operator-recoverable via `git worktree prune` and `gh pr delete-branch`, and removing them automatically on an event that may arrive out-of-order would destroy working trees incorrectly. The teardown handlers set `phase="teardown"` and post the final Linear comment; nothing else.
+
+### Inputs
+
+- `ticket_id`: Linear ticket identifier
+- `event.payload.prNumber`, `event.payload.repoSlug`: PR identity
+- `event.payload.mergedAt` (pr-merged) or `event.payload.closedAt` (pr-closed): terminal timestamp from GitHub
+- `state.convergenceCommentPosted`: whether the convergence comment was already posted in Watch
+
+### At-most-once semantics
+
+The teardown handler sets `phase="teardown"` BEFORE posting the Linear comment. This guarantees at most one comment even if the dispatcher delivers the event twice. The sequence:
+
+1. Check `isTeardownComplete(state)` — if already in teardown phase, exit as `result:"noop:already-torn-down"`.
+2. Set `state.phase = "teardown"` and persist immediately (before the Linear write).
+3. Post the final Linear comment (once).
+4. Set `state.finalCommentPosted = true` and persist.
+
+### Implementation
+
+```
+teardown_merged_handler(ticket_id, event, state):
+    PR   = event.payload.prNumber
+    REPO = event.payload.repoSlug
+
+    # At-most-once guard (phase=teardown is set BEFORE the Linear write).
+    teardown_state = normalizeTeardownState(state.teardown)
+    if isTeardownComplete(teardown_state):
+        echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"pr-merged","eventTs":"'"$event.ts"'","result":"noop:already-torn-down","note":"teardown already complete"}'
+        return
+
+    # Persist teardown phase first — at-most-once guard for the Linear comment.
+    state.teardown = createTeardownMarker()
+    state.phase    = "teardown"
+    persist(state, STATE_FILE)
+
+    # Post merge confirmation to Linear if not already posted.
+    if shouldPostFinalComment(state.teardown):
+        # Post a one-line note. Only post if convergence comment was not already sent
+        # to avoid redundant messages — but convergenceCommentPosted is advisory only;
+        # always post on merge so the ticket has a clear terminal marker.
+        mcp__claude_ai_Linear__save_comment(
+            issueId = <linear-issue-id-for-ticket_id>,
+            body    = f"PR #{PR} merged into {REPO}."
+        )
+        state.teardown.finalCommentPosted = true
+        persist(state, STATE_FILE)
+
+    echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"pr-merged","eventTs":"'"$event.ts"'","result":"acted","note":"teardown complete; merge comment posted to Linear"}'
+
+teardown_closed_handler(ticket_id, event, state):
+    PR   = event.payload.prNumber
+    REPO = event.payload.repoSlug
+
+    # At-most-once guard.
+    teardown_state = normalizeTeardownState(state.teardown)
+    if isTeardownComplete(teardown_state):
+        echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"pr-closed","eventTs":"'"$event.ts"'","result":"noop:already-torn-down","note":"teardown already complete"}'
+        return
+
+    # Persist teardown phase first.
+    state.teardown = createTeardownMarker()
+    state.phase    = "teardown"
+    persist(state, STATE_FILE)
+
+    # Post closed-without-merge note to Linear.
+    if shouldPostFinalComment(state.teardown):
+        mcp__claude_ai_Linear__save_comment(
+            issueId = <linear-issue-id-for-ticket_id>,
+            body    = f"PR #{PR} closed without merging ({REPO})."
+        )
+        state.teardown.finalCommentPosted = true
+        persist(state, STATE_FILE)
+
+    echo '{"skill":"workon-event","ticketId":"'"$ticket_id"'","eventType":"pr-closed","eventTs":"'"$event.ts"'","result":"acted","note":"teardown complete; closed-without-merge note posted to Linear"}'
+```
+
+### Result classification
+
+| Result | Condition |
+| --- | --- |
+| `"acted"` | Teardown ran for the first time; Linear comment posted |
+| `"noop:already-torn-down"` | `state.teardown.phase` was already `"teardown"` before this invocation |
+
+### Linear issue ID resolution
+
+Use `mcp__claude_ai_Linear__get_issue` with the human-readable `ticket_id` (e.g. `PROJ-123`) to look up the Linear issue UUID. The `save_comment` call requires the UUID (`issueId`), not the identifier.
+
+---
 
 ## 5. §4.1 merge-state routing
 
@@ -448,7 +1309,7 @@ The `pre-check-error` line's `eventType` is the *original* event type — the pr
 
 ## 7. Idempotency and exit semantics
 
-- Exactly one event handled per invocation. The skill exits zero on success, non-zero on validation errors, unknown event types, pre-check errors, or stale teardown rejections.
+- Exactly one event handled per invocation. The skill exits zero on success, non-zero on validation errors, unknown event types, pre-check errors, stale teardown rejections, **or a setup-handler scope-budget halt (§8.1)**. The first four are dispatch-layer rejections that exit before any handler runs; the scope-budget halt is the one non-zero path that exits *after* the handler ran and *after* state was written, because the event was successfully dispatched and processed — the halt is the handler's structured outcome, not a dispatch failure. Dispatcher retry/failure-class mappings should distinguish between rejections (re-deliver after the upstream condition clears) and halts (do not re-deliver until the operator splits the ticket, raises the budget, or sets an override).
 - No polling, no `sleep`, no scheduled re-entry. The dispatcher owns timing. `convergence-check` is a *normal event*, not an internal timer.
 - State writes are last-step-only: state is only updated after the handler returns successfully, **including for re-routed dispatches** (see §4). A crash mid-handler leaves the previous state intact, so the dispatcher can safely retry. The unknown-type short-circuit (§4), the stale-teardown guard (§5), and the pre-check-error guard (§5) do **not** write state — all three exit before `load_or_create_state` runs (state load itself is deferred until after the §5 pre-check guards have passed; see §3 and §4 "Pre-handler steps"), so a first-time-ticket invocation that exits via `unknown`, `stale`, or `pre-check-error` leaves no state file behind. `lastHandledEvent*` therefore always reflects only handlers that actually ran.
 - De-duplication on `(eventType, ts)` is left to per-handler implementations. The scaffold records the latest seen pair on `state.lastHandledEvent*` but does not skip duplicates. On a re-route, the **original** event's `(type, ts)` is what's recorded — not the synthesized destination type — so duplicate-delivery detection keys off what the dispatcher actually sent.
@@ -466,6 +1327,20 @@ These rules apply uniformly to all handlers and are reproduced here so the per-h
 - **No internal jargon in external artifacts.** PR descriptions, Linear comments, and commit messages describe what the change contains, not the team-local label for it.
 - **Use project-preferred terminology in external artifacts.** Audit drafted text for outdated or team-specific terms before posting.
 
+### 8.1 Setup-handler scope-budget contract
+
+`handle_ticket_ready` (the event-driven Setup path) must enforce the same scope-budget halt that the polling skill enforces between §3.4 and §3.5 (`skills/engineering/workon/SKILL.md` §3.4b). The contract is:
+
+- Read the `## Scope budget` line from the brief on `<TICKET-ID>`. Briefs without the heading skip the check; briefs with a malformed line — missing fields, non-numeric, **zero, or negative** — emit a single warning identifying the violation and skip rather than guess. Both `loc` and `files` must be strictly positive integers per the `/groom` contract (`skills/engineering/groom/SKILL.md` §4); a zero `budget.loc` would either divide by zero in the multiplier check or turn the halt condition into a guaranteed trip on any diff, neither of which is a useful signal. The halt only fires for tickets that declared a *valid* budget.
+- Measure cumulative diff against the base branch the same way `/workon` does — first `git fetch origin "$BASE_BRANCH"` so the local `origin/$BASE_BRANCH` ref reflects the current remote tip, then `git diff --shortstat "origin/$BASE_BRANCH"...HEAD` for LOC (insertions + deletions, the diff size reviewers actually scan) and `git diff --name-only "origin/$BASE_BRANCH"...HEAD | wc -l` for the file count. Both the fetch and the triple-dot range are required: a stale `origin/$BASE_BRANCH` from a long-lived clone (or after the base advanced) can mis-measure the diff against an old merge-base, and a bare `git diff --shortstat` without a range compares the working tree against the index and returns zero on a clean worktree after commits — either failure mode silently skips the halt even when the branch is far over budget.
+- Halt when **either** `LOC > multiplier × budget.loc` (default `multiplier = 1.5`) **or** `LOC > budget.loc + overage_loc` (default `overage_loc = 500`). File count is reported but does not gate the halt independently.
+- Thresholds are configurable via the same env vars `/workon` reads (`WORKON_SCOPE_OVERAGE_MULTIPLIER`, `WORKON_SCOPE_OVERAGE_LOC`) so a project can tune both paths uniformly. The override env var `WORKON_SCOPE_OVERAGE_OVERRIDE` (truthy: `1`, `true`, `yes`) bypasses the entire halt — both branches at once — and is the only complete way to skip the check; raising one threshold env var alone does not disable the OR-joined other branch. When the override is set, log a one-line note and continue to push + PR-open as if the budget had been met.
+- Halt action is **non-interactive by construction in this skill** (the dispatcher is the caller, not a human at a terminal): post the split-proposal as a Linear comment via `mcp__claude_ai_Linear__save_comment`, leave the worktree in place with WIP commits intact, do **not** push, do **not** open the PR, and exit non-zero so the dispatcher can route the ticket to operator review. The proposal carries (a) the actual diff summary, (b) the over-budget delta, (c) candidate seams derived from the changed-file groupings (matching the named-seam contract `/groom` enforces), and (d) the same three options `/workon` surfaces (split / document the new size on the ticket / user override).
+- A halt is **not** a `validation-error`, `unknown`, `stale`, or `pre-check-error` outcome — those are §6 dispatch-layer rejections. The halt happens *inside* the handler after dispatch succeeds, so the §6 line-count contract still applies (one `result: "stub"` line under the scaffold, one `result: "stub"` or production-equivalent line under a real implementation). The scope-budget halt mechanism is what the handler does internally; it does not change the dispatcher's view of the event.
+- The state file is updated normally on a halt — `lastHandledEvent*` reflects that the `ticket-ready` event was processed. A subsequent re-delivery of the same event after the operator splits the ticket or applies an override is the dispatcher's call, on the same idempotency footing as any other handled event.
+
+This rule lives here, not in a stub, because §1 forbids adding behavior to scaffold stubs. The follow-up work that ports `handle_ticket_ready` from the polling skill must implement the halt — the contract above is what reviewers check against.
+
 ## 9. Reference
 
 Original polling implementation, useful when filling in handler bodies: `skills/engineering/workon/SKILL.md`.
@@ -477,7 +1352,7 @@ Section mapping:
 | §3 Setup | `ticket-ready` | `handle_ticket_ready` |
 | §4.1 merge-state | All PR events | Pre-dispatch routing in §5 above |
 | §4.2 conflicts | `pr-base-advanced` | `handle_pr_base_advanced` |
-| §4.3 Codex comments | `pr-comment` | `handle_pr_comment` |
+| §4.3 reviewer comments (Codex, CodeRabbit) | `pr-comment` | `handle_pr_comment` |
 | §4.4 CI failures | `pr-ci-failure` | `handle_pr_ci_failure` |
 | §4.5 convergence | `convergence-check` (+ `pr-push` for bookkeeping) | `handle_convergence_check` |
 | §5 Teardown | `pr-merged`, `pr-closed` | `handle_pr_merged`, `handle_pr_closed` |
