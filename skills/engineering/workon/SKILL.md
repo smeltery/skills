@@ -1,6 +1,6 @@
 ---
 name: workon
-description: Pick up a Linear ticket end-to-end — worktree, implement, PR, then watch the PR on a 5-min loop addressing Codex comments, CI failures, and merge conflicts until merged. Use when the user types `/workon <TICKET-ID>` (e.g. `/workon ENG-66`).
+description: Pick up a Linear ticket end-to-end — worktree, implement, PR, then watch the PR on a 5-min loop addressing reviewer comments (Codex, CodeRabbit), CI failures, and merge conflicts until merged. Use when the user types `/workon <TICKET-ID>` (e.g. `/workon ENG-66`).
 argument-hint: "<TICKET-ID>"
 ---
 
@@ -9,7 +9,7 @@ argument-hint: "<TICKET-ID>"
 Idempotent, state-branched skill. Same invocation drives three phases:
 
 - **Setup** — no worktree yet → create worktree, read ticket, implement, PR, start loop.
-- **Watch** — worktree + open PR → address Codex comments, fix CI, resolve conflicts, check convergence, check merge.
+- **Watch** — worktree + open PR → address reviewer comments (Codex, CodeRabbit), fix CI, resolve conflicts, check convergence, check merge.
 - **Teardown** — PR merged → remove worktree, stop loop.
 
 **Arguments:** "$ARGUMENTS"
@@ -33,9 +33,15 @@ State file: `~/.claude/workon/<TICKET-ID>.json`. Shape:
   "phase": "setup|watch|teardown",
   "convergenceCommentPosted": false,
   "lastAddressedCommentISO": null,
+  "lastAddressedCommentIds": [],
+  "lastRetriedCheckRunId": null,
+  "lastFixedCheckRunId": null,
   "loopStarted": false
 }
 ```
+
+- `lastAddressedCommentIds`: namespaced ids (`issue:<id>` / `review:<id>`) of comments AT `lastAddressedCommentISO`, for boundary-second dedup (§4.3).
+- `lastRetriedCheckRunId` / `lastFixedCheckRunId`: per-check-run-id watermarks that stop the loop from rerunning or re-fixing the same failing check forever (§4.4).
 
 Create the `~/.claude/workon/` dir if it doesn't exist. If no state file, this is a fresh Setup run. If state exists, jump to the phase it declares and re-verify against GitHub — phase transitions are owned by the skill, not the state file (state is a cache, GitHub is source of truth).
 
@@ -119,6 +125,24 @@ Before writing any code, build a working picture of the repo's conventions, stan
 
 If repo docs and ticket scope conflict, prefer repo docs and raise the conflict on the Linear ticket before coding.
 
+### 3.4b Scope-budget gate
+
+Enforce the ticket's groomed scope budget before handing the PR off for review. Read the `## Scope budget` line from the brief on `<TICKET-ID>` (set by `/groom`). Briefs without the heading skip the check; a malformed line — missing fields, non-numeric, **zero, or negative** — emits one warning and skips rather than guessing (both `loc` and `files` must be strictly positive integers).
+
+Measure the cumulative diff against the base **after the §3.5 implementation pass, before the §3.6 push** — the diff only exists once code is written:
+
+```bash
+git fetch origin "$BASE_BRANCH"   # refresh origin/$BASE_BRANCH first
+LOC=$(git diff --shortstat "origin/$BASE_BRANCH"...HEAD)        # insertions + deletions
+FILES=$(git diff --name-only "origin/$BASE_BRANCH"...HEAD | wc -l)
+```
+
+Both the fetch and the triple-dot range are required: a stale `origin/$BASE_BRANCH` mis-measures against an old merge-base, and a bare `git diff --shortstat` (no range) compares the worktree to the index and returns zero after commits — either silently skips the halt.
+
+Halt when **either** `LOC > multiplier × budget.loc` (default `multiplier = 1.5`) **or** `LOC > budget.loc + overage_loc` (default `overage_loc = 500`). File count is reported but does not gate. Thresholds are tunable via `WORKON_SCOPE_OVERAGE_MULTIPLIER` / `WORKON_SCOPE_OVERAGE_LOC`; `WORKON_SCOPE_OVERAGE_OVERRIDE` (truthy: `1`, `true`, `yes`) bypasses the whole halt — raising one threshold env var alone does **not** disable the OR-joined other branch.
+
+On halt: post a split-proposal as a Linear comment via `mcp__*Linear__save_comment` carrying (a) the actual diff summary, (b) the over-budget delta, (c) candidate seams derived from the changed-file groupings, and (d) three options — split the ticket / update the budget on the ticket / user override. Leave the worktree with WIP commits intact, do **not** push, do **not** open the PR, and stop. Resume (re-run `/workon <TICKET-ID>`) once the user splits the ticket or sets the override.
+
 ### 3.5 Implement the ticket
 
 Work inside the worktree (`cd "$WT"`). Run autonomously in this phase — no user check-in before opening the PR.
@@ -131,6 +155,8 @@ Work inside the worktree (`cd "$WT"`). Run autonomously in this phase — no use
 If implementation requires a product decision outside ticket scope, stop, leave a WIP commit, notify the user, and exit.
 
 ### 3.6 Push and open PR
+
+First enforce the §3.4b scope-budget gate against the finished diff. If it halts, stop here — do not push or open the PR.
 
 Use your normal PR workflow. Required behavior:
 
@@ -173,40 +199,50 @@ gh pr view "$PR" --json state,mergedAt,mergeable,mergeStateStatus
 
 ### 4.2 Fix merge conflicts
 
-If `mergeable == "CONFLICTING"`:
+Re-read live merge state first (`gh pr view`); if it now reports `MERGEABLE`, the conflict already cleared — no-op this tick. If `mergeable == "CONFLICTING"`:
 
 ```bash
 git fetch origin
 git merge "origin/$BASE_BRANCH"
-# resolve conflicts in-place, then:
+# resolve mechanical conflicts in-place, then:
 git add -A
 git commit
 git push origin HEAD
 ```
 
-If conflict resolution requires product-level judgment, leave the worktree in conflict state, notify the ticket owner, and exit this tick.
+If the merge driver auto-resolved everything (no conflict markers left), just commit and push the merge.
 
-### 4.3 Address Codex comments
+If any conflict region needs product-level judgment (a semantic conflict), **`git merge --abort`** to restore a clean worktree, then notify the ticket owner on Linear with the conflicting files and exit this tick. Never leave the worktree mid-merge — a half-resolved state breaks the next tick's fetch/merge.
 
-Fetch comments newer than `lastAddressedCommentISO`:
+### 4.3 Address reviewer comments (Codex, CodeRabbit)
+
+Fetch comments newer than `lastAddressedCommentISO`. The author regex
+`codex|chatgpt|coderabbit` covers Codex (`chatgpt-codex-connector`) and
+CodeRabbit (`coderabbitai[bot]`). CodeRabbit's summary/walkthrough/status are
+auto-generated *issue* comments (marked with an HTML comment naming
+`coderabbit.ai`, or a `walkthrough_start` marker) — skip those; its actionable
+findings arrive as review (line-level) comments.
 
 ```bash
-# Issue comments (general PR comments)
+# Issue comments (general PR comments) — drop CodeRabbit's auto-generated summaries
 gh api "repos/$REPO/issues/$PR/comments" --paginate \
-  --jq '[.[] | select(.user.login | test("codex|chatgpt"; "i"))]'
+  --jq '[.[] | select((.user.login | test("codex|chatgpt|coderabbit"; "i"))
+                       and ((.body | test("<!--[^>]*coderabbit\\.ai|walkthrough_start"; "i")) | not))]'
 
 # Review comments (line-level)
 gh api "repos/$REPO/pulls/$PR/comments" --paginate \
-  --jq '[.[] | select(.user.login | test("codex|chatgpt"; "i"))]'
+  --jq '[.[] | select(.user.login | test("codex|chatgpt|coderabbit"; "i"))]'
 ```
 
-For each new Codex comment:
+Dedup against the watermark: skip comments older than `lastAddressedCommentISO`, and at the boundary second (`created_at == lastAddressedCommentISO`) skip those whose namespaced id (`issue:<id>` / `review:<id>`) is already in `lastAddressedCommentIds`. Process the survivors oldest-first so the watermark never advances past an unhandled comment.
+
+For each new reviewer comment:
 
 1. If valid, implement the fix.
 2. If incorrect or out of scope, reply with rationale.
 3. Commit fixes.
 4. Resolve review threads explicitly after pushing.
-5. Update `lastAddressedCommentISO` to newest processed comment.
+5. Advance the watermark: set `lastAddressedCommentISO` to the newest processed `created_at` and `lastAddressedCommentIds` to the namespaced ids at that timestamp. If the newest timestamp **equals** the existing watermark, union the id sets instead of replacing — so two comments sharing a second aren't dropped or re-processed.
 
 Push once at the end of §4.3.
 
@@ -217,23 +253,25 @@ gh pr checks "$PR"
 ```
 
 - Ignore non-blocking informational checks.
-- If required checks are red, fetch failed logs (`gh run view <run-id> --log-failed`), diagnose, fix, commit, push.
-- If failure appears unrelated to this PR, rerun failed jobs once (`gh run rerun <run-id> --failed`) before coding a fix.
+- Re-read the failing check's live conclusion before acting — it may have cleared on a newer run.
+- **Likely-flaky** (`conclusion == "timed_out"`, or an infra-noise check: upload-artifact, cache, network/registry) → rerun the failed jobs once (`gh run rerun <run-id> --failed`) and record the check-run id in `lastRetriedCheckRunId`. Never rerun the same check-run id twice — if it's already in `lastRetriedCheckRunId`, treat the failure as deterministic.
+- **Deterministic failure** → fetch failed logs (`gh run view <run-id> --log-failed`), diagnose, fix, commit, push, and record the check-run id in `lastFixedCheckRunId`.
+- **Escalate to the ticket owner** (Linear comment, stop fixing this check) when the failure is unfixable — infra / permission / secret errors — or when the same check-run id is already in `lastFixedCheckRunId` (a prior fix didn't take; retrying would just loop).
 
 ### 4.5 Convergence check
 
-Read last commit timestamp and last Codex comment timestamp:
+Read last commit timestamp and last reviewer comment timestamp:
 
 ```bash
 LAST_COMMIT=$(gh api "repos/$REPO/pulls/$PR/commits" --jq '[.[]][-1].commit.committer.date')
-LAST_CODEX=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
-  --jq '[.[] | select(.user.login | test("codex|chatgpt"; "i")) | .created_at] | last')
+LAST_REVIEWER=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+  --jq '[.[] | select(.user.login | test("codex|chatgpt|coderabbit"; "i")) | .created_at] | last')
 ```
 
 Converged when both:
 
 1. `now - LAST_COMMIT >= 30 minutes`, and
-2. `LAST_CODEX` is null or `LAST_CODEX < LAST_COMMIT`.
+2. `LAST_REVIEWER` is null or `LAST_REVIEWER < LAST_COMMIT`.
 
 If converged and `convergenceCommentPosted == false`, post a concise Linear update with PR URL and set `convergenceCommentPosted: true`.
 
