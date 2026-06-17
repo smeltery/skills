@@ -16,7 +16,7 @@ The following skills were ported from `mattpocock/skills` and remain MIT-license
 
 - `skills/engineering/diagnose/` (including `scripts/hitl-loop.template.sh`)
 - `skills/engineering/grill-with-docs/` (including `CONTEXT-FORMAT.md`, `ADR-FORMAT.md`)
-- `skills/engineering/improve-codebase-architecture/` (including `DEEPENING.md`, `INTERFACE-DESIGN.md`, `LANGUAGE.md`)
+- `skills/engineering/improve-codebase-architecture/` (including `DEEPENING.md`, `HTML-REPORT.md`, `INTERFACE-DESIGN.md`, `LANGUAGE.md`)
 - `skills/engineering/prototype/` (including `LOGIC.md`, `UI.md`)
 - `skills/engineering/tdd/` (including `tests.md`, `mocking.md`, `deep-modules.md`, `interface-design.md`, `refactoring.md`)
 - `skills/engineering/to-issues/`
@@ -26,6 +26,7 @@ The following skills were ported from `mattpocock/skills` and remain MIT-license
 - `skills/productivity/caveman/`
 - `skills/productivity/grill-me/`
 - `skills/productivity/handoff/`
+- `skills/productivity/teach/` (including `GLOSSARY-FORMAT.md`, `LEARNING-RECORD-FORMAT.md`, `MISSION-FORMAT.md`, `RESOURCES-FORMAT.md`)
 - `skills/productivity/write-a-skill/`
 
 A few upstream skills (`triage`, `to-issues`, `to-prd`) reference an
