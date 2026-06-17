@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   upload-assets:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith
     steps:
       - name: Checkout
         uses: actions/checkout@v4
