@@ -1,5 +1,6 @@
 # skills
 
+[![Release](https://img.shields.io/badge/release-v0.2.0-blue)](https://github.com/dotbrains/skills/releases/latest)
 [![CI](https://github.com/dotbrains/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/dotbrains/skills/actions/workflows/ci.yml)
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-brightgreen.svg)](https://polyformproject.org/licenses/shield/1.0.0)
 
