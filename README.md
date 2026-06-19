@@ -19,17 +19,32 @@ Other install options (manual copy) are in
 
 ## Available skills
 
-26 skills across two categories — see **[docs/skills.md](./docs/skills.md)** for
-the full annotated catalog. Each skill directory also has its own `README.md`
-alongside the canonical `SKILL.md` the agent consumes.
+26 skills across two categories. Each links to its own README; see
+**[docs/skills.md](./docs/skills.md)** for the full annotated catalog and
+**[why these skills exist](./docs/motivation.md)** for the thinking behind them.
 
-**Engineering** — code work: bug-hunting, design, planning, review, execution.
+### Engineering
 
-`branch-conventions` · `ci-monitoring` · `commit-conventions` · `diagnose` · `git-commit` · `git-safety` · `grill-with-docs` · `improve-codebase-architecture` · `pr-monitor` · `pr-workflow` · `prototype` · `review` · `tdd` · `to-issues` · `to-prd` · `triage` · `workon` · `workon-event` · `zoom-out`
+Code work — bug-hunting, design, planning, review, and execution.
 
-**Productivity** — general workflow, not code-specific.
+| Group | Skills |
+| --- | --- |
+| **Git & commits** | [branch-conventions](./skills/engineering/branch-conventions/README.md) · [commit-conventions](./skills/engineering/commit-conventions/README.md) · [git-commit](./skills/engineering/git-commit/README.md) · [git-safety](./skills/engineering/git-safety/README.md) |
+| **Plan & shape work** | [grill-with-docs](./skills/engineering/grill-with-docs/README.md) · [to-prd](./skills/engineering/to-prd/README.md) · [to-issues](./skills/engineering/to-issues/README.md) · [triage](./skills/engineering/triage/README.md) |
+| **Design & architecture** | [zoom-out](./skills/engineering/zoom-out/README.md) · [prototype](./skills/engineering/prototype/README.md) · [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/README.md) |
+| **Build & debug** | [tdd](./skills/engineering/tdd/README.md) · [diagnose](./skills/engineering/diagnose/README.md) |
+| **Review, CI & PRs** | [review](./skills/engineering/review/README.md) · [pr-workflow](./skills/engineering/pr-workflow/README.md) · [pr-monitor](./skills/engineering/pr-monitor/README.md) · [ci-monitoring](./skills/engineering/ci-monitoring/README.md) |
+| **End-to-end delivery** | [workon](./skills/engineering/workon/README.md) · [workon-event](./skills/engineering/workon-event/README.md) |
 
-`caveman` · `grill-me` · `handoff` · `teach` · `wrap` · `wrap-resume` · `write-a-skill`
+### Productivity
+
+General workflow, not code-specific.
+
+| Group | Skills |
+| --- | --- |
+| **Communicate** | [caveman](./skills/productivity/caveman/README.md) · [grill-me](./skills/productivity/grill-me/README.md) |
+| **Sessions & continuity** | [handoff](./skills/productivity/handoff/README.md) · [wrap](./skills/productivity/wrap/README.md) · [wrap-resume](./skills/productivity/wrap-resume/README.md) |
+| **Author & learn** | [teach](./skills/productivity/teach/README.md) · [write-a-skill](./skills/productivity/write-a-skill/README.md) |
 
 ## Documentation
 
