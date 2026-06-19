@@ -1,6 +1,5 @@
 # skills
 
-[![Release](https://img.shields.io/badge/release-v0.2.0-blue)](https://github.com/dotbrains/skills/releases/latest)
 [![CI](https://github.com/dotbrains/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/dotbrains/skills/actions/workflows/ci.yml)
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-brightgreen.svg)](https://polyformproject.org/licenses/shield/1.0.0)
 
@@ -15,7 +14,7 @@ npx skills@latest add dotbrains/skills
 ```
 
 Pick the skills you want, choose the agents to install them on, and you're done.
-Other install options (release script, manual copy) are in
+Other install options (manual copy) are in
 [docs/installation.md](./docs/installation.md).
 
 ## Available skills
@@ -36,7 +35,7 @@ alongside the canonical `SKILL.md` the agent consumes.
 
 - **[Available skills](./docs/skills.md)** — the full annotated catalog.
 - **[Why these skills exist](./docs/motivation.md)** — the failure modes each skill targets, and the books behind them.
-- **[Installation](./docs/installation.md)** — quickstart, release script, and manual install.
+- **[Installation](./docs/installation.md)** — quickstart and manual install.
 - **[Contributing](./docs/contributing.md)** — skill layout, conventions, and repository structure.
 
 ## Attributions
