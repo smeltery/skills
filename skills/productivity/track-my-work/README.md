@@ -19,27 +19,19 @@ It's idempotent: running it multiple times the same day updates existing entries
 - **`gh` CLI authenticated** (`gh auth status` should succeed) and scoped to the org(s) you want tracked.
 - **`python3` on PATH** for the timezone fallback.
 
-### Optional: Linear API key for full coverage
+No Linear API key or CLI is needed — Linear reads go entirely through the MCP.
 
-`/track-my-work` runs in two modes:
+### Linear coverage
 
-| Mode | Setup | What you get |
-| --- | --- | --- |
-| **Reduced** (default) | None — just install | Linear: assigned tickets only. GitHub: full. |
-| **Full** | Generate a Linear API key (~30 sec) + a local `linear-cli` | Linear: assigned + tickets you created + comments you authored. GitHub: full. |
+All Linear activity is read through the Linear MCP. No API key, no CLI, no extra setup:
 
-To enable full mode (useful for cross-team work, RCA writeups, triage):
+| Activity | Coverage |
+| --- | --- |
+| **Assigned** | Full — `list_issues { assignee: "me" }`. |
+| **Created** | Full within the lookback window — found via a `createdAt`-windowed scan filtered to issues you created (the MCP has no `creator` filter). |
+| **Commented** | Not pulled directly (the MCP has no global "my comments" query). Recovered via the GitHub→Linear cross-link, and Step 7's manual prompt. |
 
-1. In Linear, open **Settings → Security & access → Personal API keys** (`.../settings/account/security`).
-2. Click **New API key**, name it `track-my-work-key`, scope **Full access**, click **Create**.
-3. Save the key:
-   ```
-   mkdir -p ~/.config/linear-cli
-   echo '{"apiKey":"lin_api_..."}' > ~/.config/linear-cli/config.json
-   chmod 600 ~/.config/linear-cli/config.json
-   ```
-
-Full mode also needs a local `linear-cli` that reads `~/.config/linear-cli/config.json` and exposes `issues-mine-assigned`, `issues-mine-created`, and `comments-mine`. Without it, the skill stays in reduced mode and degrades gracefully. The first-run setup offers the API-key step interactively, and you can enable it later anytime with `/track-my-work --setup-linear-cli`.
+In practice a ticket you created or commented on that also has a PR you authored/reviewed still shows up via the GitHub cross-link. The only gap is a Linear ticket you touched with no associated PR in the window — Step 7 is the catch-all.
 
 ## First-run setup
 
@@ -161,3 +153,4 @@ To keep this skill portable across teammates, **nothing about you is hardcoded**
 
 - **GitHub MCP fallback.** The GitHub MCP token may lack visibility into private repos. When this happens, Step 3 returns zero results even when you clearly had PR activity. The skill auto-falls-back to `gh search prs` via Bash, so practically you'll still get your PRs — just slightly slower.
 - **Linear assignee filter.** `assignee: "me"` sometimes misses tickets you only briefly touched (e.g., triage closures). Surfaces as occasional missing standup entries for cleanup work. Workaround: add anything missed via the manual capture prompt.
+- **Comments aren't pulled from Linear.** The MCP has no global "my comments" query, so a ticket you only commented on (didn't create or get assigned) appears only if it has an associated PR (the GitHub cross-link). Otherwise add it via the manual capture prompt.
