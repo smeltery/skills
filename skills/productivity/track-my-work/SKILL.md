@@ -38,18 +38,17 @@ Stored at `~/.config/track-my-work/config.json`:
 
 Everything else (Linear "me", GitHub username) is resolved at runtime — no identity stored. Linear activity is not filtered by team; whatever you're assigned to anywhere shows up.
 
-### Linear coverage modes
+### Linear coverage
 
-Two modes, auto-selected by detecting whether you have set up a Linear API key for a bundled `linear-cli`:
+Linear reads go entirely through the **Linear MCP** — no CLI, no API key, no extra setup. The MCP covers two of the three activity types directly:
 
-| Mode | Trigger | Linear coverage |
+| Activity | How | Coverage |
 | --- | --- | --- |
-| **Full** | `~/.config/linear-cli/config.json` exists with a valid `apiKey` | Assigned + Created + Commented — uses the three `linear-cli` subcommands |
-| **Reduced** | No API key | Assigned only — falls back to Linear MCP `list_issues { assignee: "me" }` |
+| **Assigned** | `list_issues { assignee: "me" }` | Full |
+| **Created** | `list_issues { createdAt: <lookback> }` then client-filter on `creator == me` (the MCP has no `creator` filter, so the date-windowed scan bounds the result set) | Full within the lookback window |
+| **Commented** | No global "comments I authored" query exists in the MCP | Not pulled directly — recovered via the GitHub→Linear cross-link (Step 3) and Step 7's manual prompt |
 
-The API key is **optional**. The skill works day-1 in reduced mode. First-run bootstrap offers a path to set it up; you can opt in any time later by running `/track-my-work --setup-linear-cli`.
-
-> `linear-cli` is whatever local Linear CLI you have wired up to read `~/.config/linear-cli/config.json` and expose `issues-mine-assigned`, `issues-mine-created`, and `comments-mine` subcommands. If you don't have one, stay in reduced mode — the skill degrades gracefully.
+The GitHub cross-link means a ticket you created *or* commented on that also has a PR you authored/reviewed still surfaces. The only gap is a Linear ticket you touched with no associated PR activity in the window — Step 7 is the catch-all for those.
 
 ## Common workflows
 
@@ -66,28 +65,7 @@ If `~/.config/track-my-work/config.json` does not exist, run setup before anythi
    - If none work, ask the user: "What's your IANA timezone? (e.g., `America/Los_Angeles`, `America/New_York`, `Europe/London`)"
 4. **Resolve the GitHub org.** Ask the user which GitHub org to scope standup PR searches to (or `all` to search across every org by author). Store it as `githubOrg` (string or `null` for all-orgs). You can suggest a default from `gh api user/orgs --jq '.[].login'`.
 5. **Write the config file.**
-6. **Offer to enable full Linear coverage (optional).** Check whether `~/.config/linear-cli/config.json` exists.
-   - **If yes** — full mode is auto-enabled. Just tell the user: `"✓ Linear full coverage enabled (linear-cli API key detected)."`
-   - **If no** — ask:
-     > "Optional: enable full Linear coverage? This tracks comments you authored and tickets you created (not just assigned). Requires a personal Linear API key (~30 seconds). Skip for now and use assigned-only?"
-
-     If the user opts in, walk them through:
-     1. In Linear, open **Settings → Security & access → Personal API keys** (your workspace's `.../settings/account/security`).
-     2. Click **New API key**.
-     3. Name it `track-my-work-key`, leave scope at **Full access**, click **Create**.
-     4. Copy the key (starts with `lin_api_`) and paste it back here.
-
-     Then save it:
-     - `mkdir -p ~/.config/linear-cli && echo '{"apiKey":"<key>"}' > ~/.config/linear-cli/config.json && chmod 600 ~/.config/linear-cli/config.json` via Bash.
-     - Verify by running `linear-cli comments-mine --first 1`. If it returns JSON, full mode is now active.
-     - On failure (invalid key, network error), surface the error verbatim and ask them to retry or skip.
-
-     **Security note:** treat the API key as a secret. Don't paste it into screenshots, commit messages, or shared chat. If exposed, rotate immediately by deleting and recreating in the same Linear settings page.
-
-     If the user opts out:
-     - Print: `"OK — using reduced mode (assigned-only). You can enable full coverage later with /track-my-work --setup-linear-cli."`
-     - Continue. Do not store a "declined" flag — re-prompt is OK if they reconsider.
-7. **Offer to schedule daily auto-runs.** Most people won't know they can automate this. Ask:
+6. **Offer to schedule daily auto-runs.** Most people won't know they can automate this. Ask:
    > "Want this to run automatically every weekday evening, or do you prefer to invoke `/track-my-work` manually whenever?"
 
    If the user chooses **auto**:
@@ -111,7 +89,7 @@ If `~/.config/track-my-work/config.json` does not exist, run setup before anythi
 
    If the user chooses **manual**:
    - Skip scheduling. Print: `"OK — run /track-my-work whenever you want. You can schedule it later."`
-8. **Continue into the daily run** for today. The first run should both set up *and* log the user's work for the current date.
+7. **Continue into the daily run** for today. The first run should both set up *and* log the user's work for the current date.
 
 ### Daily run — Steps 1–8
 
@@ -140,23 +118,28 @@ mcp__*Notion__notion-query-data-sources {
 
 If an entry exists, use its date as the start of the lookback window. If no entries (first run), look back 7 days. Cap at 14 days.
 
-**Step 2 — Linear.** Two paths depending on coverage mode (detect by checking `~/.config/linear-cli/config.json`):
+**Step 2 — Linear.** All Linear reads go through the Linear MCP. Resolve your user once with `mcp__*Linear__get_user { query: "me" }` (needed for the creator filter below). Then pull two sets:
 
-**Full mode (API key present):** Run all three `linear-cli` subcommands in parallel via Bash:
+**Assigned** — issues assigned to you with activity in the window:
 
 ```
-linear-cli issues-mine-assigned --since <lookback-iso> --first 100
-linear-cli issues-mine-created  --since <lookback-iso> --first 100
-linear-cli comments-mine        --since <lookback-iso> --first 100
+mcp__*Linear__list_issues { assignee: "me", updatedAt: "<lookback-iso-or-duration>", limit: 250 }
 ```
 
-Each returns JSON. Then dedupe across the three sets by issue ID — a ticket assigned to me AND that I commented on counts as one ticket with combined context (assignment + comment text both inform Step 5's classification). Comments are returned with their parent issue inline, so a "commented on PROJ-X" comment surfaces PROJ-X for logging.
+**Created** — the MCP has no `creator` filter, so list issues *created* in the window workspace-wide and filter client-side to yours:
 
-For each comment found, briefly evaluate substantiveness: log the parent ticket if the comment contains real information (RCA findings, decisions, root-cause observations, technical insight) — skip if it's an ack/emoji/scheduling chitchat. Keep the comment text in mind for Notes content.
+```
+mcp__*Linear__list_issues { createdAt: "<lookback-iso-or-duration>", limit: 250 }
+→ keep only issues whose creator is the "me" user from get_user
+```
 
-**Reduced mode (no API key):** Fall back to MCP `mcp__*Linear__list_issues` with `assignee: "me"` and a date filter from the lookback window. **Do not** filter by team — pull whatever you are assigned to anywhere.
+`createdAt`/`updatedAt` accept an ISO-8601 date or a relative duration (e.g. `-P14D`). Page with `cursor` if the result set hits the limit; if the created-scan still returns a full 250 after paging (very large workspace), note that created-coverage may be truncated for that window rather than silently dropping it. **Do not** filter by team — pull whatever you're assigned to / created anywhere.
 
-**Both modes:** for each issue extract: title, identifier, status, URL, completion date. Do not block on Linear failures — if the CLI or MCP errors out, log the error and continue to Step 3.
+Dedupe the two sets by issue ID — an issue you both created and are assigned to is one ticket. For each issue extract: title, identifier, status, URL, completion date.
+
+**Comments you authored are not pulled here** — the MCP has no global "my comments" query. Tickets you commented on (but didn't create or get assigned) are instead recovered two ways: the GitHub→Linear cross-link in Step 3 (if you have an associated PR), and Step 7's manual prompt. If you already have a ticket in hand and want to weigh a comment's substance for Notes, `mcp__*Linear__list_comments { issueId: <id> }` reads that ticket's thread.
+
+Do not block on Linear failures — if the MCP errors out, log the error and continue to Step 3.
 
 **Step 3 — GitHub.** Resolve the username at runtime with `gh api user --jq .login`. Then (using `<org>` = `config.githubOrg`, or omitting the `--owner`/org filter when it's `null`):
 
@@ -319,14 +302,6 @@ If yes, classify and log the same way. For Notion docs the user mentions, ask fo
 
 The `PRs reviewed` count is cross-cutting — it counts every unique PR where the user's role was `reviewer` (from Step 3), regardless of which bucket the entry was logged in. PRs you reviewed that were cross-linked into Linear entries still count here.
 
-**Reduced-mode hint.** If running in reduced mode (no linear-cli API key), append one line to the summary:
-
-```
-ℹ️  Linear coverage is reduced (assigned-only). Comments you authored and cross-team tickets you created aren't tracked. Enable full coverage anytime: /track-my-work --setup-linear-cli
-```
-
-Keep it one line, don't repeat it elsewhere in the run.
-
 If nothing new was found across all sources, say so clearly.
 
 ### Reconfigure
@@ -404,3 +379,5 @@ If you're verifying an existing/duplicated database instead of creating one, the
 
 - **GitHub MCP token may lack private-repo visibility.** Manifests as Step 3 returning 0 results when the user clearly had PR activity. The `gh search prs` fallback in Step 3 partially mitigates.
 - **Linear `assignee: "me"` filter sometimes misses tickets the user only briefly touched.** Surfaces as standup entries missing for cleanup/triage tickets. Workaround: add anything missed via Step 7's manual capture prompt.
+- **Comments you authored aren't pulled from Linear.** The MCP has no global "my comments" query, so a ticket you only commented on (didn't create or get assigned) won't appear unless it has an associated PR (Step 3 cross-link). Workaround: Step 7's manual capture prompt.
+- **Created-coverage is bounded by a workspace-wide scan.** The MCP has no `creator` filter, so created issues are found by scanning issues created in the lookback window and filtering client-side. In a very large/busy workspace the window may exceed the page limit; the skill flags truncation rather than dropping silently.
