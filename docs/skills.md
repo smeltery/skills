@@ -25,6 +25,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[to-issues](../skills/engineering/to-issues/README.md)** — Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.
 - **[to-prd](../skills/engineering/to-prd/README.md)** — Turn the current conversation context into a PRD and publish it to the project issue tracker.
 - **[triage](../skills/engineering/triage/README.md)** — Move issues through a small state machine of triage roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`).
+- **[wayfinder](../skills/engineering/wayfinder/README.md)** — Plan work too large or unclear for one agent session by creating an issue-tracker map and resolving one frontier decision ticket at a time.
 - **[workon](../skills/engineering/workon/README.md)** — Pick up a Linear ticket end-to-end: worktree, implement, PR, then watch the PR on a 5-minute loop addressing review comments, CI failures, and merge conflicts until merged.
 - **[workon-event](../skills/engineering/workon-event/README.md)** — Event-driven `/workon` companion that handles one ticket event per invocation via a dispatcher.
 - **[zoom-out](../skills/engineering/zoom-out/README.md)** — Tell the agent to zoom out and give a higher-level perspective on an unfamiliar section of code.

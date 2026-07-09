@@ -31,6 +31,20 @@ Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an
 - Prefer many thin slices over few thick ones
 </vertical-slice-rules>
 
+Give each issue its blocking edges: the other issues that must complete before
+it can start. An issue with no blockers can start immediately.
+
+Wide refactors are the exception to vertical slicing. A wide refactor is one
+mechanical change whose blast radius breaks many call sites at once, so no thin
+slice can land green. Sequence it as expand-contract:
+
+1. Expand: add the new form beside the old form.
+2. Migrate: move callers in batches sized by blast radius.
+3. Contract: remove the old form once every caller has moved.
+
+If even migration batches cannot stay green alone, keep the sequence but use an
+integration branch and a final integrate-and-verify issue.
+
 ### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each slice, show:
@@ -54,6 +68,11 @@ Iterate until the user approves the breakdown.
 For each approved slice, publish a new issue to the issue tracker. Use the issue body template below. Apply the `needs-triage` triage label so each issue enters the normal triage flow.
 
 Publish issues in dependency order (blockers first) so you can reference real issue identifiers in the "Blocked by" field.
+
+Use the platform's native blocking/sub-issue relationship where it exists.
+Otherwise, keep the blocking links in the issue body. If the repo has no real
+tracker configured, write a local `issues.md` file in dependency order using the
+same template.
 
 <issue-template>
 ## Parent

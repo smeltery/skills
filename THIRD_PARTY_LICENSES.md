@@ -22,6 +22,7 @@ The following skills were ported from `mattpocock/skills` and remain MIT-license
 - `skills/engineering/to-issues/`
 - `skills/engineering/to-prd/`
 - `skills/engineering/triage/` (including `AGENT-BRIEF.md`, `OUT-OF-SCOPE.md`)
+- `skills/engineering/wayfinder/`
 - `skills/engineering/zoom-out/`
 - `skills/productivity/caveman/`
 - `skills/productivity/grill-me/`

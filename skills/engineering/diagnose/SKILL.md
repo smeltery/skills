@@ -48,9 +48,23 @@ The goal is not a clean repro but a **higher reproduction rate**. Loop the trigg
 
 Stop and say so explicitly. List what you tried. Ask the user for: (a) access to whatever environment reproduces it, (b) a captured artifact (HAR file, log dump, core dump, screen recording with timestamps), or (c) permission to add temporary production instrumentation. Do **not** proceed to hypothesise without a loop.
 
-Do not proceed to Phase 2 until you have a loop you believe in.
+### Completion criterion — a tight loop that goes red
 
-## Phase 2 — Reproduce
+Phase 1 is done only when you can name one command you have already run, with
+output, that is:
+
+- **Red-capable** — it drives the actual bug path and asserts the user's exact
+  symptom.
+- **Deterministic** — same verdict every run, or a pinned high reproduction
+  rate for flaky bugs.
+- **Fast** — seconds, not minutes, where the repo allows it.
+- **Agent-runnable** — no hidden human step unless explicitly wrapped by a HITL
+  script.
+
+If you catch yourself theorising before this command exists, stop and build the
+loop. No red-capable command, no Phase 2.
+
+## Phase 2 — Reproduce and minimise
 
 Run the loop. Watch the bug appear.
 
@@ -60,7 +74,11 @@ Confirm:
 - [ ] The failure is reproducible across multiple runs (or, for non-deterministic bugs, reproducible at a high enough rate to debug against).
 - [ ] You have captured the exact symptom (error message, wrong output, slow timing) so later phases can verify the fix actually addresses it.
 
-Do not proceed until you reproduce the bug.
+Once it is red, shrink the repro to the smallest scenario that still fails. Cut
+inputs, callers, config, data, and steps one at a time, re-running the loop after
+each cut. Keep only what is load-bearing for the failure.
+
+Do not proceed until you have reproduced and minimised the bug.
 
 ## Phase 3 — Hypothesise
 
