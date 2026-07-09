@@ -16,6 +16,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[git-safety](../skills/engineering/git-safety/README.md)** — Guardrails for safe git operations: stash/cherry-pick preference, force-push constraints, and destructive-command avoidance.
 - **[grill-with-docs](../skills/engineering/grill-with-docs/README.md)** — Code-aware grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` / ADRs inline.
 - **[improve-codebase-architecture](../skills/engineering/improve-codebase-architecture/README.md)** — Surface architectural friction and propose deepening opportunities — refactors that turn shallow modules into deep ones.
+- **[loc-budget](../skills/engineering/loc-budget/README.md)** — Find large line-count hitters, modularize them into cohesive files, and add file-size and flat-directory budget gates in the repo's idiomatic tooling.
 - **[pr-monitor](../skills/engineering/pr-monitor/README.md)** — One-pass PR monitor that processes bot review feedback, CI failures, and merge-readiness signals.
 - **[pr-workflow](../skills/engineering/pr-workflow/README.md)** — Create and update PRs with clear reviewer-focused descriptions and mergeability checks.
 - **[port](../skills/engineering/port/README.md)** — Port an upstream GitHub repository into a fresh private destination repository with a new identity, clean single-commit history, detailed docs, CI/pre-commit/Flox setup, structure cleanup, and upstream-reference sanitization.
