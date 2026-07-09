@@ -14,6 +14,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[improve-codebase-architecture](./improve-codebase-architecture/README.md)** — Surface architectural friction and propose deepening opportunities — refactors that turn shallow modules into deep ones.
 - **[pr-monitor](./pr-monitor/README.md)** — One-pass PR monitor that processes bot review feedback, CI failures, and merge-readiness signals.
 - **[pr-workflow](./pr-workflow/README.md)** — Create and update PRs with clear reviewer-focused descriptions and mergeability checks.
+- **[port](./port/README.md)** — Port an upstream GitHub repository into a fresh private destination repository with a new identity, clean single-commit history, detailed docs, CI/pre-commit/Flox setup, structure cleanup, and upstream-reference sanitization.
 - **[review](./review/README.md)** — Read-only, high-signal pull request review using PR description, ticket scope, full diff context, and PR-suggested tests. Returns Critical / Suggestions / Nits.
 - **[tdd](./tdd/README.md)** — Test-driven development with a red-green-refactor loop. Vertical slices via tracer bullets — one test, one implementation, repeat.
 - **[to-issues](./to-issues/README.md)** — Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.
@@ -33,6 +34,7 @@ flowchart LR
   TI --> TRI[triage<br/>label & ready issues]
   TRI --> WO[workon<br/>execute a slice]
   WO --> RV[review<br/>review the PR]
+  ZO -.repo migration.-> PORT[port<br/>productize repo]
   WO -.bug found.-> DIAG[diagnose<br/>find root cause]
   WO -.architectural smell.-> ARCH[improve-codebase-architecture<br/>deepen modules]
   TDD[tdd] -.red-green-refactor.-> WO
