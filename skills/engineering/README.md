@@ -8,6 +8,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[ci-monitoring](./ci-monitoring/README.md)** — Monitor GitHub PR checks, rerun failed jobs when appropriate, and confirm merge-readiness.
 - **[commit-conventions](./commit-conventions/README.md)** — Keep commit messages aligned with branch intent using conventional commit types.
 - **[diagnose](./diagnose/README.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
+- **[feature-gap](./feature-gap/README.md)** — Compare a source GitHub repository against a destination repository, identify real missing functionality, implement it destination-natively, then commit and push to the destination default branch.
 - **[git-commit](./git-commit/README.md)** — Safe commit-message workflow using temp files and `git commit -F` to avoid shell-substitution pitfalls.
 - **[git-safety](./git-safety/README.md)** — Guardrails for safe git operations: stash/cherry-pick preference, force-push constraints, and destructive-command avoidance.
 - **[grill-with-docs](./grill-with-docs/README.md)** — Code-aware grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` / ADRs inline.
@@ -35,6 +36,7 @@ flowchart LR
   TRI --> WO[workon<br/>execute a slice]
   WO --> RV[review<br/>review the PR]
   ZO -.repo migration.-> PORT[port<br/>productize repo]
+  PORT -.missing behavior.-> FG[feature-gap<br/>close parity gaps]
   WO -.bug found.-> DIAG[diagnose<br/>find root cause]
   WO -.architectural smell.-> ARCH[improve-codebase-architecture<br/>deepen modules]
   TDD[tdd] -.red-green-refactor.-> WO

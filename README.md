@@ -19,7 +19,7 @@ Other install options (manual copy) are in
 
 ## Available skills
 
-28 skills across two categories. Each links to its own README; see
+29 skills across two categories. Each links to its own README; see
 **[docs/skills.md](./docs/skills.md)** for the full annotated catalog and
 **[why these skills exist](./docs/motivation.md)** for the thinking behind them.
 
@@ -34,7 +34,7 @@ Code work — bug-hunting, design, planning, review, and execution.
 | **Design & architecture** | [zoom-out](./skills/engineering/zoom-out/README.md) · [prototype](./skills/engineering/prototype/README.md) · [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/README.md) |
 | **Build & debug** | [tdd](./skills/engineering/tdd/README.md) · [diagnose](./skills/engineering/diagnose/README.md) |
 | **Review, CI & PRs** | [review](./skills/engineering/review/README.md) · [pr-workflow](./skills/engineering/pr-workflow/README.md) · [pr-monitor](./skills/engineering/pr-monitor/README.md) · [ci-monitoring](./skills/engineering/ci-monitoring/README.md) |
-| **End-to-end delivery** | [port](./skills/engineering/port/README.md) · [workon](./skills/engineering/workon/README.md) · [workon-event](./skills/engineering/workon-event/README.md) |
+| **End-to-end delivery** | [feature-gap](./skills/engineering/feature-gap/README.md) · [port](./skills/engineering/port/README.md) · [workon](./skills/engineering/workon/README.md) · [workon-event](./skills/engineering/workon-event/README.md) |
 
 ### Productivity
 
