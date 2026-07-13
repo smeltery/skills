@@ -11,9 +11,11 @@ tooling, and validation.
 4. Create a private destination repo without preserving upstream Git history.
 5. Sanitize upstream identity, improve structure, split large implementation
    files where useful, and write detailed docs.
-6. Configure CI with Blacksmith runners, pre-commit hooks, and Flox where
+6. Slim the README, lowercase docs filenames, add useful Mermaid diagrams,
+   update badges, and install LOC/flat-directory budget gates.
+7. Configure CI with Blacksmith runners, pre-commit hooks, and Flox where
    practical.
-7. Validate the repo and push exactly one fresh initial commit.
+8. Validate the repo and push exactly one fresh initial commit.
 
 ## Lifecycle
 
@@ -26,10 +28,11 @@ flowchart LR
   E --> F[Sanitize]
   F --> G[Restructure]
   G --> H[Document]
-  H --> I[Tool]
-  I --> J[Validate]
-  J --> K[Commit]
-  K --> L[Handoff]
+  H --> I[Harden]
+  I --> J[Tool]
+  J --> K[Validate]
+  K --> L[Commit]
+  L --> M[Handoff]
 ```
 
 The skill is stateful and resumable. Re-running the same invocation resumes from
@@ -46,7 +49,8 @@ stateDiagram-v2
   Initialize --> Sanitize
   Sanitize --> Restructure
   Restructure --> Document
-  Document --> Tool
+  Document --> Harden
+  Harden --> Tool
   Tool --> Validate
   Validate --> Commit
   Commit --> Handoff

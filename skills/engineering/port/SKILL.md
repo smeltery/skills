@@ -10,7 +10,8 @@ Idempotent, state-branched skill for turning an upstream repository into a
 fresh private repository under a user-approved new name.
 
 Same invocation drives: Intake → Name gate → Audit → Plan → Initialize →
-Sanitize → Restructure → Document → Tool → Validate → Commit → Handoff.
+Sanitize → Restructure → Document → Harden → Tool → Validate → Commit →
+Handoff.
 
 **Arguments:** "$ARGUMENTS"
 
@@ -36,7 +37,7 @@ State file: `~/.claude/port/<source-owner>-<source-repo>.json`.
   "destinationSlug": null,
   "workspacePath": "/absolute/path/to/scratch/repo",
   "baseBranch": "main",
-  "phase": "intake|name|audit|plan|initialize|sanitize|restructure|document|tool|validate|commit|handoff",
+  "phase": "intake|name|audit|plan|initialize|sanitize|restructure|document|harden|tool|validate|commit|handoff",
   "legalHold": false,
   "nameApproved": false,
   "repoCreated": false,
@@ -59,10 +60,11 @@ elif phase == "initialize": run Repository Initialization (§7)
 elif phase == "sanitize": run Identity Sanitization (§8)
 elif phase == "restructure": run Structure Cleanup (§9)
 elif phase == "document": run Documentation (§10)
-elif phase == "tool": run Tooling (§11)
-elif phase == "validate": run Validation (§12)
-elif phase == "commit": run Final Commit (§13)
-elif phase == "handoff": run Handoff (§14)
+elif phase == "harden": run Documentation and Budget Hardening (§11)
+elif phase == "tool": run Tooling (§12)
+elif phase == "validate": run Validation (§13)
+elif phase == "commit": run Final Commit (§14)
+elif phase == "handoff": run Handoff (§15)
 ```
 
 ---
@@ -296,13 +298,52 @@ when releases exist, and `AGENTS.md` when agent guidance is useful.
 Use Mermaid diagrams where they clarify architecture, development workflow, CI,
 state machines, or release flow. Do not add diagrams where prose is clearer.
 
+Set `phase: "harden"`.
+
+---
+
+## 11. Documentation and Budget Hardening
+
+Make the migrated repo crisp and enforceable before generic tooling work.
+
+### 11.1 README and docs
+
+- Slim the root README into a scannable entry point: concise description,
+  destination badges, status, quick start, install/usage, monorepo table, common
+  commands, docs links, and license.
+- Move long architecture, API, operations, release, configuration, and
+  contribution detail into focused docs or subproject READMEs.
+- Normalize docs filenames to lowercase kebab-case with `git mv`, then update
+  links, docs nav, package metadata, tests, and examples. Conventional required
+  files may stay uppercase: `README.md`, `LICENSE`, `CHANGELOG.md`,
+  `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md`, `AGENTS.md`, and
+  framework-required files.
+- Add Mermaid diagrams only where they clarify architecture boundaries,
+  request/data flow, development workflow, CI/release flow, or state machines.
+- Add destination-repo badges for CI, release/version, runtimes, Flox, and
+  license where useful. Remove stale upstream badges.
+
+### 11.2 LOC budgets and deflatting
+
+- Install or adapt the `loc-budget` pattern: file-size checker,
+  flat-directory checker, budget data files, justified exceptions, and
+  pre-commit/CI wiring.
+- Use the destination repo's idiomatic tooling: Python, Node/Bun/Deno, Ruby, Go,
+  Rust, shell, or an existing repo-native command.
+- Modularize the worst large-file hitters and reorganize mixed-responsibility
+  flat directories before adding exceptions.
+- Keep framework-conventional flat directories only when justified in the
+  flat-directory budget file.
+- Budget checks must pass before the final commit; temporary exceptions must be
+  explicit and documented in the handoff.
+
 Set `phase: "tool"`.
 
 ---
 
-## 11. Tooling, Flox, CI, and Hooks
+## 12. Tooling, Flox, CI, and Hooks
 
-### 11.1 CI
+### 12.1 CI
 
 Configure CI for the destination repo.
 
@@ -327,7 +368,7 @@ or for small jobs:
 runs-on: blacksmith-2vcpu-ubuntu-2404
 ```
 
-### 11.2 Pre-commit
+### 12.2 Pre-commit
 
 Configure stack-appropriate hooks. Prefer local hooks for repo-specific checks
 and include checks for shell scripts, GitHub Actions, markdown/docs, file size
@@ -340,7 +381,7 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-### 11.3 Flox
+### 12.3 Flox
 
 Use Flox where practical for toolchain reproducibility:
 
@@ -353,7 +394,7 @@ Set `phase: "validate"`.
 
 ---
 
-## 12. Validation
+## 13. Validation
 
 Run every applicable local gate: format, lint, type check, unit/integration
 tests, build, docs build, pre-commit all files, workflow syntax validation, and
@@ -364,13 +405,17 @@ Run repository audits:
 ```bash
 rg -n "$SOURCE_OWNER|$SOURCE_REPO|github.com/$SOURCE_OWNER/$SOURCE_REPO" .
 rg -n "ubuntu-latest|runs-on: ubuntu-" .github/workflows || true
+find docs -type f 2>/dev/null | rg '/[A-Z][^/]*$' || true
 git log --oneline
 git remote -v
 ```
 
 Confirm no disallowed upstream references/history remain, the destination remote
-is correct, >1000 LOC files and flat directories are improved or justified, CI
-uses Blacksmith runners, and pre-commit/Flox are documented.
+is correct, README is slim and linked to detail docs, docs filenames are
+lowercase except conventional files, Mermaid diagrams are useful and valid,
+badges point to the destination repo, LOC/flat-directory budgets pass, >1000 LOC
+files and flat directories are improved or justified, CI uses Blacksmith
+runners, and pre-commit/Flox are documented.
 
 If a validation failure cannot be fixed, document it in the handoff and stop for
 user approval before committing.
@@ -379,7 +424,7 @@ Set `phase: "commit"`.
 
 ---
 
-## 13. Final Commit
+## 14. Final Commit
 
 Create exactly one fresh commit.
 
@@ -411,11 +456,13 @@ Set `phase: "handoff"`.
 
 ---
 
-## 14. Handoff
+## 15. Handoff
 
 Report the destination URL, privacy, name, final SHA, one-commit confirmation,
-major identity/structure/refactor changes, docs added, CI/pre-commit/Flox setup,
-validation commands, and any approved legal notices or remaining exceptions.
+major identity/structure/refactor changes, README/docs hardening, lowercase docs
+renames, Mermaid diagrams, badges, LOC/flat-directory budget setup,
+CI/pre-commit/Flox setup, validation commands, and any approved legal notices or
+remaining exceptions.
 
 Keep the response concise. Do not mention the source repository in the handoff
 unless required for legal or user-approved context.
@@ -429,9 +476,14 @@ unless required for legal or user-approved context.
 - No disallowed upstream references remain.
 - Required legal notices are preserved or approved.
 - Root and contributor docs are complete.
+- Root README is slim and links to deeper docs.
+- Documentation filenames are lowercase except conventional required files.
+- Mermaid diagrams are added where they clarify architecture or workflow.
+- README badges point to the destination repo.
 - Each monorepo subproject has a useful README.
 - CI uses Blacksmith runners.
 - Pre-commit hooks are configured and documented.
 - Flox is used where practical.
-- Flat directories and >1000 LOC files are addressed or justified.
+- LOC and flat-directory budget gates are installed or equivalent gates exist.
+- Flat directories and >1000 LOC files are addressed or justified in budgets.
 - Validation passes or exceptions are explicitly approved.
