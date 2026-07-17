@@ -9,6 +9,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 
 - **[branch-conventions](../skills/engineering/branch-conventions/README.md)** — Standard branch naming and creation flow using conventional prefixes and an up-to-date default branch.
 - **[ci-monitoring](../skills/engineering/ci-monitoring/README.md)** — Monitor GitHub PR checks, rerun failed jobs when appropriate, and confirm merge-readiness.
+- **[cloud-factory](../skills/engineering/cloud-factory/README.md)** — Convert a GitHub repository into a cloud software factory with agent skills, workflow triggers, labels, and domain-doc placeholders.
 - **[commit-conventions](../skills/engineering/commit-conventions/README.md)** — Keep commit messages aligned with branch intent using conventional commit types.
 - **[diagnose](../skills/engineering/diagnose/README.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[feature-gap](../skills/engineering/feature-gap/README.md)** — Compare a source GitHub repository against a destination repository, identify real missing functionality, implement it destination-natively, then commit and push to the destination default branch.
