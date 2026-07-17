@@ -1,7 +1,7 @@
 ---
 name: cloud-factory
 description: Convert the current GitHub repository into a cloud software factory by installing agent skills, docs, labels, specs directories, and GitHub Actions workflow templates. Use when the user wants one-command repository setup for automated triage, spec, implementation, review, or feedback loops.
-argument-hint: "[repo path] [--agent codex|claude|warp|all]"
+argument-hint: "[repo path] [--agent codex|claude|all]"
 ---
 
 # Cloud Factory
@@ -20,14 +20,14 @@ gh api repos/dotbrains/cloud-factory/contents/scripts/install-cloud-factory.sh \
 For per-agent installation, set `CLOUD_FACTORY_AGENT` to a comma-separated list:
 
 ```sh
-CLOUD_FACTORY_AGENT=codex,claude,warp \
+CLOUD_FACTORY_AGENT=codex,claude \
   bash scripts/install-cloud-factory.sh
 ```
 
 When using the remote installer with multiple agent targets:
 
 ```sh
-CLOUD_FACTORY_AGENT=codex,claude,warp \
+CLOUD_FACTORY_AGENT=codex,claude \
   bash -c "$(gh api repos/dotbrains/cloud-factory/contents/scripts/install-cloud-factory.sh --jq .content | base64 --decode)"
 ```
 
@@ -62,8 +62,7 @@ CLOUD_FACTORY_AGENT=codex,claude,warp \
   - `ready-to-spec`
   - `needs-info`
   - `wait-to-implement`
-- Set the `WARP_API_KEY` GitHub Actions secret when using the default Oz
-  workflows.
+- Set the cloud-runner API key secret required by the installed workflows.
 - Edit `vision.md`, `roadmap.md`, and `CONTEXT.md` so triage has real product
   and domain context.
 
