@@ -15,7 +15,8 @@ npx skills@latest add dotbrains/skills --skill cloud-factory --agent codex --yes
 /cloud-factory
 ```
 
-The skill installs the reusable assets from `dotbrains/cloud-factory` into the
+The skill installs the reusable assets from
+[dotbrains/cloud-factory](https://github.com/dotbrains/cloud-factory) into the
 current repository and verifies the factory scaffold.
 
 ## Factory flow
