@@ -14,7 +14,7 @@ From the target repository root, run:
 
 ```sh
 gh api repos/dotbrains/cloud-factory/contents/scripts/install-cloud-factory.sh \
-  -f ref=main --jq .content | base64 --decode | bash
+  --jq .content | base64 --decode | bash
 ```
 
 For per-agent installation, set `CLOUD_FACTORY_AGENT` to a comma-separated list:
@@ -28,7 +28,7 @@ When using the remote installer with multiple agent targets:
 
 ```sh
 CLOUD_FACTORY_AGENT=codex,claude,warp \
-  bash -c "$(gh api repos/dotbrains/cloud-factory/contents/scripts/install-cloud-factory.sh -f ref=main --jq .content | base64 --decode)"
+  bash -c "$(gh api repos/dotbrains/cloud-factory/contents/scripts/install-cloud-factory.sh --jq .content | base64 --decode)"
 ```
 
 ## Workflow
