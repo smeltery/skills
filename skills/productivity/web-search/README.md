@@ -4,6 +4,16 @@ Give coding agents free local web search through the browser already installed o
 
 The skill keeps a headless browser available as a local daemon, uses real search engines, and lets agents visit selected results. Pages are rendered with JavaScript, reduced to readable content, and returned as clean Markdown for efficient agent context. Using a real, persistent browser also reduces bot-detection failures compared with ordinary HTTP requests.
 
+```mermaid
+flowchart LR
+  query[Query or URL] --> cli[web-search.js]
+  cli --> daemon[Browser daemon]
+  daemon --> search[Google or DuckDuckGo]
+  search --> results[Result set ID]
+  results --> fetch[Fetch selected pages]
+  fetch --> markdown[Readable Markdown]
+```
+
 ## Install
 
 ```bash
