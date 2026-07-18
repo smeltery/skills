@@ -17,7 +17,7 @@ flowchart LR
 ## Install
 
 ```bash
-npx skills add ogulcancelik/agent-skills --skill web-search
+npx skills@latest add dotbrains/skills --skill web-search
 ```
 
 The agent installs dependencies with Bun when needed. Node.js 20.19 or newer and a Chromium-family browser are required.
