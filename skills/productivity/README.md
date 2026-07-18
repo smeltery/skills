@@ -7,6 +7,7 @@ General workflow skills, not code-specific.
 - **[caveman](./caveman/README.md)** — Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler while keeping full technical accuracy.
 - **[grill-me](./grill-me/README.md)** — Get interviewed relentlessly about a plan or design until every branch of the decision tree resolves.
 - **[handoff](./handoff/README.md)** — Compact the current conversation into a handoff document so another agent can pick up the work.
+- **[linear](./linear/README.md)** — Use the `linear` CLI to search Linear, inspect issues, manage comments, list workspace metadata, and check Linear platform status.
 - **[teach](./teach/README.md)** — Teach the user a new skill or concept across multiple sessions, building durable lessons and reference docs in a teaching workspace.
 - **[track-my-work](./track-my-work/README.md)** — Personal standup logger: pulls your recent Linear and GitHub activity into a Notion Standup Log, classifies it by impact/type, cross-links PRs to tickets, and prompts for anything not auto-captured.
 - **[web-search](./web-search/README.md)** — Search the web through a local browser daemon, fetch selected results, and extract pages as readable Markdown.

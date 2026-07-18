@@ -19,7 +19,7 @@ Other install options (manual copy) are in
 
 ## Available skills
 
-33 skills across two categories. Each links to its own README; see
+34 skills across two categories. Each links to its own README; see
 **[docs/skills.md](./docs/skills.md)** for the full annotated catalog and
 **[why these skills exist](./docs/motivation.md)** for the thinking behind them.
 
@@ -45,6 +45,7 @@ General workflow, not code-specific.
 | **Communicate** | [caveman](./skills/productivity/caveman/README.md) · [grill-me](./skills/productivity/grill-me/README.md) |
 | **Sessions & continuity** | [handoff](./skills/productivity/handoff/README.md) · [wrap](./skills/productivity/wrap/README.md) · [wrap-resume](./skills/productivity/wrap-resume/README.md) |
 | **Track & report** | [track-my-work](./skills/productivity/track-my-work/README.md) |
+| **Tools** | [linear](./skills/productivity/linear/README.md) |
 | **Research** | [web-search](./skills/productivity/web-search/README.md) |
 | **Author & learn** | [teach](./skills/productivity/teach/README.md) · [write-a-skill](./skills/productivity/write-a-skill/README.md) |
 
