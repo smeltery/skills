@@ -18,9 +18,33 @@ First check that the CLI exists:
 linear --help
 ```
 
-If it is missing, tell the user to install `@dotbrains/linear-cli` from the
-package source they use for dotbrains packages. Do not fall back to scraping
-Linear HTML.
+If it is missing, install it from `dotbrains/linear-cli` before continuing.
+Prefer the published GitHub Packages install when `npm` is available:
+
+```bash
+npm config set @dotbrains:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken "$(gh auth token)"
+npm install -g @dotbrains/linear-cli
+linear --help
+```
+
+If `gh auth token` is unavailable, ask the user for a GitHub token with
+`read:packages` access and use that value for the `_authToken` config. Do not
+print or persist the token anywhere except npm's package-auth config.
+
+If GitHub Packages installation is unavailable but repository access works,
+install from source:
+
+```bash
+git clone https://github.com/dotbrains/linear-cli.git
+cd linear-cli
+bun install
+bun link
+linear --help
+```
+
+After installing, continue with `linear init` if authentication is missing.
+Do not fall back to scraping Linear HTML.
 
 If authentication is missing or stale, run:
 
