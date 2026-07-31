@@ -1,10 +1,10 @@
 ---
 name: review
-description: Review a pull request end-to-end in read-only mode by using the PR description, associated ticket scope, full diff context, and PR-suggested tests. Return only high-signal findings grouped as Critical, Suggestions, and Nits.
-argument-hint: "<PR-URL-or-NUMBER>"
+description: Review a pull request or local change set end-to-end in read-only mode by using the stated scope, associated ticket context when available, full diff context, and relevant tests. Return only high-signal findings grouped as Critical, Suggestions, and Nits.
+argument-hint: "<PR-URL-or-NUMBER-or-diff-range>"
 ---
 
-# Review: high-signal pull request reviewer
+# Review: high-signal change reviewer
 
 Deep, read-only review skill. It inspects intent, implementation, and validation
 without changing code, posting comments, or mutating git state.
@@ -18,10 +18,19 @@ Accept either:
 - A full GitHub pull request URL (e.g.
   `https://github.com/owner/repo/pull/123`)
 - A PR number (e.g. `123`) in the current repository
+- A local git range (e.g. `main...HEAD`, `HEAD~3..HEAD`)
+- Empty input, meaning review the current local worktree diff
 
-If the input is missing or malformed, stop with a short usage hint.
+If the input is malformed, stop with a short usage hint.
 
-## 1. Resolve PR and baseline metadata
+## 1. Resolve change set and baseline metadata
+
+Route into one of two modes:
+
+- **PR mode** for PR URLs or numbers.
+- **Local mode** for git ranges or empty input.
+
+### 1.1 PR mode
 
 Use GitHub CLI to resolve PR details:
 
@@ -38,11 +47,43 @@ Capture:
 - PR URL and number
 - author
 
-## 2. Build scope context (PR + associated ticket)
+### 1.2 Local mode
 
-### 2.1 Read PR description thoroughly
+Resolve the repository and local change set:
 
-Extract:
+```bash
+git status --short
+git branch --show-current
+git rev-parse --show-toplevel
+git diff --stat
+```
+
+If the user supplied a range, review that range with `git diff "$RANGE"`. If no
+range was supplied, review unstaged and staged changes with `git diff` and
+`git diff --cached`. Include untracked files only as candidates for inspection;
+do not assume they are part of the review unless their path or content is
+clearly related.
+
+Capture:
+
+- current branch
+- diff range or worktree state
+- changed files and impacted areas
+- any ticket references in branch name, commit messages, file names, or docs
+
+If there is no PR description or ticket, derive a provisional scope from the
+branch name, commit messages, changed files, and surrounding code. Label this as
+reduced certainty in the final output.
+
+## 2. Build scope context (change set + associated ticket)
+
+### 2.1 Read stated change intent
+
+In PR mode, read the PR description thoroughly. In local mode, use the best
+available local intent signal: branch name, recent commit messages, issue
+references, nearby docs, or user-provided text.
+
+Extract where available:
 
 - Claimed problem
 - Claimed solution
@@ -87,7 +128,7 @@ Try in order:
 
 Create a short internal contract:
 
-- **In scope:** what the PR and ticket say should change
+- **In scope:** what the change set and ticket say should change
 - **Out of scope:** what should not change
 - **Success criteria:** what must be true for approval
 
@@ -124,7 +165,7 @@ Use:
 gh pr diff "$PR_REF"
 ```
 
-and/or file-level APIs to identify changed paths and hunks.
+or the local-mode diff commands from §1.2 to identify changed paths and hunks.
 
 ### 4.2 Read nearby code beyond hunks
 
@@ -148,8 +189,9 @@ maintainability or correctness.
 
 ## 5. Run tests claimed by the PR (read-only execution)
 
-Identify tests/commands explicitly claimed in PR description (e.g. "Tests run",
-checklist, pasted commands).
+Identify tests/commands explicitly claimed in the PR description or local
+context (e.g. "Tests run", checklist, pasted commands, package scripts, changed
+test files).
 
 Then:
 
@@ -276,7 +318,7 @@ This section is informational — see §6 for promotion rules into `Critical` / 
 
 ## Scope Alignment Check
 
-- What matches the ticket/PR scope
+- What matches the ticket/change-set scope
 - What appears out of scope
 - Any missing expected changes
 
@@ -298,5 +340,5 @@ Add one short rationale sentence.
 - **Evidence over opinion.** Every finding must be grounded in code or test data.
 - **High signal only.** Prefer fewer meaningful findings over exhaustive noise.
 - **Context-aware review.** Always evaluate nearby code, not just changed lines.
-- **Scope-first judging.** Review against stated ticket/PR intent, not preferences.
+- **Scope-first judging.** Review against stated ticket/change-set intent, not preferences.
 - **Linear via MCP, always.** All Linear ticket reads go through the configured Linear MCP server (e.g. `mcp__*Linear__get_issue`, `mcp__*Linear__list_comments`) — never the Linear REST API, the `linear` CLI, or HTML scraping. Read-only: do not invoke any Linear `save_*` MCP tool from this skill. If no Linear MCP is connected, treat the ticket as unavailable and note reduced certainty.

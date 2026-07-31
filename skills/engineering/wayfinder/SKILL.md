@@ -6,21 +6,23 @@ argument-hint: "<idea-or-map-reference>"
 
 # Wayfinder
 
-Wayfinder plans work that is too large, ambiguous, or foggy for one agent
-session. It creates a shared map on the repo's issue tracker, then resolves
-small decision tickets until the way to the destination is clear.
+A loose idea has arrived, too large for one agent session and wrapped in fog.
+Wayfinding is about finding the path to the destination, not charging at the
+destination. The skill charts a shared map on the repo's issue tracker, then
+works decision tickets one at a time until the route is clear.
 
-Default posture: **plan, do not implement**. Each ticket resolves a question or
+Default posture: **plan, do not implement**. Each ticket resolves a decision or
 unblocks a decision. If the next step is straightforward execution, hand off to
 the appropriate implementation skill.
 
 ## Core concepts
 
 - **Destination** — the end state this map is trying to make clear: a spec, a
-  decision, a migration route, or an implementation plan.
+  decision, a migration route, or an implementation plan. Naming it is the first
+  act of charting because it fixes the scope.
 - **Map** — one parent issue labelled `wayfinder:map`.
 - **Tickets** — child issues under the map, each sized for one fresh agent
-  session.
+  session. A ticket is a question, not a build slice.
 - **Frontier** — open, unblocked, unclaimed child issues.
 - **Fog** — in-scope uncertainty that cannot yet be phrased as a precise ticket.
 - **Out of scope** — work ruled outside this destination.
@@ -66,16 +68,21 @@ the ticket that resolved them; keep the map as a low-resolution route summary.
 Apply one type label:
 
 - `wayfinder:research` — AFK reading of docs, APIs, repo history, or local
-  resources; resolves with a concise linked summary.
+  resources. Resolve with a concise linked summary. Use when knowledge outside
+  the current working context is required.
 - `wayfinder:prototype` — HITL reaction to a cheap artifact, mock, outline,
-  state machine, stub, or UI/logic prototype.
+  state machine, stub, or UI/logic prototype. Link the prototype asset from the
+  ticket.
 - `wayfinder:grilling` — HITL decision sharpening through direct questioning.
 - `wayfinder:task` — manual or agent work required before a decision can be
-  made; use only when doing the task unblocks later decisions.
+  made. Use only when doing the task unblocks later decisions.
 
 Claim a ticket by assigning it to yourself before working it. Use the tracker's
 native blocking/dependency relationship when available; otherwise record
 `Blocked by` links in the body.
+
+The answer is recorded on resolution, not in the ticket body. Assets created
+while resolving a ticket are linked from the issue, not pasted in.
 
 ## Invocation modes
 
@@ -111,15 +118,20 @@ Use this when the user provides a map reference. A ticket reference is optional.
    the destination.
 9. Stop. Never resolve more than one ticket per session.
 
+The user may run unblocked tickets in parallel, so expect other sessions to be
+editing the tracker concurrently.
+
 ## Fog handling
 
-Create a ticket only when the question can be stated precisely. Keep vague but
-in-scope areas in `Not yet specified`; resolving frontier tickets should make
-some fog sharp enough to graduate. Do not pre-slice fog into speculative
+Create a ticket only when the question can be stated precisely, not merely when
+it can be answered now. Blocked but precise questions are tickets. Vague but
+in-scope areas stay in `Not yet specified`; resolving frontier tickets should
+make some fog sharp enough to graduate. Do not pre-slice fog into speculative
 tickets.
 
 Out-of-scope work is not fog. It belongs in `Out of scope` and should not
-graduate unless the destination changes.
+graduate unless the destination changes. If a live ticket turns out to sit past
+the destination, close it and leave one linked line in `Out of scope`.
 
 ## Tracker fallback
 

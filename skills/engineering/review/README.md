@@ -1,13 +1,14 @@
 # /review
 
-Portable `/review` skill for high-signal pull request review. Read-only by
-default — never edits files, commits, pushes, or posts PR comments.
+Portable `/review` skill for high-signal pull request or local change-set
+review. Read-only by default — never edits files, commits, pushes, or posts PR
+comments.
 
-1. Read PR metadata and description.
-2. Pull full ticket context via the Linear MCP (if Linear-linked) — issue body, full comment thread, and relevant attachments (design docs, screenshots, linked PRs, cross-referenced tickets) — before touching the codebase.
+1. Resolve PR metadata or local git diff state.
+2. Pull full ticket context via the Linear MCP when linked — issue body, full comment thread, and relevant attachments (design docs, screenshots, linked PRs, cross-referenced tickets) — before touching the codebase.
 3. Sweep repo docs (`CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`, `.cursor/rules/`, lint config) and surface relevant skills — establishes the baseline for "consistent with existing patterns" findings.
 4. Analyze the diff plus surrounding code context.
-5. Run PR-suggested tests in read-only mode.
+5. Run relevant claimed or adjacent tests in read-only mode.
 6. Run an algorithmic analysis pass over the diff — informational time/space complexity check.
 7. Produce a structured review with Critical / Suggestions / Nits / Algorithmic Analysis.
 
@@ -15,14 +16,14 @@ default — never edits files, commits, pushes, or posts PR comments.
 
 ```mermaid
 flowchart LR
-  A[Input PR] --> B[Context Gathering]
+  A[PR or Local Diff] --> B[Context Gathering]
   B --> C[Code + Test Analysis]
   C --> D[Tiered Findings]
 ```
 
 ```mermaid
 flowchart TD
-  A[Read PR + Ticket + Repo Context] --> B[Inspect Diff + Nearby Code]
+  A[Read Scope + Ticket + Repo Context] --> B[Inspect Diff + Nearby Code]
   B --> C[Run Suggested Tests Read-Only]
   C --> E[Algorithmic Analysis Pass]
   E --> D[Produce Tiered Review]
@@ -40,13 +41,14 @@ Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/review
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/review/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/review/SKILL.md \
   -o ~/.claude/skills/review/SKILL.md
 ```
 
 ## Usage
 
-Pass either a full PR URL or a PR number in the current repository:
+Pass a full PR URL, a PR number in the current repository, a git diff range, or
+nothing to review the current local worktree diff:
 
 ```text
 /review https://github.com/owner/repo/pull/123
@@ -54,6 +56,11 @@ Pass either a full PR URL or a PR number in the current repository:
 
 ```text
 /review 123
+```
+
+```text
+/review main...HEAD
+/review
 ```
 
 ## Output
@@ -66,7 +73,7 @@ The skill returns a fixed-section review:
 - **Suggestions** — important but non-blocking improvements.
 - **Nits** — minor polish only when worthwhile.
 - **Algorithmic Analysis** — informational time/space complexity sweep over the diff. Heading shifts based on worst severity (`Optimization Opportunities Found` / `Minor Opportunities` / `Code Quality Good` / `No algorithmic code in diff`). Findings are non-blocking unless promoted into Critical or Suggestions per §6 of [`SKILL.md`](./SKILL.md).
-- **Test Validation** — commands claimed vs. commands actually run.
+- **Test Validation** — commands claimed or inferred vs. commands actually run.
 - **Scope Alignment Check** — what matches scope, what's out of scope, what's
   missing.
 - **Verdict** — exactly one of `APPROVE`, `APPROVE WITH SUGGESTIONS`, or
@@ -74,9 +81,10 @@ The skill returns a fixed-section review:
 
 ## Requirements
 
-- `gh` CLI authenticated against your GitHub host
+- `gh` CLI authenticated against your GitHub host for PR reviews
+- `git` for local change-set reviews
 - Access to the repository being reviewed
-- A connected **Linear MCP server** if the PR links a Linear ticket — the skill always reads Linear via MCP (`mcp__*Linear__get_issue`, `mcp__*Linear__list_comments`), never the REST API. Without it, the review proceeds with PR-only scope and notes reduced certainty.
+- A connected **Linear MCP server** if the change links a Linear ticket — the skill always reads Linear via MCP (`mcp__*Linear__get_issue`, `mcp__*Linear__list_comments`), never the REST API. Without it, the review proceeds with reduced scope and notes reduced certainty.
 
 ## Files
 

@@ -14,10 +14,11 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[grill-with-docs](./grill-with-docs/README.md)** — Code-aware grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` / ADRs inline.
 - **[improve-codebase-architecture](./improve-codebase-architecture/README.md)** — Surface architectural friction and propose deepening opportunities — refactors that turn shallow modules into deep ones.
 - **[loc-budget](./loc-budget/README.md)** — Find large line-count hitters, modularize them into cohesive files, and add file-size and flat-directory budget gates in the repo's idiomatic tooling.
+- **[performance-engineer](./performance-engineer/README.md)** — Measure, diagnose, and improve software performance on a specific critical path with bounded experiments and before/after evidence.
 - **[pr-monitor](./pr-monitor/README.md)** — One-pass PR monitor that processes bot review feedback, CI failures, and merge-readiness signals.
 - **[pr-workflow](./pr-workflow/README.md)** — Create and update PRs with clear reviewer-focused descriptions and mergeability checks.
 - **[port](./port/README.md)** — Port an upstream GitHub repository into a fresh private destination repository with a new identity, clean single-commit history, detailed docs, CI/pre-commit/Flox setup, structure cleanup, and upstream-reference sanitization.
-- **[review](./review/README.md)** — Read-only, high-signal pull request review using PR description, ticket scope, full diff context, and PR-suggested tests. Returns Critical / Suggestions / Nits.
+- **[review](./review/README.md)** — Read-only, high-signal review for pull requests or local change sets using scope, ticket context, full diff context, and relevant tests.
 - **[tdd](./tdd/README.md)** — Test-driven development with a red-green-refactor loop. Vertical slices via tracer bullets — one test, one implementation, repeat.
 - **[to-issues](./to-issues/README.md)** — Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.
 - **[to-prd](./to-prd/README.md)** — Turn the current conversation context into a PRD and publish it to the project issue tracker.
@@ -43,6 +44,7 @@ flowchart LR
   PORT -.missing behavior.-> FG[feature-gap<br/>close parity gaps]
   ARCH -.large files.-> LOC[loc-budget<br/>modularize hitters]
   WO -.bug found.-> DIAG[diagnose<br/>find root cause]
+  DIAG -.performance target.-> PERF[performance-engineer<br/>measure and optimize]
   WO -.architectural smell.-> ARCH[improve-codebase-architecture<br/>deepen modules]
   TDD[tdd] -.red-green-refactor.-> WO
 ```
