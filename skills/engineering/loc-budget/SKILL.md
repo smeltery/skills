@@ -127,6 +127,113 @@ Classify each large file:
 Record baseline totals: largest files, budget failures, flat directories, test
 commands, and current CI/pre-commit budget gates if any.
 
+### Normalized analysis contract
+
+Every audit must normalize findings into the same language-agnostic shape before
+planning. Tool-specific output is evidence, not the public analysis format.
+
+For each file, record:
+
+- `path`: repo-relative path.
+- `language`: detected language or `unknown`.
+- `lines`: tracked file line count.
+- `fileBudget`: applicable line budget.
+- `budgetStatus`: `within_budget`, `over_budget`, `excepted`, or `excluded`.
+- `directory`: parent directory.
+- `directDirectoryFileCount`: direct tracked files in that directory.
+- `complexity.score`: numeric score when an analyzer provides one, otherwise
+  `null`.
+- `complexity.rating`: `low`, `medium`, `high`, or `unknown`.
+- `complexity.signals`: concise language-agnostic signals such as `large file`,
+  `high branching`, `long functions`, `mixed responsibilities`,
+  `high fan-in`, `high fan-out`, `high churn`, or `hard-to-test`.
+- `complexity.source`: analyzer name such as `fta`, `radon`, `eslint`,
+  `gocyclo`, `cargo`, `manual`, or `heuristic`.
+- `classification`: one of the audit classifications above.
+- `recommendedAction`: `modularize`, `split_tests`, `split_docs`,
+  `add_exception`, `exclude_generated`, `defer`, or `no_action`.
+- `reason`: one concise sentence explaining the recommendation.
+
+For each flat directory, record:
+
+- `path`: repo-relative directory path.
+- `directFiles`: direct tracked file count.
+- `budget`: applicable direct-file budget.
+- `status`: `within_budget`, `over_budget`, `excepted`, or `excluded`.
+- `reason`: one concise sentence for any exception or action.
+
+Human-facing output should use this table shape:
+
+```text
+| File | LOC | Budget | Complexity | Classification | Action | Reason |
+| --- | ---: | ---: | --- | --- | --- | --- |
+| src/example.ts | 842 | 500 | high | implementation | modularize | Mixed parsing/rendering responsibilities. |
+```
+
+Keep equivalent structured state available for handoff:
+
+```json
+{
+  "files": [
+    {
+      "path": "src/example.ts",
+      "language": "typescript",
+      "lines": 842,
+      "fileBudget": 500,
+      "budgetStatus": "over_budget",
+      "directory": "src",
+      "directDirectoryFileCount": 18,
+      "complexity": {
+        "score": 72.4,
+        "rating": "high",
+        "signals": ["large file", "mixed responsibilities"],
+        "source": "fta"
+      },
+      "classification": "refactorable implementation file",
+      "recommendedAction": "modularize",
+      "reason": "Large file with high complexity and mixed parsing/rendering responsibilities."
+    }
+  ],
+  "directories": [
+    {
+      "path": "src/components",
+      "directFiles": 42,
+      "budget": 25,
+      "status": "over_budget",
+      "reason": "Flat component directory should be grouped by surface area."
+    }
+  ]
+}
+```
+
+### Complexity adapters
+
+Use complexity analysis to prioritize and shape refactors, never as a
+replacement for the normalized contract.
+
+For TypeScript and JavaScript repos, Fast TypeScript Analyzer (FTA) may be used
+as an optional adapter:
+
+```bash
+npx fta-cli .
+```
+
+Map FTA output into the normalized fields:
+
+- FTA file path -> `path`.
+- FTA line count -> `lines`.
+- FTA score -> `complexity.score`.
+- FTA assessment -> `complexity.rating`.
+- `fta` -> `complexity.source`.
+
+For non-TypeScript repos, apply the same principles with repo-native or
+ecosystem-native signals when available. Examples include cyclomatic or
+cognitive complexity, function or method length, dependency fan-in/fan-out,
+mixed responsibilities, deep branching, high churn, and fragile tests. If no
+analyzer fits the repo, inspect the selected files and use
+`complexity.source: "manual"` or `complexity.source: "heuristic"` with
+`complexity.rating: "unknown"` unless the evidence supports a stronger rating.
+
 Set `phase: "plan"`.
 
 ---
@@ -139,6 +246,8 @@ For each selected hitter, write:
 
 - Current LOC and target budget.
 - Why the file is large.
+- Complexity signals that justify the module boundaries, especially when LOC
+  alone is misleading.
 - Proposed module boundaries by responsibility.
 - Public API or import path compatibility plan.
 - Tests that prove behavior did not change.
@@ -168,6 +277,8 @@ Rules:
 - Split docs by topic and preserve navigation.
 - Avoid splitting generated, vendored, fixture, lock, migration, and asset files.
 - Do not create a shallow pile of tiny files just to satisfy a number.
+- When complexity analysis is available, reduce tangled responsibilities and
+  branching before chasing lower LOC.
 
 After each extraction, search for stale imports, paths, and symbols:
 
@@ -338,6 +449,9 @@ Set `phase: "handoff"`.
 Report:
 
 - Largest files before and after.
+- Normalized analysis table for the selected batch.
+- Complexity signals used, including FTA results for TypeScript/JavaScript repos
+  or equivalent language-native signals elsewhere.
 - Files modularized and new module boundaries.
 - Budgets installed or tightened.
 - Checker language/tooling chosen and why.

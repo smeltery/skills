@@ -9,6 +9,11 @@ Python, JavaScript/TypeScript, Ruby, Go, Rust, shell, or another existing
 toolchain. Popcorn's Python implementation is a reference pattern, not a
 requirement.
 
+The analysis output is standardized across languages. Tools such as Fast
+TypeScript Analyzer can feed complexity signals for TypeScript/JavaScript repos,
+but every run reports the same normalized file, directory, complexity,
+classification, action, and reason fields.
+
 1. Audit tracked files by LOC and direct files per directory.
 2. Classify large files as refactorable, test/docs split candidates, generated,
    vendored, fixtures, lockfiles, migrations, or justified framework files.
