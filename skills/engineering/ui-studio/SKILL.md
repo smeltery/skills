@@ -33,6 +33,8 @@ viewable showcase that can later be imported into a product.
   and synthesis: [REFERENCES.md](REFERENCES.md)
 - Playwright command discovery, exploration, capture harnesses, authentication,
   traces, and production traversal: [PLAYWRIGHT.md](PLAYWRIGHT.md)
+- Ordered visual and interaction evidence from video or animated references:
+  [RECORDINGS.md](RECORDINGS.md)
 - Foundations, components, packaging, showcase, production hosting, verification,
   and iteration: [BUILD.md](BUILD.md)
 - Evidence-based structural and visual review before release:
@@ -87,6 +89,7 @@ Initial state:
   "approvedScope": [],
   "stack": null,
   "generatedFiles": {},
+  "approvals": {},
   "lastVerifiedAt": null
 }
 ```
@@ -109,6 +112,18 @@ Validate state after each transition when the bundled validator is available:
 ```bash
 python3 <skill-dir>/scripts/validate-kit.py <state.json>
 ```
+
+Prefer the bundled state controller so legal transitions, explicit gate
+receipts, atomic writes, target migration, and hand-edit detection are enforced:
+
+```bash
+python3 <skill-dir>/scripts/state.py status <state.json>
+python3 <skill-dir>/scripts/state.py advance <state.json>
+```
+
+`status` reports stale generated artifacts, and `advance` refuses to move while
+any recorded file is missing or its hash has drifted. Route backward or inspect
+and adopt the hand edit instead of bypassing that check.
 
 ## 2. Route by phase
 
@@ -154,6 +169,10 @@ request counts; never ask twice.
 3. **Release gate** — review the production-built showcase and accepted
    limitations before calling the kit reusable. Then set `phase: "handoff"`.
 
+When using the state controller, leave a gate with `advance --approve
+--rationale <summary>`. The rationale records the user's decision without
+requiring verbatim conversation or private content.
+
 ## 4. Execute the routed phase
 
 ### Intake through synthesis
@@ -161,6 +180,8 @@ request counts; never ask twice.
 Read [REFERENCES.md](REFERENCES.md). For navigable sources also read
 [PLAYWRIGHT.md](PLAYWRIGHT.md). Do not advance Capture based only on screenshots
 when the source was accessible and interactive behavior matters.
+For video or animated references, read [RECORDINGS.md](RECORDINGS.md) and keep
+observed, inferred, and unknown behavior distinct.
 
 ### Plan through handoff
 
@@ -193,6 +214,8 @@ additions, and major only for an explicitly approved breaking change.
 
 - Track generated-file hashes. Before replacing a tracked file, compare its
   current hash. Merge or stop on user edits; never silently overwrite them.
+- Use `state.py record-file`; adopt a hand edit with `--accept-current` only
+  after inspecting it and deciding it is authoritative.
 - Re-running a completed phase verifies its outputs and no-ops when they remain
   valid.
 - On a partial write, retain the last completed phase and record partial files.
@@ -200,7 +223,11 @@ additions, and major only for an explicitly approved breaking change.
 - If a source disappears, retain prior observations as stale and request a
   replacement only when the missing evidence blocks the current phase.
 - If a target moves, find the manifest by kit name, confirm the move, and update
-  state paths without rebuilding the kit.
+  state paths without rebuilding the kit. Use `state.py relocate --target
+  <path> --confirm-slug <slug>` to verify the destination manifest before the
+  path changes.
+- Routing backward clears approvals for invalidated gates and later gates;
+  retain earlier approvals only when their contracts still hold.
 - Stop all managed reference/showcase processes and delete ephemeral auth state
   at completion or before a blocking handoff unless the user asks to retain them.
 - Validate the state and `ui-kit.json` manifest with the bundled validator before

@@ -1,0 +1,12 @@
+{
+  "scenarios": [
+    {"name": "keyboard-only", "status": "not-applicable", "evidence": "Decide applicability and record focus order, visibility, and restoration."},
+    {"name": "screen-reader-semantics", "status": "not-applicable", "evidence": "Decide applicability and record names, roles, states, and announcements."},
+    {"name": "zoom-200-400", "status": "not-applicable", "evidence": "Decide applicability and record reflow, clipping, and task completion."},
+    {"name": "forced-colors", "status": "not-applicable", "evidence": "Decide applicability and record control, focus, and status visibility."},
+    {"name": "reduced-motion", "status": "not-applicable", "evidence": "Decide applicability and verify meaning survives removed motion."},
+    {"name": "reduced-transparency", "status": "not-applicable", "evidence": "Decide applicability and verify hierarchy without transparency."},
+    {"name": "rtl", "status": "not-applicable", "evidence": "Decide applicability and record reading order, mirroring, and overflow."},
+    {"name": "touch-and-pointer", "status": "not-applicable", "evidence": "Decide applicability and record target and hover-independent behavior."}
+  ]
+}

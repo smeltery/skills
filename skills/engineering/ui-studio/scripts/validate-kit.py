@@ -17,6 +17,8 @@ SKILL_DIR = Path(__file__).resolve().parent.parent
 SCHEMA_PATHS = {
     "state": SKILL_DIR / "schemas" / "state.schema.json",
     "manifest": SKILL_DIR / "schemas" / "ui-kit.schema.json",
+    "evidence": SKILL_DIR / "schemas" / "evidence.schema.json",
+    "verification": SKILL_DIR / "schemas" / "verification.schema.json",
 }
 SKIP_DIRS = {".git", "node_modules", "dist", "build", ".next", ".cache"}
 
@@ -122,6 +124,10 @@ def infer_kind(path: Path, data: dict[str, Any]) -> str | None:
         return "state"
     if {"entryPoints", "commands", "hosting"}.issubset(data):
         return "manifest"
+    if {"hypothesis", "capturedAt", "sources"}.issubset(data):
+        return "evidence"
+    if {"verifiedAt", "target", "routes", "deployment"}.issubset(data):
+        return "verification"
     return None
 
 
@@ -142,7 +148,13 @@ def check_paths(path: Path, data: dict[str, Any], kind: str) -> list[str]:
         for key, value in data.get("entryPoints", {}).items():
             if isinstance(value, str):
                 candidates.append((f"entryPoints.{key}", value))
-        for key in ("sourceLedger", "designDecision", "critiqueReport"):
+        for key in (
+            "sourceLedger",
+            "evidenceIndex",
+            "designDecision",
+            "critiqueReport",
+            "verificationReceipt",
+        ):
             value = data.get(key)
             if isinstance(value, str):
                 candidates.append((key, value))
@@ -190,13 +202,23 @@ def main() -> int:
     for raw in args.paths:
         path = raw.expanduser().resolve()
         if path.is_dir():
-            inputs.extend(walk_named(path, {"ui-kit.json", "state.json"}))
+            inputs.extend(
+                walk_named(
+                    path,
+                    {
+                        "ui-kit.json",
+                        "state.json",
+                        "evidence.json",
+                        "verification.json",
+                    },
+                )
+            )
         else:
             inputs.append(path)
 
     inputs = sorted(set(inputs))
     if not inputs:
-        print("No ui-kit.json or state.json files found.", file=sys.stderr)
+        print("No UI Studio contract JSON files found.", file=sys.stderr)
         return 1
 
     failed = False

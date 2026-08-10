@@ -20,8 +20,10 @@
     "outputPath": "dist"
   },
   "sourceLedger": "docs/source-ledger.md",
+  "evidenceIndex": "docs/evidence.json",
   "designDecision": "docs/design-decision.md",
   "critiqueReport": "docs/critique.md",
+  "verificationReceipt": "docs/verification.json",
   "themes": ["light", "dark"],
   "publicScope": ["reference-page"],
   "performanceBudget": {

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "hypothesis": "The fixture exposes responsive navigation and theme state.",
+  "capturedAt": "2026-08-10T00:00:00+00:00",
+  "maxAgeDays": 3650,
+  "sources": [
+    {
+      "id": "fixture-html",
+      "source": "../public/index.html",
+      "kind": "local-html",
+      "rightsMode": "same-product-reuse",
+      "capturedAt": "2026-08-10T00:00:00+00:00",
+      "revision": null,
+      "contentFingerprint": null,
+      "routes": ["/"],
+      "viewports": ["390x844", "1440x900"],
+      "evidence": [],
+      "limitations": ["Fixture evidence is generated only during dogfood."]
+    }
+  ]
+}

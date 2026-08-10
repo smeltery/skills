@@ -5,11 +5,13 @@ Use disposable output and retain no private evidence.
 
 ## Automated local case
 
-The bundled runner validates schemas and discovery, copies the local fixture to
-a disposable directory, builds it, installs a matching Playwright Test package,
-starts its documented server, captures ARIA/screenshots/traces at wide and narrow
-viewports, verifies interactions and a clean tracked worktree, then removes the
-temporary directory:
+The bundled runner validates schemas, state transitions, gate receipts, safe
+migration, hand-edit adoption, compatibility classification, evidence freshness,
+capture generation, and discovery. It then copies the local fixture to a
+disposable directory, builds it, installs a matching Playwright Test package,
+starts its documented server, captures ARIA/screenshots/traces at wide and
+narrow viewports, verifies interactions and a clean tracked worktree, then
+removes the temporary directory:
 
 ```bash
 ./scripts/dogfood.sh
@@ -18,8 +20,9 @@ temporary directory:
 Set `UI_STUDIO_PLAYWRIGHT_VERSION` to force a version,
 `UI_STUDIO_SKIP_BROWSER_INSTALL=1` to reuse an installed browser, or
 `UI_STUDIO_PUBLIC_URL=<url>` to include the optional public-reference case. The
-authenticated curated-reference and resume/iteration cases remain manual because
-their user gate and hand-edit behavior are the conditions being tested.
+authenticated curated-reference judgment and end-to-end agent gate decisions
+remain manual. Deterministic resume primitives and hand-edit protection are
+covered by `scripts/test-tooling.py`.
 
 ## Case 1: Public live site
 

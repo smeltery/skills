@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kit": "<kit name>",
+  "version": "<version>",
+  "verifiedAt": "<ISO-8601 timestamp>",
+  "target": "<production preview or deployed URL>",
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "deepLink": false,
+      "refresh": false,
+      "assetFailures": []
+    }
+  ],
+  "accessibility": {
+    "scenarios": []
+  },
+  "deployment": {
+    "basePath": false,
+    "missingRoute": false,
+    "assetPaths": false,
+    "cacheAssumptions": "<observed headers and host assumptions>"
+  },
+  "result": "fail",
+  "limitations": ["Template values must be replaced with observed evidence."]
+}

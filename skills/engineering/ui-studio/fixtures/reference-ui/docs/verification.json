@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "kit": "UI Studio Fixture",
+  "version": "0.1.0",
+  "verifiedAt": "2026-08-10T00:00:00+00:00",
+  "target": "http://127.0.0.1:4173/",
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "deepLink": true,
+      "refresh": true,
+      "assetFailures": []
+    }
+  ],
+  "accessibility": {
+    "scenarios": [
+      {
+        "name": "keyboard-only",
+        "status": "pass",
+        "evidence": "Dogfood activates theme and menu controls by keyboard."
+      }
+    ]
+  },
+  "deployment": {
+    "basePath": true,
+    "missingRoute": true,
+    "assetPaths": true,
+    "cacheAssumptions": "Disposable local static server; no shared cache."
+  },
+  "result": "pass",
+  "limitations": ["This receipt describes only the bundled static fixture."]
+}
