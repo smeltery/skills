@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "name": "UI Studio Fixture",
+  "slug": "ui-studio-fixture",
+  "version": "0.1.0",
+  "stack": "static-html",
+  "entryPoints": {
+    "html": "public/index.html"
+  },
+  "commands": {
+    "dev": "npm run dev",
+    "validate": "npm run validate",
+    "build": "npm run build",
+    "preview": "npm run preview",
+    "consumerSmoke": "npm run consumer:smoke"
+  },
+  "hosting": {
+    "strategy": "static-directory",
+    "basePath": "/",
+    "outputPath": "dist"
+  },
+  "sourceLedger": "docs/source-ledger.md",
+  "designDecision": "docs/design-decision.md",
+  "critiqueReport": "docs/critique.md",
+  "themes": ["light", "dark"],
+  "publicScope": ["reference-page"],
+  "performanceBudget": {
+    "htmlBytes": {
+      "unit": "bytes",
+      "baseline": null,
+      "limit": 100000,
+      "variance": 0,
+      "command": "wc -c public/index.html",
+      "notes": "Dogfood fixture ceiling, not a universal UI Studio default."
+    }
+  }
+}

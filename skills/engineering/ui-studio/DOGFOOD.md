@@ -3,6 +3,24 @@
 Run this protocol after changing the skill's workflow or Playwright contract.
 Use disposable output and retain no private evidence.
 
+## Automated local case
+
+The bundled runner validates schemas and discovery, copies the local fixture to
+a disposable directory, builds it, installs a matching Playwright Test package,
+starts its documented server, captures ARIA/screenshots/traces at wide and narrow
+viewports, verifies interactions and a clean tracked worktree, then removes the
+temporary directory:
+
+```bash
+./scripts/dogfood.sh
+```
+
+Set `UI_STUDIO_PLAYWRIGHT_VERSION` to force a version,
+`UI_STUDIO_SKIP_BROWSER_INSTALL=1` to reuse an installed browser, or
+`UI_STUDIO_PUBLIC_URL=<url>` to include the optional public-reference case. The
+authenticated curated-reference and resume/iteration cases remain manual because
+their user gate and hand-edit behavior are the conditions being tested.
+
 ## Case 1: Public live site
 
 Choose a public interactive site with navigation and responsive behavior.
@@ -18,8 +36,8 @@ Pass when the agent:
 
 ## Case 2: Local repository UI
 
-Use a disposable repository with a documented UI start command and at least one
-interaction.
+Use the bundled fixture or another disposable repository with a documented UI
+start command and at least one interaction.
 
 Pass when the agent:
 

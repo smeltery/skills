@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ui-studio:state:1",
+  "title": "UI Studio state",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "phase",
+    "references",
+    "generatedFiles"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kitName": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "kitSlug": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "targetPath": {
+      "type": ["string", "null"]
+    },
+    "phase": {
+      "enum": [
+        "intake",
+        "capture",
+        "synthesize",
+        "direction-gate",
+        "name-gate",
+        "plan",
+        "scaffold",
+        "foundations",
+        "components",
+        "compositions",
+        "showcase",
+        "verify",
+        "release-gate",
+        "handoff",
+        "iterate"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "source", "rightsMode"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "kind": {
+            "enum": [
+              "website",
+              "repository",
+              "design-link",
+              "curated-link",
+              "image",
+              "video",
+              "local-html",
+              "existing-kit"
+            ]
+          },
+          "source": {"type": "string", "minLength": 1},
+          "revision": {"type": ["string", "null"]},
+          "access": {
+            "enum": ["public", "authenticated", "local", "unavailable"]
+          },
+          "rightsMode": {
+            "enum": [
+              "inspiration-only",
+              "behavior-reimplementation",
+              "licensed-reuse",
+              "same-product-reuse"
+            ]
+          },
+          "evidence": {"type": "array"},
+          "limitations": {"type": "array"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "artifactPolicy": {
+      "type": ["object", "null"],
+      "properties": {
+        "visibility": {"enum": ["public", "internal", "restricted"]},
+        "commitEvidence": {"enum": ["never", "redacted-only", "approved"]},
+        "retention": {"enum": ["session", "until-release", "manual"]},
+        "redactions": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "approvedDirection": {
+      "type": ["object", "string", "null"]
+    },
+    "approvedScope": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "stack": {
+      "type": ["object", "string", "null"]
+    },
+    "generatedFiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
+    },
+    "blockedReason": {
+      "type": ["string", "null"]
+    },
+    "lastVerifiedAt": {
+      "type": ["string", "null"]
+    }
+  },
+  "additionalProperties": true
+}

@@ -35,6 +35,8 @@ viewable showcase that can later be imported into a product.
   traces, and production traversal: [PLAYWRIGHT.md](PLAYWRIGHT.md)
 - Foundations, components, packaging, showcase, production hosting, verification,
   and iteration: [BUILD.md](BUILD.md)
+- Evidence-based structural and visual review before release:
+  [CRITIQUE.md](CRITIQUE.md)
 - Manual acceptance runs for the skill itself: [DOGFOOD.md](DOGFOOD.md)
 
 Read a linked guide completely before executing a phase that depends on it. Do
@@ -46,6 +48,18 @@ Collect the reference inputs, intended product surface, kit name if supplied,
 destination path, hosting target, and constraints. Keep reference repositories
 distinct from the destination repository unless the user explicitly makes them
 the same.
+
+Resolve the loaded skill directory, then run its read-only doctor when Python is
+available:
+
+```bash
+python3 <skill-dir>/scripts/doctor.py --root <repo-root>
+```
+
+Use the report to identify candidate UI apps, package managers, commands,
+Playwright setup, hosting configuration, and existing `ui-kit.json` manifests.
+When the user names an existing kit, match by manifest name/slug, show collisions,
+and confirm the chosen path instead of making them remember it.
 
 Resolve the destination in this order:
 
@@ -90,6 +104,12 @@ State and transient evidence under `.ui-studio/` are local runtime artifacts by
 default. Do not commit them unless the approved artifact policy names specific
 redacted files. Durable decisions belong in the kit manifest and documentation.
 
+Validate state after each transition when the bundled validator is available:
+
+```bash
+python3 <skill-dir>/scripts/validate-kit.py <state.json>
+```
+
 ## 2. Route by phase
 
 ```text
@@ -116,8 +136,8 @@ its completion test passes. `blocked` is a recorded condition, not a phase.
 | `components` | Public components, documented APIs and state examples | Approved component scenarios render and operate accessibly |
 | `compositions` | Representative pages/flows using public components | Dense, sparse, adverse and responsive scenarios are covered |
 | `showcase` | Navigable named/versioned catalog | One command runs it and every review route is reachable |
-| `verify` | Verification report and production artifacts | Required checks and consumer/host smoke tests pass |
-| `release-gate` | User review decision with accepted limitations | User explicitly approves reuse or names revisions |
+| `verify` | Verification, performance, and critique reports plus production artifacts | Required checks, budgets, consumer/host smoke tests, and critique complete |
+| `release-gate` | User review decision with critique recommendation and accepted limitations | User explicitly approves reuse or names revisions |
 | `handoff` | Version, changelog, reuse/hosting docs and migration notes | A fresh consumer can follow the documented path |
 | `iterate` | Updated request mapped to affected phases | Route to the earliest invalidated contract or no-op |
 
@@ -146,6 +166,8 @@ when the source was accessible and interactive behavior matters.
 
 Read [BUILD.md](BUILD.md). Use [PLAYWRIGHT.md](PLAYWRIGHT.md) for the feedback
 loop and production traversal. Verify the built artifact, not only a dev server.
+After mechanical checks pass, read [CRITIQUE.md](CRITIQUE.md) completely and
+perform its fresh production review before the Release gate.
 
 ### Iterate
 
@@ -181,6 +203,8 @@ additions, and major only for an explicitly approved breaking change.
   state paths without rebuilding the kit.
 - Stop all managed reference/showcase processes and delete ephemeral auth state
   at completion or before a blocking handoff unless the user asks to retain them.
+- Validate the state and `ui-kit.json` manifest with the bundled validator before
+  Release and Handoff. Use `--check-files` once durable paths and hashes exist.
 
 ## Completion report
 
@@ -191,5 +215,7 @@ View: <command and URL/path>
 Reuse: <public entry point>
 Evidence: <source-ledger path and policy>
 Verified: <checks run>
+Performance: <budgets met or accepted exceptions>
+Critique: <approve|revise|approve-with-limitations and report path>
 Open: <accepted limitations or next gate>
 ```

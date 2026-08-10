@@ -108,3 +108,21 @@ jobs:
 
           print(f"\nAll {len(skill_files)} skill(s) validated.")
           PY
+      - name: Validate UI Studio tooling
+        run: |
+          python skills/engineering/ui-studio/scripts/validate-kit.py \
+            --check-files skills/engineering/ui-studio/fixtures/reference-ui
+          python skills/engineering/ui-studio/scripts/doctor.py \
+            --root skills/engineering/ui-studio/fixtures/reference-ui \
+            --json > /tmp/ui-studio-doctor.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(
+              Path("/tmp/ui-studio-doctor.json").read_text(encoding="utf-8")
+          )
+          assert report["kits"][0]["schemaValid"] is True
+          assert report["packages"][0]["runnableUi"] is True
+          PY
+          bash -n skills/engineering/ui-studio/scripts/dogfood.sh

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ui-studio:kit:1",
+  "title": "UI Studio reusable kit manifest",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "name",
+    "slug",
+    "version",
+    "stack",
+    "entryPoints",
+    "commands",
+    "hosting",
+    "sourceLedger"
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "name": {"type": "string", "minLength": 1},
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "stack": {"type": ["object", "string"]},
+    "entryPoints": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "commands": {
+      "type": "object",
+      "required": ["dev", "validate", "build", "preview", "consumerSmoke"],
+      "properties": {
+        "dev": {"type": "string", "minLength": 1},
+        "validate": {"type": "string", "minLength": 1},
+        "build": {"type": "string", "minLength": 1},
+        "preview": {"type": "string", "minLength": 1},
+        "consumerSmoke": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": {"type": "string"}
+    },
+    "hosting": {
+      "type": "object",
+      "required": ["strategy", "basePath"],
+      "properties": {
+        "strategy": {"type": "string", "minLength": 1},
+        "basePath": {"type": "string"},
+        "outputPath": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "sourceLedger": {"type": "string", "minLength": 1},
+    "designDecision": {"type": ["string", "null"]},
+    "critiqueReport": {"type": ["string", "null"]},
+    "themes": {"type": "array", "items": {"type": "string"}},
+    "publicScope": {"type": "array", "items": {"type": "string"}},
+    "peerDependencies": {
+      "type": "object",
+      "additionalProperties": {"type": "string"}
+    },
+    "artifactPolicy": {"type": ["object", "null"]},
+    "performanceBudget": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["unit", "limit", "command"],
+        "properties": {
+          "unit": {"type": "string", "minLength": 1},
+          "baseline": {"type": ["number", "null"], "minimum": 0},
+          "limit": {"type": "number", "minimum": 0},
+          "variance": {"type": ["number", "null"], "minimum": 0},
+          "command": {"type": "string", "minLength": 1},
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

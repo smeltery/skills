@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>UI Studio reference fixture</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { margin: 0; min-height: 100vh; background: #f4f1ea; color: #172033; }
+      body.dark { background: #172033; color: #f8fafc; }
+      header, main { max-width: 64rem; margin: auto; padding: 1.5rem; }
+      header { display: flex; align-items: center; gap: 1rem; }
+      nav[hidden] { display: none; }
+      button { min-height: 44px; padding: 0.5rem 0.75rem; }
+      .panel { border: 1px solid currentColor; padding: 1rem; }
+      @media (max-width: 480px) { header { align-items: stretch; flex-direction: column; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button aria-expanded="false" aria-controls="primary-nav">Menu</button>
+      <nav id="primary-nav" aria-label="Primary" hidden>
+        <a href="#examples">Examples</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Reference workspace</h1>
+      <section class="panel" id="examples" aria-labelledby="examples-heading">
+        <h2 id="examples-heading">Interaction example</h2>
+        <p id="status" role="status">Navigation closed</p>
+        <button id="theme">Use dark theme</button>
+      </section>
+    </main>
+    <script>
+      const menu = document.querySelector('header button');
+      const nav = document.querySelector('nav');
+      const status = document.querySelector('#status');
+      menu.addEventListener('click', () => {
+        const open = menu.getAttribute('aria-expanded') !== 'true';
+        menu.setAttribute('aria-expanded', String(open));
+        nav.hidden = !open;
+        status.textContent = open ? 'Navigation open' : 'Navigation closed';
+      });
+      document.querySelector('#theme').addEventListener('click', event => {
+        document.body.classList.toggle('dark');
+        event.currentTarget.textContent = document.body.classList.contains('dark')
+          ? 'Use light theme' : 'Use dark theme';
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "ui-studio-reference-fixture",
+  "private": true,
+  "scripts": {
+    "build": "python3 scripts/build.py",
+    "consumer:smoke": "python3 scripts/validate.py",
+    "dev": "python3 -m http.server 4173 --directory public",
+    "preview": "python3 -m http.server 4174 --directory dist",
+    "seed:dangerous": "echo 'DOGFOOD FAILURE: unsafe seed executed' && exit 99",
+    "validate": "python3 scripts/validate.py"
+  }
+}
