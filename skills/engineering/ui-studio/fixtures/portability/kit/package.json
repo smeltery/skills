@@ -1,0 +1,11 @@
+{
+  "name": "@ui-studio/portability-kit",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./styles.css": "./src/styles.css",
+    "./tokens.json": "./src/tokens.json"
+  },
+  "sideEffects": ["./src/styles.css"]
+}

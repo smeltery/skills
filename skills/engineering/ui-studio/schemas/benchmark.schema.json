@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ui-studio:benchmark:1",
+  "title": "UI Studio quality benchmark suite",
+  "type": "object",
+  "required": ["schemaVersion", "name", "scenarios"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "name": {"type": "string", "minLength": 1},
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "archetype", "pressures", "requiredContracts"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "archetype": {"type": "string", "minLength": 1},
+          "pressures": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "requiredContracts": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "reference": {"type": ["string", "null"]},
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

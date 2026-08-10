@@ -34,6 +34,8 @@ Create `ui-kit.json` or an idiomatic manifest containing:
 - source-ledger and durable design-decision paths;
 - machine-readable evidence index and production verification receipt paths
   when retained by policy;
+- asset-provenance report and approved generated-kit visual-baseline path when
+  those artifacts exist;
 - development, validation, build, preview, and consumer-smoke commands.
 - performance budgets with units, baseline, limit, expected variance, command,
   and rationale.
@@ -52,6 +54,10 @@ Prefer CSS custom properties or the target stack's native theme contract so
 consumers can override semantics without forking. Document fonts, icons, and
 assets with provenance, license, loading/fallback behavior, and failure modes.
 Do not hide one-off component values in a token system.
+
+When tokens must cross tools or repositories, use the DTCG-compatible workflow
+in `QUALITY.md`. Preserve semantic hierarchy and typed rich values; flattened
+tokens are an interchange artifact, not the authoring source by default.
 
 ## Components and compositions
 
@@ -127,6 +133,9 @@ Use repository-native checks first. Add dependencies only when approved.
   reference source;
 - provenance, license, privacy, and artifact-policy audit.
 
+Use `QUALITY.md` for the machine-readable provenance inventory, generated
+production verifier, and explicit visual-baseline approval workflow.
+
 Start accessibility verification from
 `templates/accessibility-scenarios.json`. Decide applicability explicitly for
 keyboard operation, names/roles/states and announcements, focus restoration,
@@ -188,6 +197,7 @@ At the Release gate provide:
 - performance budgets with baseline, result, variance, and accepted exceptions;
 - critique recommendation and report path;
 - evidence policy and retained artifacts;
+- asset provenance, visual-baseline decision, and public compatibility result;
 - accepted limitations and proposed next components.
 
 After approval, update the manifest, changelog, reuse/hosting docs, and any
@@ -205,3 +215,5 @@ python3 <skill-dir>/scripts/compare-kits.py \
 Treat the result as a lower bound: removed or changed public entries are
 breaking, but component API and behavioral changes still require repository
 native type, test, and migration review.
+When more than one named kit enters the same consumer, run `compose-kits.py` and
+resolve peer, token, global-style, and identity conflicts before Release.

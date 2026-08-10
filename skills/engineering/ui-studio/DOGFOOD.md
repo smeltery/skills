@@ -7,7 +7,9 @@ Use disposable output and retain no private evidence.
 
 The bundled runner validates schemas, state transitions, gate receipts, safe
 migration, hand-edit adoption, compatibility classification, evidence freshness,
-capture generation, and discovery. It then copies the local fixture to a
+capture and verifier generation, benchmark contracts, token interchange,
+composition collisions, provenance, visual approval, and discovery. It then
+copies the local fixture to a
 disposable directory, builds it, installs a matching Playwright Test package,
 starts its documented server, captures ARIA/screenshots/traces at wide and
 narrow viewports, verifies interactions and a clean tracked worktree, then
@@ -16,6 +18,24 @@ removes the temporary directory:
 ```bash
 ./scripts/dogfood.sh
 ```
+
+The Playwright run validates both structured observations and the generated
+production verification receipt.
+
+## Framework portability case
+
+The optional portability runner installs pinned fixture dependencies in a
+disposable directory and production-builds the same public kit from React, Vue,
+Svelte, and native web-component consumers:
+
+```bash
+./scripts/dogfood-portability.sh
+```
+
+Run it after changing package exports, style loading, token distribution,
+SSR/browser boundaries, or consumer guidance. It requires npm registry access;
+the lightweight `check-portability.py` contract check remains available when
+networked dependency installation is not appropriate.
 
 Set `UI_STUDIO_PLAYWRIGHT_VERSION` to force a version,
 `UI_STUDIO_SKIP_BROWSER_INSTALL=1` to reuse an installed browser, or

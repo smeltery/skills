@@ -1,0 +1,8 @@
+{
+  "name": "ui-studio-web-component-consumer",
+  "private": true,
+  "type": "module",
+  "scripts": {"build": "vite build"},
+  "dependencies": {"@ui-studio/portability-kit": "*"},
+  "devDependencies": {"vite": "8.1.5"}
+}

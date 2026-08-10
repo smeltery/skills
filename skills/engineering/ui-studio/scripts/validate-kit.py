@@ -19,6 +19,10 @@ SCHEMA_PATHS = {
     "manifest": SKILL_DIR / "schemas" / "ui-kit.schema.json",
     "evidence": SKILL_DIR / "schemas" / "evidence.schema.json",
     "verification": SKILL_DIR / "schemas" / "verification.schema.json",
+    "benchmark": SKILL_DIR / "schemas" / "benchmark.schema.json",
+    "observation": SKILL_DIR / "schemas" / "observation.schema.json",
+    "visual-baseline": SKILL_DIR / "schemas" / "visual-baseline.schema.json",
+    "provenance": SKILL_DIR / "schemas" / "provenance.schema.json",
 }
 SKIP_DIRS = {".git", "node_modules", "dist", "build", ".next", ".cache"}
 
@@ -128,6 +132,14 @@ def infer_kind(path: Path, data: dict[str, Any]) -> str | None:
         return "evidence"
     if {"verifiedAt", "target", "routes", "deployment"}.issubset(data):
         return "verification"
+    if {"name", "scenarios"}.issubset(data):
+        return "benchmark"
+    if {"hypothesis", "capturedAt", "captures"}.issubset(data):
+        return "observation"
+    if {"approvedAt", "rationale", "files"}.issubset(data):
+        return "visual-baseline"
+    if {"kit", "assets"}.issubset(data):
+        return "provenance"
     return None
 
 
@@ -151,9 +163,12 @@ def check_paths(path: Path, data: dict[str, Any], kind: str) -> list[str]:
         for key in (
             "sourceLedger",
             "evidenceIndex",
+            "observationIndex",
             "designDecision",
             "critiqueReport",
             "verificationReceipt",
+            "provenanceReport",
+            "visualBaseline",
         ):
             value = data.get(key)
             if isinstance(value, str):
@@ -210,6 +225,10 @@ def main() -> int:
                         "state.json",
                         "evidence.json",
                         "verification.json",
+                        "benchmark.json",
+                        "observations.json",
+                        "visual-baseline.json",
+                        "provenance.json",
                     },
                 )
             )

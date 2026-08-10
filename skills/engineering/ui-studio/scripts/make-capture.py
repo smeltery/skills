@@ -44,6 +44,7 @@ import {{ test, expect }} from '@playwright/test';
 
 const plan = JSON.parse(readFileSync(resolve(__dirname, '{plan_name}'), 'utf8'));
 const observations: any[] = [];
+const structuredCaptures: any[] = [];
 
 for (const source of plan.sources) {{
   for (const viewport of plan.viewports) {{
@@ -60,6 +61,56 @@ for (const source of plan.sources) {{
       await expect(page.locator('body')).toBeVisible();
       const aria = await page.locator('body').ariaSnapshot();
       const size = `${{viewport.width}}x${{viewport.height}}`;
+      const structured = await page.evaluate(() => {{
+        const selected = Array.from(document.querySelectorAll(
+          'h1,h2,h3,p,a,button,input,select,textarea,[role]'
+        )).slice(0, 80);
+        const samples = selected.map((element) => {{
+          const style = getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return {{
+            tag: element.tagName.toLowerCase(),
+            role: element.getAttribute('role'),
+            textLength: (element.textContent || '').trim().length,
+            rect: {{ x: rect.x, y: rect.y, width: rect.width, height: rect.height }},
+            style: {{
+              display: style.display,
+              position: style.position,
+              fontFamily: style.fontFamily,
+              fontSize: style.fontSize,
+              fontWeight: style.fontWeight,
+              lineHeight: style.lineHeight,
+              color: style.color,
+              backgroundColor: style.backgroundColor,
+              borderRadius: style.borderRadius,
+              padding: style.padding,
+              gap: style.gap,
+              transitionDuration: style.transitionDuration,
+              animationDuration: style.animationDuration,
+            }},
+          }};
+        }});
+        return {{
+          structure: {{
+            headings: document.querySelectorAll('h1,h2,h3,h4,h5,h6').length,
+            landmarks: document.querySelectorAll(
+              'main,nav,header,footer,aside,[role="main"],[role="navigation"]'
+            ).length,
+            controls: document.querySelectorAll(
+              'button,input,select,textarea,a[href]'
+            ).length,
+            dialogs: document.querySelectorAll('dialog,[role="dialog"]').length,
+            lists: document.querySelectorAll('ul,ol,[role="list"]').length,
+          }},
+          samples,
+          media: {{
+            reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+            darkScheme: matchMedia('(prefers-color-scheme: dark)').matches,
+            forcedColors: matchMedia('(forced-colors: active)').matches,
+            coarsePointer: matchMedia('(pointer: coarse)').matches,
+          }},
+        }};
+      }});
       await testInfo.attach('aria.yml', {{ body: aria, contentType: 'text/yaml' }});
       await page.screenshot({{ path: testInfo.outputPath(`${{size}}.png`), fullPage: true }});
       observations.push({{
@@ -73,6 +124,17 @@ for (const source of plan.sources) {{
         evidence: ['aria.yml', `${{size}}.png`],
         consoleErrors,
         failedRequests,
+      }});
+      structuredCaptures.push({{
+        sourceId: source.id,
+        url: page.url(),
+        viewport: size,
+        structure: structured.structure,
+        samples: structured.samples,
+        media: structured.media,
+        limitations: [
+          'Samples are bounded observations, not reusable source CSS.'
+        ],
       }});
       // Add only approved, hypothesis-driven interactions below this line.
     }});
@@ -88,6 +150,16 @@ test.afterAll(() => {{
     capturedAt: new Date().toISOString(),
     maxAgeDays: plan.maxAgeDays,
     sources: observations,
+  }}, null, 2) + '\\n');
+  const observationOutput = resolve(
+    process.env.UI_STUDIO_OBSERVATION_OUTPUT || 'test-results/observations.json'
+  );
+  mkdirSync(dirname(observationOutput), {{ recursive: true }});
+  writeFileSync(observationOutput, JSON.stringify({{
+    schemaVersion: 1,
+    hypothesis: plan.hypothesis,
+    capturedAt: new Date().toISOString(),
+    captures: structuredCaptures,
   }}, null, 2) + '\\n');
 }});
 """

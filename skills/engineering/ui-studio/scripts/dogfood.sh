@@ -22,6 +22,15 @@ trap cleanup EXIT INT TERM
 python3 "$SKILL_DIR/scripts/validate-kit.py" --check-files "$FIXTURE"
 python3 "$SKILL_DIR/scripts/test-tooling.py"
 python3 "$SKILL_DIR/scripts/check-evidence.py" "$FIXTURE/docs/evidence.json"
+python3 "$SKILL_DIR/scripts/provenance.py" \
+  "$FIXTURE/docs/provenance.json" --root "$FIXTURE"
+python3 "$SKILL_DIR/scripts/validate-kit.py" --schema benchmark \
+  "$SKILL_DIR/fixtures/benchmark/benchmark.json"
+python3 "$SKILL_DIR/scripts/benchmark.py" plan \
+  "$SKILL_DIR/fixtures/benchmark/benchmark.json" >"$WORK_DIR/benchmark-plan.json"
+python3 "$SKILL_DIR/scripts/check-portability.py"
+python3 "$SKILL_DIR/scripts/tokens.py" validate \
+  "$SKILL_DIR/fixtures/portability/kit/src/tokens.json"
 python3 "$SKILL_DIR/scripts/doctor.py" --root "$FIXTURE" --json >"$WORK_DIR/doctor.json"
 python3 - "$WORK_DIR/doctor.json" <<'PY'
 import json
@@ -43,6 +52,10 @@ python3 "$SKILL_DIR/scripts/make-capture.py" \
   --url http://127.0.0.1:4173 \
   --hypothesis "Responsive navigation preserves state and hierarchy." \
   --out "$WORK_DIR/tests/generated-capture"
+python3 "$SKILL_DIR/scripts/make-verifier.py" "$WORK_DIR/ui-kit.json" \
+  --base-url http://127.0.0.1:4173 \
+  --route / \
+  --out "$WORK_DIR/tests/generated-verifier"
 cd "$WORK_DIR"
 
 npm run validate
@@ -94,6 +107,19 @@ fi
 
 python3 "$SKILL_DIR/scripts/validate-kit.py" \
   --schema evidence test-results/evidence.json
+python3 "$SKILL_DIR/scripts/validate-kit.py" \
+  --schema observation test-results/observations.json
+python3 "$SKILL_DIR/scripts/validate-kit.py" \
+  --schema verification test-results/verification.json
+python3 - test-results/observations.json test-results/verification.json <<'PY'
+import json
+import sys
+
+observations = json.load(open(sys.argv[1], encoding="utf-8"))
+verification = json.load(open(sys.argv[2], encoding="utf-8"))
+assert len(observations["captures"]) == 3
+assert verification["result"] == "pass"
+PY
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "Dogfood changed tracked fixture files:" >&2

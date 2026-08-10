@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -93,6 +94,54 @@ def package_exports(path: Path) -> Any:
     return package.get("exports", {}) if isinstance(package, dict) else {}
 
 
+def flatten_json(value: Any, prefix: str = "") -> dict[str, str]:
+    flattened: dict[str, str] = {}
+    if isinstance(value, dict):
+        for key, item in value.items():
+            name = f"{prefix}.{key}" if prefix else key
+            flattened.update(flatten_json(item, name))
+    else:
+        flattened[prefix] = json.dumps(value, sort_keys=True)
+    return flattened
+
+
+def public_contracts(manifest_path: Path, manifest: dict[str, Any]) -> dict[str, Any]:
+    contracts: dict[str, Any] = {
+        "typeDeclarations": {},
+        "designTokens": {},
+        "cssVariables": {},
+    }
+    entry_points = manifest.get("entryPoints", {})
+    if not isinstance(entry_points, dict):
+        return contracts
+    for label, raw in entry_points.items():
+        if not isinstance(raw, str) or "://" in raw:
+            continue
+        path = (manifest_path.parent / raw).resolve()
+        if not path.is_file():
+            continue
+        if label in {"types", "type", "declarations"} or path.suffix == ".d.ts":
+            exports = {
+                line.strip(): line.strip()
+                for line in path.read_text(encoding="utf-8").splitlines()
+                if line.strip().startswith("export ")
+            }
+            contracts["typeDeclarations"].update(exports)
+        if label in {"tokens", "designTokens"} and path.suffix == ".json":
+            try:
+                contracts["designTokens"].update(
+                    flatten_json(json.loads(path.read_text(encoding="utf-8")))
+                )
+            except json.JSONDecodeError:
+                contracts["designTokens"][str(path)] = "invalid-json"
+        if label in {"styles", "style", "css"} or path.suffix == ".css":
+            css = path.read_text(encoding="utf-8")
+            contracts["cssVariables"].update(dict(
+                re.findall(r"(--[a-zA-Z0-9_-]+)\s*:\s*([^;}{]+)", css)
+            ))
+    return contracts
+
+
 def add_package_export_changes(
     report: dict[str, Any], before_path: Path, after_path: Path
 ) -> None:
@@ -109,6 +158,28 @@ def add_package_export_changes(
         report["recommendedBump"] = "minor"
 
 
+def add_public_contract_changes(
+    report: dict[str, Any],
+    before_path: Path,
+    before: dict[str, Any],
+    after_path: Path,
+    after: dict[str, Any],
+) -> None:
+    old = public_contracts(before_path, before)
+    new = public_contracts(after_path, after)
+    for field in ("typeDeclarations", "designTokens", "cssVariables"):
+        removed, added, changed = key_changes(old, new, field)
+        report["breaking"].extend(f"{field}: removed {item}" for item in removed)
+        report["additive"].extend(f"{field}: added {item}" for item in added)
+        report["changed"].extend(f"{field}: changed {item}" for item in changed)
+    report["reviewRequired"] = bool(report["changed"])
+    if report["breaking"]:
+        report["compatible"] = False
+        report["recommendedBump"] = "major"
+    elif report["additive"]:
+        report["recommendedBump"] = "minor"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("before", type=Path)
@@ -117,8 +188,11 @@ def main() -> int:
     parser.add_argument("--fail-on-breaking", action="store_true")
     args = parser.parse_args()
     try:
-        report = compare(load(args.before), load(args.after))
+        before = load(args.before)
+        after = load(args.after)
+        report = compare(before, after)
         add_package_export_changes(report, args.before, args.after)
+        add_public_contract_changes(report, args.before, before, args.after, after)
     except (OSError, json.JSONDecodeError, ValueError) as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1

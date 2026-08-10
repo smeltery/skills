@@ -189,23 +189,46 @@ def test_state(root: Path) -> None:
 def test_compatibility(root: Path) -> None:
     before = root / "old" / "ui-kit.json"
     after = root / "new" / "ui-kit.json"
-    write_json(before, manifest(["button"]))
-    write_json(after, manifest(["button", "dialog"]))
+    before_manifest = manifest(["button"])
+    before_manifest["entryPoints"].update({
+        "types": "index.d.ts", "tokens": "tokens.json", "styles": "styles.css"
+    })
+    after_manifest = manifest(["button", "dialog"])
+    after_manifest["entryPoints"].update({
+        "types": "index.d.ts", "tokens": "tokens.json", "styles": "styles.css"
+    })
+    write_json(before, before_manifest)
+    write_json(after, after_manifest)
+    for directory in (root / "old", root / "new"):
+        (directory / "index.d.ts").write_text(
+            "export declare const Button: string;\n", encoding="utf-8"
+        )
+        write_json(directory / "tokens.json", {"color": {"accent": "blue"}})
+        (directory / "styles.css").write_text(
+            ":root { --kit-accent: blue; }\n", encoding="utf-8"
+        )
     write_json(root / "old" / "package.json", {"exports": {".": "./index.js"}})
     write_json(root / "new" / "package.json", {"exports": {".": "./index.js"}})
     result = run(str(SCRIPTS / "compare-kits.py"), str(before), str(after), "--json")
     assert json.loads(result.stdout)["recommendedBump"] == "minor"
-    write_json(after, manifest([]))
+    after_manifest["publicScope"] = []
+    write_json(after, after_manifest)
+    (root / "new" / "index.d.ts").write_text("", encoding="utf-8")
+    write_json(root / "new" / "tokens.json", {"color": {"accent": "red"}})
     write_json(root / "old" / "package.json", {
         "exports": {".": "./index.js", "./button": "./button.js"}
     })
-    run(
+    breaking = run(
         str(SCRIPTS / "compare-kits.py"),
         str(before),
         str(after),
+        "--json",
         "--fail-on-breaking",
         expected=2,
     )
+    report = json.loads(breaking.stdout)
+    assert any("typeDeclarations" in item for item in report["breaking"])
+    assert report["reviewRequired"] is True
 
 
 def test_evidence(root: Path) -> None:
@@ -252,6 +275,7 @@ def test_capture(root: Path) -> None:
         str(output),
     )
     assert (output / "capture.spec.ts").is_file()
+    assert "structuredCaptures" in (output / "capture.spec.ts").read_text(encoding="utf-8")
     plan = json.loads((output / "capture-plan.json").read_text(encoding="utf-8"))
     assert len(plan["viewports"]) == 3
     run(
@@ -266,6 +290,140 @@ def test_capture(root: Path) -> None:
     )
 
 
+def test_verifier(root: Path) -> None:
+    manifest_path = root / "ui-kit.json"
+    write_json(manifest_path, manifest(["button"]))
+    output = root / "verifier"
+    run(
+        str(SCRIPTS / "make-verifier.py"),
+        str(manifest_path),
+        "--base-url",
+        "http://127.0.0.1:4173",
+        "--route",
+        "/components",
+        "--out",
+        str(output),
+    )
+    plan = json.loads((output / "verification-plan.json").read_text(encoding="utf-8"))
+    assert plan["routes"] == ["/components"]
+    assert (output / "verification.spec.ts").is_file()
+
+
+def test_benchmark(root: Path) -> None:
+    suite = root / "benchmark.json"
+    results = root / "results.json"
+    write_json(suite, {
+        "schemaVersion": 1,
+        "name": "Dogfood suite",
+        "scenarios": [{
+            "id": "dense",
+            "archetype": "dashboard",
+            "pressures": ["dense"],
+            "requiredContracts": ["no-overflow"],
+        }],
+    })
+    write_json(results, {"results": [{
+        "scenario": "dense",
+        "contract": "no-overflow",
+        "status": "pass",
+        "evidence": "Playwright assertion",
+    }]})
+    planned = run(str(SCRIPTS / "benchmark.py"), "plan", str(suite))
+    assert json.loads(planned.stdout)["scenarioCount"] == 1
+    run(str(SCRIPTS / "benchmark.py"), "evaluate", str(suite), str(results))
+    write_json(results, {"results": []})
+    run(
+        str(SCRIPTS / "benchmark.py"),
+        "evaluate",
+        str(suite),
+        str(results),
+        expected=1,
+    )
+
+
+def test_tokens(root: Path) -> None:
+    source = root / "tokens.json"
+    flat = root / "flat.json"
+    expanded = root / "expanded.json"
+    write_json(source, {
+        "color": {"$type": "color", "accent": {"$value": "#123456"}},
+        "space": {"small": {"$type": "dimension", "$value": {"value": 4, "unit": "px"}}},
+    })
+    run(str(SCRIPTS / "tokens.py"), "validate", str(source))
+    run(str(SCRIPTS / "tokens.py"), "flatten", str(source), str(flat))
+    run(str(SCRIPTS / "tokens.py"), "expand", str(flat), str(expanded))
+    run(str(SCRIPTS / "tokens.py"), "validate", str(expanded))
+
+
+def test_composition(root: Path) -> None:
+    first = manifest(["button"])
+    second = manifest(["dialog"])
+    first.update({"name": "First", "slug": "first"})
+    second.update({"name": "Second", "slug": "second"})
+    first["entryPoints"] = {"styles": "styles.css"}
+    second["entryPoints"] = {"styles": "styles.css"}
+    first_path = root / "first" / "ui-kit.json"
+    second_path = root / "second" / "ui-kit.json"
+    write_json(first_path, first)
+    write_json(second_path, second)
+    (first_path.parent / "styles.css").write_text(
+        ":root { --shared: blue; }\n", encoding="utf-8"
+    )
+    (second_path.parent / "styles.css").write_text(
+        ":root { --shared: red; }\n", encoding="utf-8"
+    )
+    run(
+        str(SCRIPTS / "compose-kits.py"),
+        str(first_path),
+        str(second_path),
+        expected=1,
+    )
+
+
+def test_provenance_and_visuals(root: Path) -> None:
+    root.mkdir(parents=True, exist_ok=True)
+    image = root / "assets" / "sample.png"
+    image.parent.mkdir(parents=True)
+    image.write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + b"\x00\x00\x00\x01\x00\x00\x00\x01")
+    provenance = root / "provenance.json"
+    write_json(provenance, {
+        "schemaVersion": 1,
+        "kit": "Dogfood",
+        "assets": [{
+            "path": "assets/sample.png",
+            "kind": "image",
+            "source": "Original fixture",
+            "license": "Original work",
+            "licenseFile": None,
+            "rightsMode": "original",
+        }],
+    })
+    run(str(SCRIPTS / "provenance.py"), str(provenance), "--root", str(root))
+    baseline = root / "visual-baseline.json"
+    run(
+        str(SCRIPTS / "visual-baselines.py"),
+        "approve",
+        str(image.parent),
+        str(baseline),
+        "--kit",
+        "Dogfood",
+        "--version",
+        "1.0.0",
+        "--rationale",
+        "Approved fixture",
+        "--approve",
+    )
+    run(str(SCRIPTS / "visual-baselines.py"), "compare", str(baseline), str(image.parent))
+    image.write_bytes(image.read_bytes() + b"changed")
+    run(
+        str(SCRIPTS / "visual-baselines.py"),
+        "compare",
+        str(baseline),
+        str(image.parent),
+        expected=1,
+    )
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="ui-studio-tooling-") as temporary:
         root = Path(temporary)
@@ -273,6 +431,11 @@ def main() -> int:
         test_compatibility(root / "compatibility")
         test_evidence(root / "evidence")
         test_capture(root / "capture-generator")
+        test_verifier(root / "verifier-generator")
+        test_benchmark(root / "benchmark")
+        test_tokens(root / "tokens")
+        test_composition(root / "composition")
+        test_provenance_and_visuals(root / "assets")
     print("UI Studio tooling tests passed.")
     return 0
 

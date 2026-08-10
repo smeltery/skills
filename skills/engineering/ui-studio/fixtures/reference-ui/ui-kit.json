@@ -24,6 +24,8 @@
   "designDecision": "docs/design-decision.md",
   "critiqueReport": "docs/critique.md",
   "verificationReceipt": "docs/verification.json",
+  "provenanceReport": "docs/provenance.json",
+  "visualBaseline": null,
   "themes": ["light", "dark"],
   "publicScope": ["reference-page"],
   "performanceBudget": {
