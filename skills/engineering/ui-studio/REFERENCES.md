@@ -18,6 +18,10 @@ Record whether each input is navigable, static, ordered, authenticated, and
 versioned. Static evidence can supplement a navigable source but cannot prove
 interaction behavior.
 
+When the bundled read-only doctor is available, run it against repository inputs
+before choosing an app. Its named-kit inventory resolves existing kits by
+manifest name, slug, version, and path without requiring a global registry.
+
 ## Rights mode
 
 Assign one mode to every source during Intake:

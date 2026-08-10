@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "kitName": "UI Studio Fixture",
+  "kitSlug": "ui-studio-fixture",
+  "targetPath": null,
+  "phase": "iterate",
+  "references": [
+    {
+      "id": "local-fixture",
+      "kind": "repository",
+      "source": ".",
+      "revision": null,
+      "access": "local",
+      "rightsMode": "same-product-reuse",
+      "evidence": [],
+      "limitations": []
+    }
+  ],
+  "artifactPolicy": {
+    "visibility": "public",
+    "commitEvidence": "never",
+    "retention": "session",
+    "redactions": []
+  },
+  "approvedDirection": "Dogfood fixture",
+  "approvedScope": ["reference-page"],
+  "stack": "static-html",
+  "generatedFiles": {},
+  "blockedReason": null,
+  "lastVerifiedAt": null
+}

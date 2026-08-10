@@ -10,6 +10,8 @@ Before durable implementation, present and receive approval for:
 - public tokens, components, patterns, compositions, and showcase surfaces;
 - dependency additions and peer-dependency policy;
 - development, validation, production-build, preview, and hosting strategy;
+- discovered performance baselines or the plan for establishing them, with
+  repository-appropriate budgets and repeatable commands;
 - rights and artifact policies plus evidence that can enter the repository;
 - a scenario matrix derived from real content pressure and adverse states.
 
@@ -31,6 +33,8 @@ Create `ui-kit.json` or an idiomatic manifest containing:
 - peer and runtime dependencies;
 - source-ledger and durable design-decision paths;
 - development, validation, build, preview, and consumer-smoke commands.
+- performance budgets with units, baseline, limit, expected variance, command,
+  and rationale.
 
 Write concise install, run, import, theme, extension, versioning, migration, and
 hosting instructions.
@@ -121,6 +125,27 @@ Use repository-native checks first. Add dependencies only when approved.
   reference source;
 - provenance, license, privacy, and artifact-policy audit.
 
+## Performance budgets
+
+Discover existing bundle, page-weight, rendering, interaction, and hosting
+budgets before inventing new ones. Reuse the repository's measurement commands
+and production mode. If none exist:
+
+1. establish a repeatable production baseline after Scaffold;
+2. select only metrics relevant to the approved surface, such as compressed
+   public entry-point/CSS size, font/asset weight, request count, layout shift,
+   interaction latency, long tasks, or animation frame stability;
+3. record environment, fixture, sample count, unit, baseline, expected variance,
+   limit, command, and rationale in `ui-kit.json`;
+4. receive user approval at the Name gate when a budget would materially alter
+   scope or dependencies.
+
+Do not hardcode universal thresholds or present local lab measurements as field
+performance. Compare equivalent builds and fixtures, use multiple samples for
+noisy timing, and block Release on a required regression unless the user accepts
+the named exception. A smaller bundle does not excuse worse interaction or
+accessibility.
+
 After the ordinary build passes, serve the production output using the intended
 host strategy. Verify direct deep links, browser refresh, nested routes, asset and
 font URLs, configured base paths, caching assumptions, and a missing-route case.
@@ -131,6 +156,10 @@ Visual baselines may be established for the generated kit after the direction is
 approved. Store only allowed evidence. Review every baseline update; do not mask
 change with broad thresholds or compare copyrighted references pixel-for-pixel.
 
+After mechanical and performance verification, follow `CRITIQUE.md` in a fresh
+production browser context. Resolve blockers and route substantive revisions to
+the earliest affected phase before presenting the Release gate.
+
 ## Release and handoff
 
 At the Release gate provide:
@@ -139,6 +168,8 @@ At the Release gate provide:
 - showcase route inventory and review checklist;
 - kit name/version and public entry points;
 - checks run with results;
+- performance budgets with baseline, result, variance, and accepted exceptions;
+- critique recommendation and report path;
 - evidence policy and retained artifacts;
 - accepted limitations and proposed next components.
 

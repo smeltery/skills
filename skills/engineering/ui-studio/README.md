@@ -73,10 +73,27 @@ target projects. It also uses Playwright CLI to exercise the finished showcase
 at multiple viewports and inspect interaction, accessibility, console, and
 network behavior.
 
+Bundled dependency-free Python tools discover repository UI entry points and
+named kits, validate runtime state and `ui-kit.json` manifests against portable
+schemas, and report generated-file drift. A disposable dogfood runner exercises
+the local Playwright path without retaining browser evidence.
+
 The official Playwright path uses `codegen` for headed or user-authenticated
 exploration and short scratch Playwright Test specs for repeatable autonomous
 capture. Agent-oriented Playwright CLIs are supported when their own help exposes
 interactive session commands; the skill never invents unavailable commands.
+
+## Tooling
+
+```bash
+python3 scripts/doctor.py --root /path/to/repository
+python3 scripts/validate-kit.py --check-files /path/to/kit
+./scripts/dogfood.sh
+```
+
+The doctor does not execute discovered repository scripts. The dogfood runner
+uses a disposable copy and may download Playwright Test or Chromium when they are
+not already available; see `DOGFOOD.md` for overrides and host prerequisites.
 
 ## Install
 
@@ -92,5 +109,18 @@ npx skills@latest add dotbrains/skills
 - [`PLAYWRIGHT.md`](./PLAYWRIGHT.md) — executable browser exploration and
   production-verification protocol.
 - [`BUILD.md`](./BUILD.md) — foundations, components, distribution, showcase,
-  consumer testing, hosting, release, and handoff.
-- [`DOGFOOD.md`](./DOGFOOD.md) — manual acceptance matrix for the skill itself.
+  consumer testing, performance budgets, hosting, release, and handoff.
+- [`CRITIQUE.md`](./CRITIQUE.md) — evidence-based structural and finish review
+  before the Release gate.
+- [`DOGFOOD.md`](./DOGFOOD.md) — automated local and manual acceptance matrix
+  for the skill itself.
+- [`schemas/`](./schemas/) — portable state and kit-manifest contracts.
+- [`templates/`](./templates/) — source-ledger and critique-report starting
+  points.
+- [`scripts/doctor.py`](./scripts/doctor.py) — read-only UI/tooling/kit discovery.
+- [`scripts/validate-kit.py`](./scripts/validate-kit.py) — dependency-free schema,
+  path, and generated-hash validation.
+- [`scripts/dogfood.sh`](./scripts/dogfood.sh) — disposable local Playwright
+  acceptance run using the bundled fixture.
+- [`fixtures/`](./fixtures/) — static reference app and Playwright dogfood
+  harness used only in disposable copies.
