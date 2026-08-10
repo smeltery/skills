@@ -32,6 +32,8 @@ Create `ui-kit.json` or an idiomatic manifest containing:
 - themes, supported environments, browser targets, and host/base-path rules;
 - peer and runtime dependencies;
 - source-ledger and durable design-decision paths;
+- machine-readable evidence index and production verification receipt paths
+  when retained by policy;
 - development, validation, build, preview, and consumer-smoke commands.
 - performance budgets with units, baseline, limit, expected variance, command,
   and rationale.
@@ -125,6 +127,14 @@ Use repository-native checks first. Add dependencies only when approved.
   reference source;
 - provenance, license, privacy, and artifact-policy audit.
 
+Start accessibility verification from
+`templates/accessibility-scenarios.json`. Decide applicability explicitly for
+keyboard operation, names/roles/states and announcements, focus restoration,
+200–400% zoom, forced colors, reduced motion, reduced transparency, RTL, and
+touch/pointer behavior. `not-applicable` requires evidence and rationale; it is
+not a shortcut around a failing scenario. Use existing automated accessibility
+tooling when available, but retain manual semantic and interaction checks.
+
 ## Performance budgets
 
 Discover existing bundle, page-weight, rendering, interaction, and hosting
@@ -152,6 +162,13 @@ font URLs, configured base paths, caching assumptions, and a missing-route case.
 Static-host targets must be tested from the generated static directory rather
 than the development server.
 
+Copy `templates/verification.json` to a durable or ignored location according
+to policy. Record observed status, deep-link and refresh behavior, asset
+failures, base-path behavior, missing-route handling, cache assumptions, and the
+accessibility scenario results. Validate it with `validate-kit.py --schema
+verification`; do not mark booleans true without exercising the deployed or
+production-preview behavior they represent.
+
 Visual baselines may be established for the generated kit after the direction is
 approved. Store only allowed evidence. Review every baseline update; do not mask
 change with broad thresholds or compare copyrighted references pixel-for-pixel.
@@ -176,3 +193,15 @@ At the Release gate provide:
 After approval, update the manifest, changelog, reuse/hosting docs, and any
 versioned migration notes. Do not publish, deploy externally, or modify a
 consuming product unless the user requested the exact destination action.
+
+Before versioning an iteration, compare the last released and proposed
+manifests:
+
+```bash
+python3 <skill-dir>/scripts/compare-kits.py \
+  <released-ui-kit.json> <proposed-ui-kit.json> --fail-on-breaking
+```
+
+Treat the result as a lower bound: removed or changed public entries are
+breaking, but component API and behavioral changes still require repository
+native type, test, and migration review.

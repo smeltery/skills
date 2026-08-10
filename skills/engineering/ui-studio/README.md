@@ -75,8 +75,10 @@ network behavior.
 
 Bundled dependency-free Python tools discover repository UI entry points and
 named kits, validate runtime state and `ui-kit.json` manifests against portable
-schemas, and report generated-file drift. A disposable dogfood runner exercises
-the local Playwright path without retaining browser evidence.
+schemas, enforce legal workflow transitions, generate repeatable capture
+harnesses, detect stale evidence, classify kit compatibility, and report
+generated-file drift. A disposable dogfood runner exercises the local
+Playwright path without retaining browser evidence.
 
 The official Playwright path uses `codegen` for headed or user-authenticated
 exploration and short scratch Playwright Test specs for repeatable autonomous
@@ -88,6 +90,11 @@ interactive session commands; the skill never invents unavailable commands.
 ```bash
 python3 scripts/doctor.py --root /path/to/repository
 python3 scripts/validate-kit.py --check-files /path/to/kit
+python3 scripts/state.py status /path/to/state.json
+python3 scripts/make-capture.py --url https://example.com \
+  --hypothesis "How does navigation expose state?" --out /tmp/capture
+python3 scripts/check-evidence.py /path/to/evidence.json
+python3 scripts/compare-kits.py old/ui-kit.json new/ui-kit.json
 ./scripts/dogfood.sh
 ```
 
@@ -108,18 +115,31 @@ npx skills@latest add dotbrains/skills
   curated-reference capture, evidence ledger, and design synthesis.
 - [`PLAYWRIGHT.md`](./PLAYWRIGHT.md) — executable browser exploration and
   production-verification protocol.
+- [`RECORDINGS.md`](./RECORDINGS.md) — ordered, confidence-labeled evidence from
+  video and animated UI references.
 - [`BUILD.md`](./BUILD.md) — foundations, components, distribution, showcase,
   consumer testing, performance budgets, hosting, release, and handoff.
 - [`CRITIQUE.md`](./CRITIQUE.md) — evidence-based structural and finish review
   before the Release gate.
 - [`DOGFOOD.md`](./DOGFOOD.md) — automated local and manual acceptance matrix
   for the skill itself.
-- [`schemas/`](./schemas/) — portable state and kit-manifest contracts.
+- [`schemas/`](./schemas/) — portable state, manifest, evidence, and verification
+  contracts.
 - [`templates/`](./templates/) — source-ledger and critique-report starting
   points.
 - [`scripts/doctor.py`](./scripts/doctor.py) — read-only UI/tooling/kit discovery.
 - [`scripts/validate-kit.py`](./scripts/validate-kit.py) — dependency-free schema,
   path, and generated-hash validation.
+- [`scripts/state.py`](./scripts/state.py) — legal transitions, gate receipts,
+  atomic migration, and generated-file adoption.
+- [`scripts/make-capture.py`](./scripts/make-capture.py) — disposable Playwright
+  capture-plan and spec generator.
+- [`scripts/check-evidence.py`](./scripts/check-evidence.py) — age, fingerprint,
+  and local repository revision checks.
+- [`scripts/compare-kits.py`](./scripts/compare-kits.py) — manifest compatibility
+  and minimum version-bump classification.
+- [`scripts/test-tooling.py`](./scripts/test-tooling.py) — disposable control-plane
+  recovery and idempotency tests.
 - [`scripts/dogfood.sh`](./scripts/dogfood.sh) — disposable local Playwright
   acceptance run using the bundled fixture.
 - [`fixtures/`](./fixtures/) — static reference app and Playwright dogfood

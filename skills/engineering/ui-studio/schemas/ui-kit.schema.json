@@ -54,8 +54,10 @@
       "additionalProperties": true
     },
     "sourceLedger": {"type": "string", "minLength": 1},
+    "evidenceIndex": {"type": ["string", "null"]},
     "designDecision": {"type": ["string", "null"]},
     "critiqueReport": {"type": ["string", "null"]},
+    "verificationReceipt": {"type": ["string", "null"]},
     "themes": {"type": "array", "items": {"type": "string"}},
     "publicScope": {"type": "array", "items": {"type": "string"}},
     "peerDependencies": {

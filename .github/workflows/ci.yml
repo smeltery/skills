@@ -125,4 +125,7 @@ jobs:
           assert report["kits"][0]["schemaValid"] is True
           assert report["packages"][0]["runnableUi"] is True
           PY
+          python skills/engineering/ui-studio/scripts/test-tooling.py
+          python skills/engineering/ui-studio/scripts/check-evidence.py \
+            skills/engineering/ui-studio/fixtures/reference-ui/docs/evidence.json
           bash -n skills/engineering/ui-studio/scripts/dogfood.sh

@@ -20,6 +20,8 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 python3 "$SKILL_DIR/scripts/validate-kit.py" --check-files "$FIXTURE"
+python3 "$SKILL_DIR/scripts/test-tooling.py"
+python3 "$SKILL_DIR/scripts/check-evidence.py" "$FIXTURE/docs/evidence.json"
 python3 "$SKILL_DIR/scripts/doctor.py" --root "$FIXTURE" --json >"$WORK_DIR/doctor.json"
 python3 - "$WORK_DIR/doctor.json" <<'PY'
 import json
@@ -37,6 +39,10 @@ cp -R "$FIXTURE/." "$WORK_DIR/"
 cp "$DOGFOOD/playwright.config.ts" "$WORK_DIR/playwright.config.ts"
 mkdir -p "$WORK_DIR/tests"
 cp "$DOGFOOD/ui-studio.spec.ts" "$WORK_DIR/tests/ui-studio.spec.ts"
+python3 "$SKILL_DIR/scripts/make-capture.py" \
+  --url http://127.0.0.1:4173 \
+  --hypothesis "Responsive navigation preserves state and hierarchy." \
+  --out "$WORK_DIR/tests/generated-capture"
 cd "$WORK_DIR"
 
 npm run validate
@@ -85,6 +91,9 @@ if ! npx playwright test --workers=1 --trace=on; then
   echo "authorized environment." >&2
   exit 1
 fi
+
+python3 "$SKILL_DIR/scripts/validate-kit.py" \
+  --schema evidence test-results/evidence.json
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "Dogfood changed tracked fixture files:" >&2

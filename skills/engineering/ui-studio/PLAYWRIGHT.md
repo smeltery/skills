@@ -61,6 +61,22 @@ isolated session over persisting storage.
 
 ## Repeatable capture spec
 
+When starting from HTTP(S) references, the bundled generator can establish a
+reviewable scratch plan and repeatable three-viewport harness:
+
+```bash
+python3 <skill-dir>/scripts/make-capture.py \
+  --url <reference-url> \
+  --hypothesis "<question this capture answers>" \
+  --out <ignored-scratch-directory>
+```
+
+Review the generated source list, rights mode, viewports, and placeholder before
+adding only approved interactions. Run with one worker and set
+`UI_STUDIO_EVIDENCE_OUTPUT` to an ignored `evidence.json` path. Validate that
+index and apply the artifact policy before retaining it. The generator refuses
+to overwrite an existing harness unless `--force` is supplied after review.
+
 For autonomous evidence, create a short scratch Playwright Test spec outside the
 reference repository's tracked files. Adapt this shape to the pinned version:
 
@@ -129,6 +145,10 @@ For each accessible surface:
    managed server.
 
 Do not interact randomly or crawl beyond the approved evidence question.
+
+After Capture, record the source revision, capture timestamp, route, and content
+fingerprint when it is locally or safely observable. A fingerprint detects
+change; it is not proof that two rendered interfaces are semantically equal.
 
 ## Drive the built UI
 

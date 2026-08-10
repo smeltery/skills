@@ -18,6 +18,9 @@ Record whether each input is navigable, static, ordered, authenticated, and
 versioned. Static evidence can supplement a navigable source but cannot prove
 interaction behavior.
 
+For recordings, follow `RECORDINGS.md` and preserve timestamp order, confidence,
+and uncertainty. Do not flatten a demonstrated flow into unrelated stills.
+
 When the bundled read-only doctor is available, run it against repository inputs
 before choosing an app. Its named-kit inventory resolves existing kits by
 manifest name, slug, version, and path without requiring a global registry.
@@ -134,6 +137,19 @@ into one coherent rule; do not average unrelated styles.
 
 Capture completes only when every approved surface has behavioral evidence or a
 disclosed gap. Never fabricate inaccessible or unobserved states.
+
+When a machine-readable `evidence.json` is retained, validate it and check
+freshness before Synthesis and on resume:
+
+```bash
+python3 <skill-dir>/scripts/validate-kit.py --schema evidence <evidence.json>
+python3 <skill-dir>/scripts/check-evidence.py <evidence.json>
+```
+
+Age limits are product decisions, not universal defaults. For local files and
+repositories the checker also compares recorded fingerprints or revisions.
+Remote sources are reported stale by age unless they are deliberately recaptured;
+the checker never fetches or authenticates to them by itself.
 
 ## Synthesize an original direction
 

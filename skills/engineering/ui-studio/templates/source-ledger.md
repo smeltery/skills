@@ -8,9 +8,9 @@ Artifact policy: `<public|internal|restricted>` / `<never|redacted-only|approved
 
 ## Sources
 
-| ID | Source and revision | Kind | Rights mode | Access | Viewport/device | Evidence | Limitations |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `<id>` | `<URL, path, commit, or screen set>` | `<reference kind>` | `<rights mode>` | `<access mode>` | `<size/device>` | `<snapshot/screenshot/trace ids>` | `<gaps>` |
+| ID | Source/revision | Captured/fingerprint | Kind/rights | Access/viewport | Evidence | Limitations |
+| --- | --- | --- | --- | --- | --- | --- |
+| `<id>` | `<URL, path, commit, or screen set>` | `<timestamp and fingerprint>` | `<kind / rights mode>` | `<access / size>` | `<snapshot/screenshot/trace ids>` | `<gaps>` |
 
 ## Trait matrix
 
@@ -23,6 +23,9 @@ Artifact policy: `<public|internal|restricted>` / `<never|redacted-only|approved
 | Flow/state | Trigger | Before | After | Keyboard/touch | Feedback/recovery | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
 | `<flow>` | `<role/label action>` | `<state>` | `<state>` | `<behavior>` | `<behavior>` | `<id>` |
+
+For recording evidence, add timestamps and classify each interaction as
+`observed`, `inferred`, or `unknown`.
 
 ## Provenance and restrictions
 

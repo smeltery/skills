@@ -4,6 +4,8 @@ Approved thesis: <one sentence>
 
 Production preview: <command and URL/path>
 
+Verification receipt: `<path to verification.json>`
+
 ## Findings
 
 | Severity | Lens | Scenario/viewport | Evidence | Finding | Required response |

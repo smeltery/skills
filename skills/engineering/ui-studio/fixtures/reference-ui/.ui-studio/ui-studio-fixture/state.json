@@ -26,6 +26,20 @@
   "approvedScope": ["reference-page"],
   "stack": "static-html",
   "generatedFiles": {},
+  "approvals": {
+    "direction-gate": {
+      "approvedAt": "2026-08-10T00:00:00+00:00",
+      "rationale": "Fixture direction contract"
+    },
+    "name-gate": {
+      "approvedAt": "2026-08-10T00:00:00+00:00",
+      "rationale": "Fixture name and target contract"
+    },
+    "release-gate": {
+      "approvedAt": "2026-08-10T00:00:00+00:00",
+      "rationale": "Fixture release contract"
+    }
+  },
   "blockedReason": null,
   "lastVerifiedAt": null
 }
