@@ -1,0 +1,12 @@
+:root {
+  --ui-studio-portability-accent: #2855d9;
+  --ui-studio-portability-space: 0.75rem;
+}
+
+.portability-consumer {
+  display: grid;
+  gap: var(--ui-studio-portability-space);
+  max-width: 32rem;
+  margin: 2rem auto;
+  font-family: system-ui, sans-serif;
+}

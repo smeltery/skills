@@ -74,8 +74,10 @@ python3 <skill-dir>/scripts/make-capture.py \
 Review the generated source list, rights mode, viewports, and placeholder before
 adding only approved interactions. Run with one worker and set
 `UI_STUDIO_EVIDENCE_OUTPUT` to an ignored `evidence.json` path. Validate that
-index and apply the artifact policy before retaining it. The generator refuses
-to overwrite an existing harness unless `--force` is supplied after review.
+index and the emitted `observations.json`, then apply the artifact policy before
+retaining either. Computed samples are bounded observations and never authorize
+copying source CSS. The generator refuses to overwrite an existing harness
+unless `--force` is supplied after review.
 
 For autonomous evidence, create a short scratch Playwright Test spec outside the
 reference repository's tracked files. Adapt this shape to the pinned version:
@@ -164,6 +166,11 @@ interaction against the production build at narrow, middle, and wide viewports.
 Keep traces on failure or when the artifact policy allows review evidence. Use
 ARIA snapshots for structural intent and targeted assertions for behavior; do
 not approve large snapshot updates without understanding the diff.
+
+When no repository-native equivalent exists, generate the production traversal
+with `make-verifier.py`. Validate its `verification.json` receipt, then complete
+the manual accessibility, critique, performance, and host-header checks it
+cannot establish.
 
 ## Official references
 

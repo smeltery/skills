@@ -37,6 +37,10 @@ viewable showcase that can later be imported into a product.
   [RECORDINGS.md](RECORDINGS.md)
 - Foundations, components, packaging, showcase, production hosting, verification,
   and iteration: [BUILD.md](BUILD.md)
+- Benchmarks, structured observations, compatibility, token interchange, visual
+  approval, provenance, and framework portability: [QUALITY.md](QUALITY.md)
+- Optional container isolation for executing unfamiliar repository references:
+  [SANDBOX.md](SANDBOX.md)
 - Evidence-based structural and visual review before release:
   [CRITIQUE.md](CRITIQUE.md)
 - Manual acceptance runs for the skill itself: [DOGFOOD.md](DOGFOOD.md)
@@ -189,6 +193,9 @@ Read [BUILD.md](BUILD.md). Use [PLAYWRIGHT.md](PLAYWRIGHT.md) for the feedback
 loop and production traversal. Verify the built artifact, not only a dev server.
 After mechanical checks pass, read [CRITIQUE.md](CRITIQUE.md) completely and
 perform its fresh production review before the Release gate.
+Read [QUALITY.md](QUALITY.md) when the kit ships portable tokens/assets, changes
+an existing public contract, composes with another kit, or retains visual
+baselines.
 
 ### Iterate
 

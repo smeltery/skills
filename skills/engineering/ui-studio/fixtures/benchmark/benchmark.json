@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "name": "UI Studio archetype quality suite",
+  "scenarios": [
+    {
+      "id": "dense-dashboard",
+      "archetype": "dashboard",
+      "pressures": ["high-volume", "narrow", "keyboard", "status-density"],
+      "requiredContracts": ["task-hierarchy", "responsive-transform", "keyboard-operation", "no-overflow"]
+    },
+    {
+      "id": "editorial-marketing",
+      "archetype": "marketing",
+      "pressures": ["long-copy", "wide", "reduced-motion", "asset-failure"],
+      "requiredContracts": ["original-direction", "reading-hierarchy", "reduced-motion", "asset-provenance"]
+    },
+    {
+      "id": "commerce-catalog",
+      "archetype": "commerce",
+      "pressures": ["filtering", "empty", "loading", "touch"],
+      "requiredContracts": ["selection-state", "recovery", "touch-operation", "content-extremes"]
+    },
+    {
+      "id": "validated-form",
+      "archetype": "form",
+      "pressures": ["errors", "long-labels", "screen-reader", "focus-restoration"],
+      "requiredContracts": ["error-association", "focus-management", "accessible-names", "completion-feedback"]
+    },
+    {
+      "id": "mobile-flow",
+      "archetype": "mobile-flow",
+      "pressures": ["touch", "soft-keyboard", "interruption", "recovery"],
+      "requiredContracts": ["touch-targets", "state-resume", "viewport-stability", "safe-mutations"]
+    },
+    {
+      "id": "localized-rtl",
+      "archetype": "localization",
+      "pressures": ["rtl", "long-copy", "mixed-direction", "zoom-400"],
+      "requiredContracts": ["reading-order", "intentional-mirroring", "zoom-reflow", "no-clipping"]
+    },
+    {
+      "id": "component-catalog",
+      "archetype": "design-system",
+      "pressures": ["themes", "states", "consumer-build", "public-api"],
+      "requiredContracts": ["state-coverage", "theme-contract", "consumer-smoke", "api-compatibility"]
+    },
+    {
+      "id": "adverse-service-state",
+      "archetype": "service-recovery",
+      "pressures": ["offline", "partial-failure", "stale-data", "retry"],
+      "requiredContracts": ["status-clarity", "recovery-action", "data-provenance", "no-false-success"]
+    }
+  ]
+}

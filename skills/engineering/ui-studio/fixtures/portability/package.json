@@ -1,0 +1,8 @@
+{
+  "name": "ui-studio-portability-fixtures",
+  "private": true,
+  "workspaces": ["kit", "react", "vue", "svelte", "web-components"],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present"
+  }
+}

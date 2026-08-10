@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "kit": "<kit name>",
+  "assets": [
+    {
+      "path": "<relative asset or dependency identifier>",
+      "kind": "other",
+      "source": "<origin URL, package, repository, or original-work record>",
+      "license": "<license identifier or same-product terms>",
+      "licenseFile": null,
+      "rightsMode": "original",
+      "notes": "<required attribution, transformation, or restriction>"
+    }
+  ]
+}

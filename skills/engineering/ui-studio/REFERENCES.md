@@ -82,6 +82,8 @@ Make the UI observable without altering tracked reference code:
    sandbox/container for scripts with broad filesystem, credential, or network
    access. Stop for approval on suspicious postinstall steps, external writes,
    destructive seeds, or commands that require real secrets.
+   When an approved local container runtime is available, follow `SANDBOX.md`
+   for the bundled read-only/disposable execution path.
 5. Use the repository's pinned runtime, package manager, lockfile, and frozen or
    immutable install mode when supported. Do not replace tooling or invent
    environment values.

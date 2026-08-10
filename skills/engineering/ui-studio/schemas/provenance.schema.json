@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ui-studio:provenance:1",
+  "title": "UI Studio asset provenance inventory",
+  "type": "object",
+  "required": ["schemaVersion", "kit", "assets"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "kit": {"type": "string", "minLength": 1},
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "kind", "source", "license", "rightsMode"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["font", "icon", "image", "illustration", "code", "dependency", "other"]},
+          "source": {"type": "string", "minLength": 1},
+          "license": {"type": "string", "minLength": 1},
+          "licenseFile": {"type": ["string", "null"]},
+          "rightsMode": {"enum": ["licensed-reuse", "same-product-reuse", "original"]},
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
