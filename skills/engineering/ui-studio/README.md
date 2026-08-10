@@ -6,10 +6,10 @@ original, named UI kit with reusable tokens and components, representative
 compositions, and a runnable, hostable showcase.
 
 The skill studies references as evidence rather than cloning them. It navigates
-and exercises reference interactions with Playwright CLI, synthesizes a coherent
-design language, waits for explicit approval at three meaningful gates, builds
-against the target repository's conventions, and preserves state so later
-sessions can continue iterating the same kit safely.
+and exercises reference interactions with Playwright CLI, applies explicit
+rights and evidence-retention policies, synthesizes a coherent design language,
+waits at three meaningful gates, verifies real package consumption and
+production hosting, and preserves state for safe later iteration.
 
 ## Lifecycle
 
@@ -73,6 +73,11 @@ target projects. It also uses Playwright CLI to exercise the finished showcase
 at multiple viewports and inspect interaction, accessibility, console, and
 network behavior.
 
+The official Playwright path uses `codegen` for headed or user-authenticated
+exploration and short scratch Playwright Test specs for repeatable autonomous
+capture. Agent-oriented Playwright CLIs are supported when their own help exposes
+interactive session commands; the skill never invents unavailable commands.
+
 ## Install
 
 ```bash
@@ -82,3 +87,10 @@ npx skills@latest add dotbrains/skills
 ## Files
 
 - [`SKILL.md`](./SKILL.md) — canonical skill definition consumed by the agent.
+- [`REFERENCES.md`](./REFERENCES.md) — intake, rights, privacy, repository and
+  curated-reference capture, evidence ledger, and design synthesis.
+- [`PLAYWRIGHT.md`](./PLAYWRIGHT.md) — executable browser exploration and
+  production-verification protocol.
+- [`BUILD.md`](./BUILD.md) — foundations, components, distribution, showcase,
+  consumer testing, hosting, release, and handoff.
+- [`DOGFOOD.md`](./DOGFOOD.md) — manual acceptance matrix for the skill itself.
