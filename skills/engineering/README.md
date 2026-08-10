@@ -23,6 +23,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[to-issues](./to-issues/README.md)** — Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.
 - **[to-prd](./to-prd/README.md)** — Turn the current conversation context into a PRD and publish it to the project issue tracker.
 - **[triage](./triage/README.md)** — Move issues through a small state machine of triage roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`).
+- **[ui-studio](./ui-studio/README.md)** — Use Playwright CLI to investigate live websites, runnable repository UIs, or curated references such as Mobbin, then create an original, named UI kit with reusable components and a hostable showcase.
 - **[wayfinder](./wayfinder/README.md)** — Plan work too large or unclear for one agent session by creating an issue-tracker map and resolving one frontier decision ticket at a time.
 - **[workon](./workon/README.md)** — Pick up a Linear ticket end-to-end: worktree, implement, PR, then watch the PR on a 5-minute loop addressing review comments, CI failures, and merge conflicts until merged.
 - **[workon-event](./workon-event/README.md)** — Event-driven `/workon` companion that handles one ticket event per invocation via a dispatcher.
@@ -53,7 +54,6 @@ Use them à la carte — there's no enforced pipeline.
 
 ## Attribution
 
-Most engineering skills are ported from
-[mattpocock/skills](https://github.com/mattpocock/skills) under MIT —
-`workon` and `review` are dotbrains originals. See
+Ported engineering skills retain their upstream attribution. `ui-studio` is a
+dotbrains original. See
 [THIRD_PARTY_LICENSES.md](../../THIRD_PARTY_LICENSES.md) for full attribution.
