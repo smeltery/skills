@@ -19,7 +19,7 @@ Other install options (manual copy) are in
 
 ## Available skills
 
-36 skills across two categories. Each links to its own README; see
+38 skills across two categories. Each links to its own README; see
 **[docs/skills.md](./docs/skills.md)** for the full annotated catalog and
 **[why these skills exist](./docs/motivation.md)** for the thinking behind them.
 
@@ -33,7 +33,7 @@ Code work — bug-hunting, design, planning, review, and execution.
 | **Plan & shape work** | [wayfinder](./skills/engineering/wayfinder/README.md) · [grill-with-docs](./skills/engineering/grill-with-docs/README.md) · [to-prd](./skills/engineering/to-prd/README.md) · [to-issues](./skills/engineering/to-issues/README.md) · [triage](./skills/engineering/triage/README.md) |
 | **Design & architecture** | [zoom-out](./skills/engineering/zoom-out/README.md) · [prototype](./skills/engineering/prototype/README.md) · [ui-studio](./skills/engineering/ui-studio/README.md) · [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/README.md) · [loc-budget](./skills/engineering/loc-budget/README.md) |
 | **Build & debug** | [tdd](./skills/engineering/tdd/README.md) · [diagnose](./skills/engineering/diagnose/README.md) · [performance-engineer](./skills/engineering/performance-engineer/README.md) |
-| **Review, CI & PRs** | [review](./skills/engineering/review/README.md) · [pr-workflow](./skills/engineering/pr-workflow/README.md) · [pr-monitor](./skills/engineering/pr-monitor/README.md) · [ci-monitoring](./skills/engineering/ci-monitoring/README.md) |
+| **Review, CI & PRs** | [review](./skills/engineering/review/README.md) · [simplify](./skills/engineering/simplify/README.md) · [pr-workflow](./skills/engineering/pr-workflow/README.md) · [pr-monitor](./skills/engineering/pr-monitor/README.md) · [ci-monitoring](./skills/engineering/ci-monitoring/README.md) |
 | **End-to-end delivery** | [cloud-factory](./skills/engineering/cloud-factory/README.md) · [feature-gap](./skills/engineering/feature-gap/README.md) · [port](./skills/engineering/port/README.md) · [workon](./skills/engineering/workon/README.md) · [workon-event](./skills/engineering/workon-event/README.md) |
 
 ### Productivity
@@ -42,7 +42,7 @@ General workflow, not code-specific.
 
 | Group | Skills |
 | --- | --- |
-| **Communicate** | [caveman](./skills/productivity/caveman/README.md) · [grill-me](./skills/productivity/grill-me/README.md) |
+| **Communicate** | [caveman](./skills/productivity/caveman/README.md) · [grill-me](./skills/productivity/grill-me/README.md) · [taste-review](./skills/productivity/taste-review/README.md) |
 | **Sessions & continuity** | [handoff](./skills/productivity/handoff/README.md) · [wrap](./skills/productivity/wrap/README.md) · [wrap-resume](./skills/productivity/wrap-resume/README.md) |
 | **Track & report** | [track-my-work](./skills/productivity/track-my-work/README.md) |
 | **Tools** | [linear](./skills/productivity/linear/README.md) |
@@ -60,7 +60,8 @@ General workflow, not code-specific.
 
 Several skills are ported from
 [mattpocock/skills](https://github.com/mattpocock/skills) and
-[ogulcancelik/agent-skills](https://github.com/ogulcancelik/agent-skills)
+[ogulcancelik/agent-skills](https://github.com/ogulcancelik/agent-skills), and
+[bholmesdev/skills](https://github.com/bholmesdev/skills)
 under MIT — see
 [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md) for the full attribution
 and license text.
