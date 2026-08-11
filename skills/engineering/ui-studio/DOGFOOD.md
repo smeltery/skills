@@ -44,6 +44,32 @@ authenticated curated-reference judgment and end-to-end agent gate decisions
 remain manual. Deterministic resume primitives and hand-edit protection are
 covered by `scripts/test-tooling.py`.
 
+## Optional provider cases
+
+These cases require user-owned accounts/tools and remain manual. Use disposable
+or explicitly named artifacts and retain no credentials.
+
+### Paper MCP
+
+Pass when the agent resolves the open file/page/selection before reading,
+defaults to read-only, distinguishes canvas evidence from navigable behavior,
+and refuses writes outside an explicit file/node/operation scope. For an
+approved write, retain before/after node IDs and verify the live result.
+
+### Refero
+
+Pass when the agent asks a bounded product question, retrieves a small diverse
+set, preserves result/source/flow metadata, labels every result
+`inspiration-only`, and converts evidence into coherent original rules plus
+explicitly rejected generic traits. Authentication remains user-controlled.
+
+### ui.sh
+
+Pass when the agent uses only an installed/available relevant skill, reads its
+contract, obtains approval before any project installation, never handles the
+private installer token, and reruns UI Studio's affected build, browser,
+accessibility, compatibility, and visual checks after the skill edits.
+
 ## Case 1: Public live site
 
 Choose a public interactive site with navigation and responsive behavior.

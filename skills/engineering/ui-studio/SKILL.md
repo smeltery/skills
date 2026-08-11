@@ -1,7 +1,7 @@
 ---
 name: ui-studio
-description: Use Playwright CLI to study live websites, runnable repository UIs, curated design-library links, and visual references, then turn the evidence into a named reusable UI kit and hostable showcase through a resumable gated workflow. Use when the user wants to investigate reference UIs, synthesize a visual direction, build sophisticated pages or components, create a design system, or iterate on an existing named UI kit.
-argument-hint: "<URL|REPO|DESIGN-LINK|IMAGE|VIDEO|PATH>... [--kit <NAME>] [--target <PATH>]"
+description: Use Playwright CLI, Paper MCP, Refero research, optional ui.sh polishing skills, runnable repository UIs, curated design links, and visual references to create an original named reusable UI kit and hostable showcase through a resumable gated workflow. Use when the user wants to investigate reference UIs, synthesize a visual direction, build sophisticated pages or components, create a design system, or iterate on an existing named UI kit.
+argument-hint: "<URL|REPO|PAPER|REFERO|DESIGN-LINK|IMAGE|VIDEO|PATH>... [--kit <NAME>] [--target <PATH>]"
 ---
 
 # UI Studio
@@ -39,6 +39,8 @@ viewable showcase that can later be imported into a product.
   and iteration: [BUILD.md](BUILD.md)
 - Benchmarks, structured observations, compatibility, token interchange, visual
   approval, provenance, and framework portability: [QUALITY.md](QUALITY.md)
+- Paper MCP, Refero research, and optional ui.sh polishing skills:
+  [PROVIDERS.md](PROVIDERS.md)
 - Optional container isolation for executing unfamiliar repository references:
   [SANDBOX.md](SANDBOX.md)
 - Evidence-based structural and visual review before release:
@@ -54,6 +56,11 @@ Collect the reference inputs, intended product surface, kit name if supplied,
 destination path, hosting target, and constraints. Keep reference repositories
 distinct from the destination repository unless the user explicitly makes them
 the same.
+
+Identify requested or available design providers. Paper files are explicit
+reference/canvas inputs, Refero is a curated research source, and ui.sh supplies
+optional project skills rather than reference evidence. Read `PROVIDERS.md`
+before using any of them.
 
 Resolve the loaded skill directory, then run its read-only doctor when Python is
 available:
@@ -165,11 +172,18 @@ its completion test passes. `blocked` is a recorded condition, not a phase.
 Hard gates require explicit approval. An approval already present in the user's
 request counts; never ask twice.
 
+Hard-gate approval does not implicitly authorize external provider mutations.
+Before the Name gate, any Paper write requires exact per-action file/node scope;
+the Name gate may approve a continuing collaborative-canvas scope for later
+phases. ui.sh installation is always a separate project mutation approved at
+the Name gate or explicitly in the request.
+
 1. **Direction gate** — approve the synthesis and exclusions. Remain in
    `direction-gate` until approval, then set `phase: "name-gate"`.
 2. **Name gate** — approve name, slug, destination, stack, public API, dependency
-   additions, and hosting strategy before durable implementation. Then migrate
-   state and set `phase: "plan"`.
+   additions, provider installation/tooling, collaborative-canvas write scope,
+   and hosting strategy before durable implementation. Then migrate state and
+   set `phase: "plan"`.
 3. **Release gate** — review the production-built showcase and accepted
    limitations before calling the kit reusable. Then set `phase: "handoff"`.
 
@@ -186,6 +200,8 @@ Read [REFERENCES.md](REFERENCES.md). For navigable sources also read
 when the source was accessible and interactive behavior matters.
 For video or animated references, read [RECORDINGS.md](RECORDINGS.md) and keep
 observed, inferred, and unknown behavior distinct.
+For Paper or Refero inputs, read [PROVIDERS.md](PROVIDERS.md); provider metadata
+does not replace Playwright evidence for a runnable interface.
 
 ### Plan through handoff
 
@@ -196,6 +212,7 @@ perform its fresh production review before the Release gate.
 Read [QUALITY.md](QUALITY.md) when the kit ships portable tokens/assets, changes
 an existing public contract, composes with another kit, or retains visual
 baselines.
+Read [PROVIDERS.md](PROVIDERS.md) before invoking any installed ui.sh skill.
 
 ### Iterate
 
@@ -237,6 +254,9 @@ additions, and major only for an explicitly approved breaking change.
   retain earlier approvals only when their contracts still hold.
 - Stop all managed reference/showcase processes and delete ephemeral auth state
   at completion or before a blocking handoff unless the user asks to retain them.
+- For Paper writes, persist the approved file/node scope and before/after node
+  identifiers. On interruption, re-read the live file before continuing; never
+  assume a partially applied external mutation rolled back.
 - Validate the state and `ui-kit.json` manifest with the bundled validator before
   Release and Handoff. Use `--check-files` once durable paths and hashes exist.
 
@@ -251,5 +271,6 @@ Evidence: <source-ledger path and policy>
 Verified: <checks run>
 Performance: <budgets met or accepted exceptions>
 Critique: <approve|revise|approve-with-limitations and report path>
+Integrations: <Paper/Refero/ui.sh modes used, or none>
 Open: <accepted limitations or next gate>
 ```

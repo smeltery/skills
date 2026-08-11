@@ -49,12 +49,20 @@ prevent a resumed run from silently overwriting hand edits.
 ```text
 /ui-studio https://example.com https://example.org/products --kit Northstar
 /ui-studio <mobbin-share-link> --kit Northstar
+/ui-studio <paper-file-or-selection> <refero-research-question> --kit Northstar
 ```
 
 References may be URLs, Mobbin or comparable design-library deep links,
 repositories, attached screenshots, or local paths. The user can also point a
 later invocation at an existing kit and request another component, theme, page
 composition, or visual direction.
+
+Optional provider integrations include Paper MCP as a read-only reference or
+explicitly scoped collaborative design canvas, Refero MCP/deep links for bounded
+real-product research, and already-installed ui.sh skills for selective ideas,
+design, responsiveness, theming, componentization, or cleanup passes. None is
+required for the core workflow, and none overrides rights, gates, repository
+conventions, or production verification.
 
 For curated design libraries, the skill preserves screen order and flow context
 instead of treating every frame as an unrelated image. If the provider requires
@@ -96,6 +104,7 @@ python3 scripts/state.py status /path/to/state.json
 python3 scripts/make-capture.py --url https://example.com \
   --hypothesis "How does navigation expose state?" --out /tmp/capture
 python3 scripts/check-evidence.py /path/to/evidence.json
+python3 scripts/check-integrations.py /path/to/integrations.json --release
 python3 scripts/compare-kits.py old/ui-kit.json new/ui-kit.json
 python3 scripts/compose-kits.py first/ui-kit.json second/ui-kit.json
 python3 scripts/benchmark.py plan fixtures/benchmark/benchmark.json
@@ -123,6 +132,8 @@ npx skills@latest add dotbrains/skills
   production-verification protocol.
 - [`RECORDINGS.md`](./RECORDINGS.md) — ordered, confidence-labeled evidence from
   video and animated UI references.
+- [`PROVIDERS.md`](./PROVIDERS.md) — Paper MCP, Refero research, and optional
+  ui.sh skill routing, permissions, and fallback behavior.
 - [`SANDBOX.md`](./SANDBOX.md) — optional read-only container isolation for
   executing unfamiliar repository references.
 - [`BUILD.md`](./BUILD.md) — foundations, components, distribution, showcase,
@@ -134,9 +145,10 @@ npx skills@latest add dotbrains/skills
 - [`DOGFOOD.md`](./DOGFOOD.md) — automated local and manual acceptance matrix
   for the skill itself.
 - [`schemas/`](./schemas/) — portable workflow, evidence, observation,
-  verification, benchmark, visual-baseline, and provenance contracts.
+  verification, benchmark, visual-baseline, provenance, and provider-integration
+  contracts.
 - [`templates/`](./templates/) — source-ledger, critique, accessibility,
-  verification, and provenance starting points.
+  verification, provenance, and provider-integration starting points.
 - [`scripts/doctor.py`](./scripts/doctor.py) — read-only UI/tooling/kit discovery.
 - [`scripts/validate-kit.py`](./scripts/validate-kit.py) — dependency-free schema,
   path, and generated-hash validation.
@@ -148,6 +160,8 @@ npx skills@latest add dotbrains/skills
   and verification-receipt generator.
 - [`scripts/check-evidence.py`](./scripts/check-evidence.py) — age, fingerprint,
   and local repository revision checks.
+- [`scripts/check-integrations.py`](./scripts/check-integrations.py) — Paper,
+  Refero, and ui.sh mode, write-scope, rights, and token-safety invariants.
 - [`scripts/compare-kits.py`](./scripts/compare-kits.py) — manifest compatibility
   and minimum version-bump classification.
 - [`scripts/compose-kits.py`](./scripts/compose-kits.py) — cross-kit identity,

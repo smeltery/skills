@@ -61,6 +61,7 @@
     "verificationReceipt": {"type": ["string", "null"]},
     "provenanceReport": {"type": ["string", "null"]},
     "visualBaseline": {"type": ["string", "null"]},
+    "integrationPlan": {"type": ["string", "null"]},
     "themes": {"type": "array", "items": {"type": "string"}},
     "publicScope": {"type": "array", "items": {"type": "string"}},
     "peerDependencies": {

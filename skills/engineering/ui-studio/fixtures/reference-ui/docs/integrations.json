@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "paper": {
+    "enabled": false,
+    "mode": "disabled",
+    "connectionVerified": false,
+    "fileIdentity": null,
+    "writeApproved": false,
+    "writeScope": [],
+    "limitations": ["Provider integrations are disabled in the local fixture."]
+  },
+  "refero": {
+    "enabled": false,
+    "mode": "disabled",
+    "connectionVerified": false,
+    "rightsMode": "inspiration-only",
+    "query": null,
+    "resultLimit": null,
+    "diversityDimensions": [],
+    "limitations": []
+  },
+  "uiSh": {
+    "enabled": false,
+    "mode": "disabled",
+    "availabilityVerified": false,
+    "skills": [],
+    "installApproved": false,
+    "tokenHandling": "user-only",
+    "limitations": []
+  },
+  "decisionPath": null,
+  "limitations": []
+}

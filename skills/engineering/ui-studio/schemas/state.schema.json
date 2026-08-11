@@ -56,6 +56,8 @@
               "repository",
               "design-link",
               "curated-link",
+              "paper-file",
+              "refero-result",
               "image",
               "video",
               "local-html",

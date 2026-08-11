@@ -22,6 +22,8 @@ trap cleanup EXIT INT TERM
 python3 "$SKILL_DIR/scripts/validate-kit.py" --check-files "$FIXTURE"
 python3 "$SKILL_DIR/scripts/test-tooling.py"
 python3 "$SKILL_DIR/scripts/check-evidence.py" "$FIXTURE/docs/evidence.json"
+python3 "$SKILL_DIR/scripts/check-integrations.py" \
+  "$FIXTURE/docs/integrations.json" --release
 python3 "$SKILL_DIR/scripts/provenance.py" \
   "$FIXTURE/docs/provenance.json" --root "$FIXTURE"
 python3 "$SKILL_DIR/scripts/validate-kit.py" --schema benchmark \
@@ -42,6 +44,8 @@ assert any(
     for item in report["kits"]
 )
 assert any("dev" in item["uiScripts"] for item in report["packages"])
+assert report["integrations"]["paper"]["connectionProbed"] is False
+assert report["integrations"]["refero"]["connectionProbed"] is False
 PY
 
 cp -R "$FIXTURE/." "$WORK_DIR/"
