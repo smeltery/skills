@@ -3,6 +3,10 @@
 Use this guide when evaluating UI Studio itself, approving visual baselines,
 shipping portable tokens/assets, or composing more than one named kit.
 
+When Refero informs the direction or ui.sh assists polishing, also apply the
+provider-specific anti-generic, rights, installation, and verification rules in
+`PROVIDERS.md`.
+
 ## Quality benchmark
 
 The bundled benchmark corpus covers dashboards, marketing, commerce, forms,

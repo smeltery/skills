@@ -36,6 +36,8 @@ Create `ui-kit.json` or an idiomatic manifest containing:
   when retained by policy;
 - asset-provenance report and approved generated-kit visual-baseline path when
   those artifacts exist;
+- optional provider-integration plan when Paper, Refero, or ui.sh materially
+  affects decisions or files;
 - development, validation, build, preview, and consumer-smoke commands.
 - performance budgets with units, baseline, limit, expected variance, command,
   and rationale.
@@ -79,6 +81,12 @@ Build representative pages and flows only from public components. Cover sparse,
 typical, dense, adverse, narrow, wide, zoomed, localized/RTL, and touch scenarios
 when relevant. Model meaningful behavior with an explicit reducer or state
 machine rather than scattered booleans.
+
+When approved ui.sh skills are installed, route only the relevant skill through
+`PROVIDERS.md`. Treat its edits like any generated change: inspect the diff,
+record hashes, and rerun affected public API, production, Playwright,
+accessibility, performance, and visual checks. Polishing never advances a gate
+or converts an unapproved direction into an approved one.
 
 ## Distribution contract
 

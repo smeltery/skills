@@ -424,6 +424,68 @@ def test_provenance_and_visuals(root: Path) -> None:
     )
 
 
+def test_integration_discovery(root: Path) -> None:
+    root.mkdir(parents=True, exist_ok=True)
+    write_json(root / ".mcp.json", {
+        "mcpServers": {
+            "paper": {"url": "http://127.0.0.1:29979/mcp"},
+            "refero": {"url": "https://api.refero.design/mcp"},
+        }
+    })
+    skill = root / ".agents" / "skills" / "design" / "SKILL.md"
+    skill.parent.mkdir(parents=True)
+    skill.write_text(
+        "---\nname: design\ndescription: Fixture candidate.\n"
+        "argument-hint: '<request>'\n---\n\n# Fixture\n",
+        encoding="utf-8",
+    )
+    result = run(
+        str(SCRIPTS / "doctor.py"), "--root", str(root), "--json"
+    )
+    report = json.loads(result.stdout)
+    integrations = report["integrations"]
+    assert integrations["paper"]["repositoryConfigPaths"] == [".mcp.json"]
+    assert integrations["refero"]["repositoryConfigPaths"] == [".mcp.json"]
+    assert integrations["paper"]["connectionProbed"] is False
+    assert integrations["refero"]["connectionProbed"] is False
+    assert integrations["uiSh"]["skillCandidates"][0]["name"] == "design"
+
+    plan_path = root / "integrations.json"
+    plan = json.loads(
+        (SKILL_DIR / "templates" / "integrations.json").read_text(encoding="utf-8")
+    )
+    plan["paper"].update({
+        "enabled": True,
+        "mode": "read-only-reference",
+        "connectionVerified": True,
+        "fileIdentity": "Fixture / Direction board",
+    })
+    plan["refero"].update({
+        "enabled": True,
+        "mode": "mcp",
+        "connectionVerified": True,
+        "query": "How do dense work queues expose recovery state?",
+        "resultLimit": 5,
+        "diversityDimensions": ["density", "interaction-model"],
+    })
+    plan["uiSh"].update({
+        "enabled": True,
+        "mode": "user-managed-install",
+        "availabilityVerified": True,
+        "skills": ["design", "make-responsive"],
+    })
+    write_json(plan_path, plan)
+    run(str(SCRIPTS / "check-integrations.py"), str(plan_path), "--release")
+    plan["paper"]["writeApproved"] = True
+    write_json(plan_path, plan)
+    run(
+        str(SCRIPTS / "check-integrations.py"),
+        str(plan_path),
+        "--release",
+        expected=1,
+    )
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="ui-studio-tooling-") as temporary:
         root = Path(temporary)
@@ -436,6 +498,7 @@ def main() -> int:
         test_tokens(root / "tokens")
         test_composition(root / "composition")
         test_provenance_and_visuals(root / "assets")
+        test_integration_discovery(root / "integrations")
     print("UI Studio tooling tests passed.")
     return 0
 

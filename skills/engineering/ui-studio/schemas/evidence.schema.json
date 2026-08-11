@@ -21,7 +21,8 @@
           "kind": {
             "enum": [
               "website", "repository", "design-link", "curated-link",
-              "image", "video", "local-html", "existing-kit"
+              "paper-file", "refero-result", "image", "video", "local-html",
+              "existing-kit"
             ]
           },
           "rightsMode": {

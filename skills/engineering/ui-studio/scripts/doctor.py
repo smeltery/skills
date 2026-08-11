@@ -7,6 +7,7 @@ import argparse
 import importlib.util
 import json
 import os
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -52,6 +53,25 @@ HOST_FILES = {
 }
 UI_SCRIPT_WORDS = ("dev", "start", "storybook", "docs", "preview", "serve", "build")
 RUN_SCRIPT_WORDS = ("dev", "start", "storybook", "docs", "preview", "serve")
+MCP_CONFIG_NAMES = {
+    ".mcp.json",
+    "config.toml",
+    "mcp.json",
+    "mcp_config.json",
+    "opencode.json",
+    "settings.json",
+}
+UI_SH_SKILL_NAMES = {
+    "add-dark-mode",
+    "brand-kit",
+    "canonicalize-tailwind",
+    "componentize",
+    "dark-mode-image",
+    "design",
+    "ideas",
+    "make-responsive",
+    "markup-from-image",
+}
 SKILL_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -103,6 +123,9 @@ def discover(root: Path) -> dict[str, Any]:
     explorers: list[str] = []
     hosting: list[str] = []
     kits: list[dict[str, Any]] = []
+    paper_configs: list[str] = []
+    refero_configs: list[str] = []
+    ui_sh_candidates: list[dict[str, str]] = []
 
     for current, files in walk(root):
         for filename in files:
@@ -118,6 +141,28 @@ def discover(root: Path) -> dict[str, Any]:
                 playwright_configs.append(rel)
             if ".storybook" in path.parts or filename.startswith("storybook."):
                 explorers.append(rel)
+            if filename in MCP_CONFIG_NAMES:
+                try:
+                    if path.stat().st_size <= 1_000_000:
+                        config_text = path.read_text(encoding="utf-8", errors="ignore")
+                        if (
+                            "127.0.0.1:29979/mcp" in config_text
+                            or "paper-design/agent-plugins" in config_text
+                        ):
+                            paper_configs.append(rel)
+                        if "api.refero.design/mcp" in config_text:
+                            refero_configs.append(rel)
+                except OSError:
+                    pass
+            if filename == "SKILL.md":
+                try:
+                    skill_head = path.read_text(encoding="utf-8", errors="ignore")[:4000]
+                except OSError:
+                    skill_head = ""
+                match = re.search(r"^name:\s*['\"]?([^'\"\n]+)", skill_head, re.M)
+                name = match.group(1).strip() if match else ""
+                if name in UI_SH_SKILL_NAMES:
+                    ui_sh_candidates.append({"name": name, "path": rel})
 
         if "package.json" in files:
             path = current / "package.json"
@@ -225,6 +270,22 @@ def discover(root: Path) -> dict[str, Any]:
         "kits": sorted(kits, key=lambda item: item["path"]),
         "kitNameCollisions": collisions,
         "kitSlugCollisions": slug_collisions,
+        "integrations": {
+            "paper": {
+                "repositoryConfigPaths": sorted(set(paper_configs)),
+                "connectionProbed": False,
+            },
+            "refero": {
+                "repositoryConfigPaths": sorted(set(refero_configs)),
+                "connectionProbed": False,
+            },
+            "uiSh": {
+                "skillCandidates": sorted(
+                    ui_sh_candidates, key=lambda item: (item["name"], item["path"])
+                ),
+                "activeRegistryInspected": False,
+            },
+        },
     }
 
 
@@ -261,6 +322,14 @@ def render_text(report: dict[str, Any]) -> str:
         lines.append("Kit slug collisions:")
         for item in report["kitSlugCollisions"]:
             lines.append(f"  - {item['slug']}: {', '.join(item['paths'])}")
+    integrations = report["integrations"]
+    lines.append("Optional design providers (repository evidence only):")
+    for provider in ("paper", "refero"):
+        paths = integrations[provider]["repositoryConfigPaths"]
+        lines.append(f"  - {provider}: {', '.join(paths) if paths else 'not detected'}")
+    ui_sh = integrations["uiSh"]["skillCandidates"]
+    rendered = ", ".join(f"{item['name']} ({item['path']})" for item in ui_sh)
+    lines.append(f"  - ui.sh candidates: {rendered or 'none detected'}")
     if report["hostingConfigs"]:
         lines.append(f"Hosting configs: {', '.join(report['hostingConfigs'])}")
     return "\n".join(lines)

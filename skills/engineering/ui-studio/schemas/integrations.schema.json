@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ui-studio:integrations:1",
+  "title": "UI Studio optional design-provider integration plan",
+  "type": "object",
+  "required": ["schemaVersion", "paper", "refero", "uiSh", "limitations"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "paper": {
+      "type": "object",
+      "required": ["enabled", "mode", "connectionVerified", "writeApproved", "writeScope"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "mode": {"enum": ["disabled", "read-only-reference", "collaborative-canvas"]},
+        "connectionVerified": {"type": "boolean"},
+        "fileIdentity": {"type": ["string", "null"]},
+        "writeApproved": {"type": "boolean"},
+        "writeScope": {"type": "array", "items": {"type": "string"}},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "refero": {
+      "type": "object",
+      "required": ["enabled", "mode", "connectionVerified", "rightsMode", "resultLimit", "diversityDimensions"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "mode": {"enum": ["disabled", "mcp", "deep-link", "static-export"]},
+        "connectionVerified": {"type": "boolean"},
+        "rightsMode": {"const": "inspiration-only"},
+        "query": {"type": ["string", "null"]},
+        "resultLimit": {"type": ["integer", "null"], "minimum": 1},
+        "diversityDimensions": {"type": "array", "items": {"type": "string"}},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "uiSh": {
+      "type": "object",
+      "required": ["enabled", "mode", "availabilityVerified", "skills", "installApproved", "tokenHandling"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "mode": {"enum": ["disabled", "existing-project-install", "user-managed-install"]},
+        "availabilityVerified": {"type": "boolean"},
+        "skills": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "design",
+              "ideas",
+              "brand-kit",
+              "componentize",
+              "canonicalize-tailwind",
+              "add-dark-mode",
+              "dark-mode-image",
+              "make-responsive",
+              "markup-from-image"
+            ]
+          }
+        },
+        "installApproved": {"type": "boolean"},
+        "tokenHandling": {"const": "user-only"},
+        "limitations": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "decisionPath": {"type": ["string", "null"]},
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

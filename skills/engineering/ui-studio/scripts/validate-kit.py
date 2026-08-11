@@ -23,6 +23,7 @@ SCHEMA_PATHS = {
     "observation": SKILL_DIR / "schemas" / "observation.schema.json",
     "visual-baseline": SKILL_DIR / "schemas" / "visual-baseline.schema.json",
     "provenance": SKILL_DIR / "schemas" / "provenance.schema.json",
+    "integrations": SKILL_DIR / "schemas" / "integrations.schema.json",
 }
 SKIP_DIRS = {".git", "node_modules", "dist", "build", ".next", ".cache"}
 
@@ -140,6 +141,8 @@ def infer_kind(path: Path, data: dict[str, Any]) -> str | None:
         return "visual-baseline"
     if {"kit", "assets"}.issubset(data):
         return "provenance"
+    if {"paper", "refero", "uiSh", "limitations"}.issubset(data):
+        return "integrations"
     return None
 
 
@@ -169,6 +172,7 @@ def check_paths(path: Path, data: dict[str, Any], kind: str) -> list[str]:
             "verificationReceipt",
             "provenanceReport",
             "visualBaseline",
+            "integrationPlan",
         ):
             value = data.get(key)
             if isinstance(value, str):
@@ -229,6 +233,7 @@ def main() -> int:
                         "observations.json",
                         "visual-baseline.json",
                         "provenance.json",
+                        "integrations.json",
                     },
                 )
             )

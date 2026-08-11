@@ -63,6 +63,24 @@ Every blocker or concern must name the route/component, state, viewport/input,
 evidence, violated principle or contract, and required response. Avoid arbitrary
 numeric scores: a number without evidence creates false precision.
 
+## Provider-assisted result check
+
+When optional providers were used, review their influence explicitly:
+
+- Refero-backed choices still solve the named product/content problem, combine
+  multiple relevant sources coherently, and do not reproduce one product's
+  distinctive trade dress or a provider-generated style guide verbatim.
+- Paper-backed implementation preserves approved hierarchy and intent without
+  mistaking canvas JSX/styles for the destination architecture or claiming
+  untested interaction fidelity.
+- ui.sh-assisted polishing improves the approved system without adding generic
+  gradients, gratuitous panels, excessive pills/radii, ornamental glass, or
+  uniform spaciousness unsupported by content.
+
+Record the provider evidence or before/after artifact behind each conclusion.
+Provider reputation is not evidence that the generated result is original,
+accessible, responsive, or suitable for release.
+
 ## Release recommendation
 
 - `revise` when any blocker remains or a required budget fails;

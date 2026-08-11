@@ -131,6 +131,9 @@ jobs:
           python skills/engineering/ui-studio/scripts/test-tooling.py
           python skills/engineering/ui-studio/scripts/check-evidence.py \
             skills/engineering/ui-studio/fixtures/reference-ui/docs/evidence.json
+          python skills/engineering/ui-studio/scripts/check-integrations.py \
+            skills/engineering/ui-studio/fixtures/reference-ui/docs/integrations.json \
+            --release
           python skills/engineering/ui-studio/scripts/validate-kit.py \
             --schema benchmark \
             skills/engineering/ui-studio/fixtures/benchmark/benchmark.json

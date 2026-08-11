@@ -10,13 +10,19 @@ Accept any combination of:
 - local repository paths, repository clone URLs, or runnable worktrees;
 - component-explorer or documentation URLs;
 - curated screen, flow, pattern, or collection links such as Mobbin;
-- design-file links when an authenticated connector is available;
+- Paper or other design-file selections when an authenticated connector is
+  available;
+- Refero MCP results, deep links, or authorized exports;
 - screenshots, image sets, screen recordings, and local HTML files;
 - an existing named UI Studio kit.
 
 Record whether each input is navigable, static, ordered, authenticated, and
 versioned. Static evidence can supplement a navigable source but cannot prove
 interaction behavior.
+
+When Paper or Refero is used, follow `PROVIDERS.md`. Record provider result/node
+identities and access limits without storing authentication state. ui.sh is a
+build/polish tool, not a reference source.
 
 For recordings, follow `RECORDINGS.md` and preserve timestamp order, confidence,
 and uncertainty. Do not flatten a demonstrated flow into unrelated stills.
@@ -117,6 +123,8 @@ For Mobbin and comparable providers:
 
 Curated screens omit application context. Infer only visible traits; validate
 hierarchy later with the user's real navigation, content, and adverse states.
+For Refero research, additionally enforce the bounded, diverse, product-question
+workflow and anti-generic synthesis checks in `PROVIDERS.md`.
 
 ## Capture ledger
 

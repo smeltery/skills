@@ -26,6 +26,7 @@
   "verificationReceipt": "docs/verification.json",
   "provenanceReport": "docs/provenance.json",
   "visualBaseline": null,
+  "integrationPlan": "docs/integrations.json",
   "themes": ["light", "dark"],
   "publicScope": ["reference-page"],
   "performanceBudget": {
