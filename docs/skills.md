@@ -24,6 +24,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[port](../skills/engineering/port/README.md)** — Port an upstream GitHub repository into a fresh private destination repository with a new identity, clean single-commit history, detailed docs, CI/pre-commit/Flox setup, structure cleanup, and upstream-reference sanitization.
 - **[prototype](../skills/engineering/prototype/README.md)** — Build a throwaway prototype to flush out a design before committing to it. Routes between an interactive terminal app for state/logic questions, or several radically different UI variations on one route.
 - **[review](../skills/engineering/review/README.md)** — Read-only, high-signal review for pull requests or local change sets using scope, ticket context, full diff context, and relevant tests.
+- **[simplify](../skills/engineering/simplify/README.md)** — Make a finished code change easier to read without changing behavior by tightening names, comments, concepts, and structure before human review.
 - **[tdd](../skills/engineering/tdd/README.md)** — Test-driven development with a red-green-refactor loop. Vertical slices via tracer bullets — one test, one implementation, repeat.
 - **[to-issues](../skills/engineering/to-issues/README.md)** — Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.
 - **[to-prd](../skills/engineering/to-prd/README.md)** — Turn the current conversation context into a PRD and publish it to the project issue tracker.
@@ -42,6 +43,7 @@ General workflow skills, not code-specific.
 - **[grill-me](../skills/productivity/grill-me/README.md)** — Get interviewed relentlessly about a plan or design until every branch of the decision tree resolves.
 - **[handoff](../skills/productivity/handoff/README.md)** — Compact the current conversation into a handoff document so another agent can pick up the work.
 - **[linear](../skills/productivity/linear/README.md)** — Use the `linear` CLI to search Linear, inspect issues, manage comments, list workspace metadata, and check Linear platform status.
+- **[taste-review](../skills/productivity/taste-review/README.md)** — Get an independent judgment on an ambiguous design, prose, naming, or formatting choice, then weigh and apply the recommendation when authorized.
 - **[teach](../skills/productivity/teach/README.md)** — Teach the user a new skill or concept across multiple sessions, building durable lessons and reference docs in a teaching workspace.
 - **[track-my-work](../skills/productivity/track-my-work/README.md)** — Personal standup logger: pulls your recent Linear and GitHub activity into a Notion Standup Log, classifies it by impact/type, cross-links PRs to tickets, and prompts for anything not auto-captured.
 - **[web-search](../skills/productivity/web-search/README.md)** — Search the web through a local browser daemon, fetch selected results, and extract pages as readable Markdown.
