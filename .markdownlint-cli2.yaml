@@ -1,3 +1,7 @@
+ignores:
+  - "skills/engineering/html-doc/tests/fixtures/**"  # test fixtures exercise Markdown edge cases (e.g. punctuation-only headings) on purpose
+  - "**/node_modules/**"
+
 config:
   MD013: false  # line length
   MD024: false  # duplicate headings (categories repeat across skills)
