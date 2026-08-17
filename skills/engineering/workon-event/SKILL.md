@@ -655,11 +655,15 @@ pr_comment_handler(ticket_id, event, state):
         # Read the comment body and decide: fix or explain-and-resolve.
         body = comment.body
 
-        # Valid criticism (code smell, bug, naming issue, missing test, etc.):
-        # fix it in the worktree, then commit.
-        # Wrong or out-of-scope (misreads intent, contradicts stated constraints,
-        # asks for something outside the ticket's scope): reply to explain why,
-        # then resolve the thread.
+        # Bucket the finding — the bar is deliberately strict because review
+        # bots get nit-picky as a diff gets clean (mirrors workon §4.3):
+        #   fix     — directly related to this PR's change, or genuinely
+        #             catastrophic; those two conditions are the whole test.
+        #   explain — everything else. Valid but unrelated: acknowledge, cite
+        #             the follow-up ticket that carries the real obstacle
+        #             (a finding this diff caused still defers, with that fact
+        #             stated). Invalid: give the one-line reason so the next
+        #             event doesn't relitigate it.
 
         decision = judge_comment(body)  # "fix" | "explain"
 
