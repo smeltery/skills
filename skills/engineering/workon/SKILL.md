@@ -158,12 +158,16 @@ If implementation requires a product decision outside ticket scope, stop, leave 
 
 First enforce the §3.4b scope-budget gate against the finished diff. If it halts, stop here — do not push or open the PR.
 
+**Local review rounds next, when a local adversarial reviewer CLI (e.g. `codex`) is available.** AI review on a PR is slow and public — every round costs a push, a wait, and a thread someone has to read — so converge locally first: run the reviewer against the working-tree diff, aiming for 5 rounds with a hard cap of 8. Converged means a full round produced no finding you'd act on; a round of only invalid findings counts as converged. Pull latest `$BASE_BRANCH` before each round that changes code. Bucket every finding: **fix** it only if directly related to the change or genuinely catastrophic; **defer** valid-but-unrelated findings to a follow-up ticket that carries the real obstacle, not just the finding restated (a finding your own diff caused still lands here, with that fact stated); **note** invalid findings with a one-line reason so the next round doesn't relitigate them. No local reviewer CLI → skip; the watch loop (§4) does the same job at the PR, just slower.
+
+**Verify commit signatures before pushing** when the repo requires verified signatures (or signing is configured): `git log --format='%H %G?' origin/$BASE_BRANCH..HEAD` must show `G` on every line. Re-sign any unsigned commit; never bypass signing to get a commit through. With squash-merge the platform signs the squash, so an unsigned branch commit won't block the merge and won't be noticed until it matters — check now.
+
 Use your normal PR workflow. Required behavior:
 
 - Base branch = repo default branch from §3.2.
 - PR title: `<type>: <short description> [<TICKET-ID>]`.
 - Respect `.github/pull_request_template.md` when present.
-- Keep description concise.
+- Keep description concise. When local review rounds ran, state the deferrals (with ticket ids) and the invalid findings (with their one-line reasons) upfront — that's what stops the PR-side reviewer re-raising them.
 - Assign to the current user.
 - **Always open as a draft.** Pass `--draft` to `gh pr create` (or the equivalent flag for whatever PR tool is in use). The skill never opens a PR ready-for-review and never marks an existing draft ready — that decision belongs to the human owner. The watch loop continues to drive Codex comments, CI fixes, and conflict resolution on the draft PR; conversion happens out-of-band.
 
@@ -210,6 +214,8 @@ git commit
 git push origin HEAD
 ```
 
+Resolve each conflict region by reading both sides and merging their intent — never by taking one side wholesale. Note also that a conflicting PR has no merge ref, so its CI cannot run at all; until the conflict is resolved and CI runs on the merged head, treat all check state in §4.4 as unknown, not green.
+
 If the merge driver auto-resolved everything (no conflict markers left), just commit and push the merge.
 
 If any conflict region needs product-level judgment (a semantic conflict), **`git merge --abort`** to restore a clean worktree, then notify the ticket owner on Linear with the conflicting files and exit this tick. Never leave the worktree mid-merge — a half-resolved state breaks the next tick's fetch/merge.
@@ -236,10 +242,10 @@ gh api "repos/$REPO/pulls/$PR/comments" --paginate \
 
 Dedup against the watermark: skip comments older than `lastAddressedCommentISO`, and at the boundary second (`created_at == lastAddressedCommentISO`) skip those whose namespaced id (`issue:<id>` / `review:<id>`) is already in `lastAddressedCommentIds`. Process the survivors oldest-first so the watermark never advances past an unhandled comment.
 
-For each new reviewer comment:
+For each new reviewer comment, bucket it — the bar is deliberately strict because review bots get nit-picky as a diff gets clean:
 
-1. If valid, implement the fix.
-2. If incorrect or out of scope, reply with rationale.
+1. **Fix it** only if it's directly related to this PR's change, or genuinely catastrophic. Those two conditions are the whole test.
+2. **Defer it** if it's valid but unrelated: reply acknowledging it and file a follow-up ticket that carries the real obstacle, not just the finding restated — otherwise whoever picks it up re-derives the analysis. A valid-but-unrelated finding your own diff caused still lands here, with that fact stated, not hidden. **Note it** if it's invalid: reply with the one-line reason why, so the next tick doesn't relitigate it — no code change, no ticket.
 3. Commit fixes.
 4. Resolve review threads explicitly after pushing.
 5. Advance the watermark: set `lastAddressedCommentISO` to the newest processed `created_at` and `lastAddressedCommentIds` to the namespaced ids at that timestamp. If the newest timestamp **equals** the existing watermark, union the id sets instead of replacing — so two comments sharing a second aren't dropped or re-processed.
@@ -253,9 +259,10 @@ gh pr checks "$PR"
 ```
 
 - Ignore non-blocking informational checks.
+- **Count which checks actually ran before trusting green.** Passing peripheral checks while the main CI workflow never started is not green; a missing expected workflow is not-yet-known, not a pass.
 - Re-read the failing check's live conclusion before acting — it may have cleared on a newer run.
 - **Likely-flaky** (`conclusion == "timed_out"`, or an infra-noise check: upload-artifact, cache, network/registry) → rerun the failed jobs once (`gh run rerun <run-id> --failed`) and record the check-run id in `lastRetriedCheckRunId`. Never rerun the same check-run id twice — if it's already in `lastRetriedCheckRunId`, treat the failure as deterministic.
-- **Deterministic failure** → fetch failed logs (`gh run view <run-id> --log-failed`), diagnose, fix, commit, push, and record the check-run id in `lastFixedCheckRunId`.
+- **Deterministic failure** → fetch failed logs (`gh run view <run-id> --log-failed`), diagnose, fix at the cause, commit, push, and record the check-run id in `lastFixedCheckRunId`. Never fix a red check by deleting, skipping, or weakening the test.
 - **Escalate to the ticket owner** (Linear comment, stop fixing this check) when the failure is unfixable — infra / permission / secret errors — or when the same check-run id is already in `lastFixedCheckRunId` (a prior fix didn't take; retrying would just loop).
 
 ### 4.5 Convergence check
@@ -267,6 +274,8 @@ LAST_COMMIT=$(gh api "repos/$REPO/pulls/$PR/commits" --jq '[.[]][-1].commit.comm
 LAST_REVIEWER=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
   --jq '[.[] | select(.user.login | test("codex|chatgpt|coderabbit"; "i")) | .created_at] | last')
 ```
+
+Guard every parsed value against being unreadable: an API error string sitting in a timestamp field reads as a definite answer. `LAST_COMMIT` empty or non-ISO → treat convergence as not-yet-known and skip the check this tick; never declare convergence from unreadable inputs. Only an empty `LAST_REVIEWER` has a defined meaning (no reviewer comments yet).
 
 Converged when both:
 
