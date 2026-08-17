@@ -7,15 +7,19 @@ and the canonical `SKILL.md` consumed by the agent.
 
 Skills for code work — bug-hunting, design, planning, review, and execution.
 
+- **[architecture](../skills/engineering/architecture/README.md)** — Create or update root `ARCHITECTURE.md` from verified implementation: source of truth, dependency direction, trust boundaries, and critical-flow walkthroughs.
+- **[architecture-review](../skills/engineering/architecture-review/README.md)** — Read-only review of a technical proposal before implementation, with Blocker/Important findings and an Approve/Request-changes/Blocked verdict.
 - **[branch-conventions](../skills/engineering/branch-conventions/README.md)** — Standard branch naming and creation flow using conventional prefixes and an up-to-date default branch.
 - **[ci-monitoring](../skills/engineering/ci-monitoring/README.md)** — Monitor GitHub PR checks, rerun failed jobs when appropriate, and confirm merge-readiness.
 - **[cloud-factory](../skills/engineering/cloud-factory/README.md)** — Convert a GitHub repository into a cloud software factory with agent skills, workflow triggers, labels, and domain-doc placeholders.
 - **[commit-conventions](../skills/engineering/commit-conventions/README.md)** — Keep commit messages aligned with branch intent using conventional commit types.
+- **[design](../skills/engineering/design/README.md)** — Write a rigorous design document for a proposed change, with numbered `INV-n` invariants and `AC-n` acceptance criteria that stay stable through review and verification.
 - **[diagnose](../skills/engineering/diagnose/README.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[feature-gap](../skills/engineering/feature-gap/README.md)** — Compare a source GitHub repository against a destination repository, identify real missing functionality, implement it destination-natively, then commit and push to the destination default branch.
 - **[git-commit](../skills/engineering/git-commit/README.md)** — Safe commit-message workflow using temp files and `git commit -F` to avoid shell-substitution pitfalls.
 - **[git-safety](../skills/engineering/git-safety/README.md)** — Guardrails for safe git operations: stash/cherry-pick preference, force-push constraints, and destructive-command avoidance.
 - **[grill-with-docs](../skills/engineering/grill-with-docs/README.md)** — Code-aware grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` / ADRs inline.
+- **[html-doc](../skills/engineering/html-doc/README.md)** — Render a finished Markdown PRD or design into one verified, self-contained static HTML reading view; Markdown stays canonical.
 - **[improve-codebase-architecture](../skills/engineering/improve-codebase-architecture/README.md)** — Surface architectural friction and propose deepening opportunities — refactors that turn shallow modules into deep ones.
 - **[loc-budget](../skills/engineering/loc-budget/README.md)** — Find large line-count hitters, modularize them into cohesive files, and add file-size and flat-directory budget gates in the repo's idiomatic tooling.
 - **[performance-engineer](../skills/engineering/performance-engineer/README.md)** — Measure, diagnose, and improve software performance on a specific critical path with bounded experiments and before/after evidence.
@@ -30,6 +34,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[to-prd](../skills/engineering/to-prd/README.md)** — Turn the current conversation context into a PRD and publish it to the project issue tracker.
 - **[triage](../skills/engineering/triage/README.md)** — Move issues through a small state machine of triage roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`).
 - **[ui-studio](../skills/engineering/ui-studio/README.md)** — Use Playwright CLI to investigate live websites, runnable repository UIs, or curated references such as Mobbin, then create an original, named UI kit with reusable components and a runnable showcase.
+- **[verify](../skills/engineering/verify/README.md)** — Prove that a code change meets its acceptance criteria, mapping every `AC-n`/`INV-n` ID to concrete automated or browser evidence.
 - **[wayfinder](../skills/engineering/wayfinder/README.md)** — Plan work too large or unclear for one agent session by creating an issue-tracker map and resolving one frontier decision ticket at a time.
 - **[workon](../skills/engineering/workon/README.md)** — Pick up a Linear ticket end-to-end: worktree, implement, PR, then watch the PR on a 5-minute loop addressing review comments, CI failures, and merge conflicts until merged.
 - **[workon-event](../skills/engineering/workon-event/README.md)** — Event-driven `/workon` companion that handles one ticket event per invocation via a dispatcher.
