@@ -5,7 +5,23 @@
 
 [![skills.sh](https://skills.sh/b/dotbrains/skills)](https://skills.sh/dotbrains/skills)
 
-Portable agent skills from [dotbrains](https://github.com/dotbrains).
+**Portable agent skills from [dotbrains](https://github.com/dotbrains).**
+
+[Why these skills](#why-these-skills) · [Quickstart](#quickstart) · [Choose a skill](#choose-a-skill) · [All skills](#all-skills) · [Guides](#documentation)
+
+## Why these skills
+
+Coding agents are capable but directionless without guardrails. Left alone
+they misalign on what you actually want, produce code that compiles but
+doesn't behave, let a codebase rot faster than any human can track, and turn
+a simple PR into an hours-long slog of review comments and flaky CI.
+
+Each skill here targets one of those failure modes and encodes the workaround
+so the agent does it without being asked. The set is deliberately broad but
+each skill is narrow — install only what a given task needs.
+
+See **[why these skills exist](./docs/motivation.md)** for the full
+failure-mode breakdown and the four books behind it.
 
 ## Quickstart
 
@@ -17,11 +33,34 @@ Pick the skills you want, choose the agents to install them on, and you're done.
 Other install options (manual copy) are in
 [docs/installation.md](./docs/installation.md).
 
-## Available skills
+## Choose a skill
 
-43 skills across two categories. Each links to its own README; see
-**[docs/skills.md](./docs/skills.md)** for the full annotated catalog and
-**[why these skills exist](./docs/motivation.md)** for the thinking behind them.
+Most work starts in one of these places. Ask what result you need next:
+
+| You need... | Reach for |
+| --- | --- |
+| A quick orientation in unfamiliar code | [`zoom-out`](./skills/engineering/zoom-out/README.md) |
+| A current `ARCHITECTURE.md` for the repo as it exists today | [`architecture`](./skills/engineering/architecture/README.md) |
+| A decision about what to build next, before writing code | [`to-prd`](./skills/engineering/to-prd/README.md) (light) or [`design`](./skills/engineering/design/README.md) (rigorous, with `INV-n`/`AC-n` IDs) |
+| A challenge to a proposal before implementation starts | [`architecture-review`](./skills/engineering/architecture-review/README.md) |
+| Decided work split into ordered, independently-gradable tasks | [`to-issues`](./skills/engineering/to-issues/README.md) or [`wayfinder`](./skills/engineering/wayfinder/README.md) |
+| A feature built test-first | [`tdd`](./skills/engineering/tdd/README.md) |
+| A hard bug or perf regression run to ground | [`diagnose`](./skills/engineering/diagnose/README.md) |
+| A ticket driven end-to-end — worktree, PR, and the review loop until merged | [`workon`](./skills/engineering/workon/README.md) |
+| An independent, high-signal review of a diff or PR | [`review`](./skills/engineering/review/README.md) |
+| Proof that a change meets its stated acceptance criteria | [`verify`](./skills/engineering/verify/README.md) |
+| Cleaner code with the same behavior before merge | [`simplify`](./skills/engineering/simplify/README.md) |
+| A finished PRD or design turned into a readable HTML doc | [`html-doc`](./skills/engineering/html-doc/README.md) |
+| A durable handoff before ending a session | [`wrap`](./skills/productivity/wrap/README.md) or [`handoff`](./skills/productivity/handoff/README.md) |
+
+Small, clear changes don't need any of this — just make the change. These
+skills earn their keep when the decision, the diagnosis, or the review is
+worth getting right.
+
+## All skills
+
+<details>
+<summary><strong>43 skills across two categories</strong> — expand for the full list, or see <a href="./docs/skills.md">docs/skills.md</a> for the annotated catalog.</summary>
 
 ### Engineering
 
@@ -48,6 +87,8 @@ General workflow, not code-specific.
 | **Tools** | [linear](./skills/productivity/linear/README.md) |
 | **Research** | [web-search](./skills/productivity/web-search/README.md) |
 | **Author & learn** | [teach](./skills/productivity/teach/README.md) · [write-a-skill](./skills/productivity/write-a-skill/README.md) |
+
+</details>
 
 ## Documentation
 
