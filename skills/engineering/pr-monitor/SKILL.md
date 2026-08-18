@@ -1,13 +1,13 @@
 ---
 name: pr-monitor
-description: "Monitors a GitHub pull request for AI review comments, GitHub Actions failures, and merge-readiness signals; applies scoped fixes, responds to bot threads, and stops once the merge bar is met. Convergence with an AI reviewer such as Codex is anchored to the head SHA, never a wall-clock window."
-version: 3.0.0
+description: "Monitors a GitHub pull request for AI review comments, CI failures across every provider reporting on the PR, and merge-readiness signals; applies scoped fixes, responds to bot threads, and stops once the merge bar is met. Convergence with an AI reviewer such as Codex is anchored to the head SHA, never a wall-clock window."
+version: 3.1.0
 argument-hint: "[pr-number | owner/repo#number | PR URL] [--local-converged]"
 user-invocable: true
 category: development
 ---
 
-Run one monitoring pass for a GitHub pull request. Each pass inspects unresolved AI review threads, GitHub Actions failures on the PR head SHA, and merge-readiness signals. Apply small scoped fixes when warranted, reply to bot review threads, and stop once the PR meets the merge bar.
+Run one monitoring pass for a GitHub pull request. Each pass inspects unresolved AI review threads, CI failures on the PR head SHA across every provider reporting on the PR (GitHub Actions and external systems such as Buildkite or CircleCI), and merge-readiness signals. Apply small scoped fixes when warranted, reply to bot review threads, and stop once the PR meets the merge bar.
 
 ## Two modes
 
@@ -31,6 +31,7 @@ All PR interaction uses the `gh` CLI plus local `git`:
 - `gh api repos/.../issues/.../reactions` - reactions on the PR body
 - `gh pr merge --auto` - arm auto-merge (local-converged mode only)
 - `git` - fetch, checkout, commit, and push scoped fixes on the PR branch
+- The reporting provider's own CLI or API (e.g. Buildkite's REST API) for non-GitHub-Actions checks, when credentials are already available in the environment — needed to read logs or trigger a rebuild for those checks
 
 ## Common workflows
 
@@ -93,11 +94,11 @@ If the host supports recurring prompts or looped execution, offer to run the sam
    - Review threads via GraphQL
    - PR reviews with their `commit_id`
    - PR diff and changed files
-   - GitHub Actions status for the PR
+   - CI status for the PR, across every provider reporting checks
    - Reactions on the PR body
 
 4. Process actionable review threads.
-5. Process actionable GitHub Actions failures.
+5. Process actionable CI failures.
 6. Re-check the merge bar before offering another monitoring pass.
 
 ## Review-thread handling
@@ -175,30 +176,41 @@ Reply to every processed thread:
 
 Resolve only `fixed`, `fixed-differently`, and `stale` threads.
 
-## GitHub Actions handling
+## CI failure handling
 
-Only inspect GitHub Actions. External checks such as Buildkite are out of scope and should be reported with their details URL only.
+Inspect every check reporting on the PR, regardless of provider — GitHub Actions and external systems (Buildkite, CircleCI, and similar) alike. Never skip a provider just because it isn't GitHub Actions; an unwatched external check is exactly as capable of blocking or silently breaking a merge as a native one.
 
-Start with the PR check summary:
+Start with the PR check summary, which lists checks from every provider:
 
 ```bash
 gh pr checks <number> --repo <owner>/<repo> \
   --json name,state,link,workflow,bucket
 ```
 
-Then inspect failing or pending GitHub Actions runs tied to the current head SHA. Parse the run ID from the check link when needed, then fetch metadata and logs:
+### GitHub Actions checks
+
+Inspect failing or pending runs tied to the current head SHA. Parse the run ID from the check link when needed, then fetch metadata and logs:
 
 ```bash
 gh run view <run-id> --repo <owner>/<repo> --json name,workflowName,conclusion,status,url,event,headBranch,headSha
 gh run view <run-id> --repo <owner>/<repo> --log
 ```
 
-Classify each failing run before touching code:
+### External CI checks (Buildkite, CircleCI, and similar)
 
-- `rerun` - infrastructure noise: a container-build stdio disconnect, runner loss, network flake, quota. Rerun the failed jobs once; do not chase a code fix.
+`gh pr checks` gives you the check's name, state, and details link, but not logs. To go further:
+
+- If the provider's CLI or API is reachable with credentials already available in the environment (e.g. a Buildkite API token), use it to fetch the build's job list and log output, and to trigger a rebuild for a `rerun` classification.
+- If no programmatic access is available, do not guess at the cause from the check name alone. Classify the failure as `report-only`, cite the check's details URL, and note that rerunning requires a human with access to that provider.
+
+### Classification
+
+Classify each failing check before touching code, on the same bar regardless of provider:
+
+- `rerun` - infrastructure noise: a container-build stdio disconnect, runner loss, network flake, quota. Rerun the failed job once through the provider's own retry mechanism; do not chase a code fix.
 - `fixable` - localized code, test, lint, or type issue with a clear cause. Fix at the cause. Never fix a red check by deleting, skipping, or weakening the test.
 - `stale` - failure belongs to an older SHA or is already addressed on the current branch
-- `report-only` - auth, secret, or environment problem outside this PR's control
+- `report-only` - auth, secret, or environment problem outside this PR's control, or an external check whose logs aren't reachable
 - `ask-first` - fixing it requires workflow edits, dependency updates, public API changes, or a broad refactor
 
 For `fixable` failures:
@@ -206,7 +218,7 @@ For `fixable` failures:
 - Sync to the PR head branch (same as for review-thread fixes) before editing any files.
 - Use the log snippet plus PR diff context to make the smallest fix that addresses the failure.
 - Commit and push the fix on the PR branch.
-- Beyond the single `rerun`-class retry, do not silently rerun workflows unless the user asks or rerunning is the only sane way to confirm a flaky recovery.
+- Beyond the single `rerun`-class retry, do not silently rerun checks unless the user asks or rerunning is the only sane way to confirm a flaky recovery. This applies to every provider equally — a failure you can't diagnose is a `report-only`, not a license to rerun until it happens to go green.
 
 For `report-only` failures:
 
@@ -217,7 +229,7 @@ For `report-only` failures:
 
 This is where PR monitoring breaks most often, so it gets its own rules. Apply them every pass, before trusting any check state:
 
-- **Count which checks actually ran.** Nine passing security scanners while the main CI workflow never started is not green. Compare the completed checks against the workflows the repo runs on PRs; a missing workflow is a not-yet-known, not a pass.
+- **Count which checks actually ran.** Nine passing security scanners while the main CI workflow never started is not green. Compare the completed checks — across every provider, not just GitHub Actions — against the checks the repo runs on PRs; a missing check is a not-yet-known, not a pass.
 - **A conflicting PR has no merge ref, so its CI cannot run at all** — the absence looks identical to success. When `mergeable == "CONFLICTING"`, treat all check state as unknown until the conflict is resolved (reading both sides, never taking one wholesale) and CI runs on the merged head.
 - **Guard every parsed value against being unreadable.** An API error string sitting in a timestamp field, or check counts that parse to empty strings, will both read as a definite answer. Treat unreadable as not-yet-known, never as zero, never as converged.
 
@@ -248,7 +260,7 @@ with a `+1` from `openai-codex[bot]` (or, failing an exact match, a bot login co
 **PR-review mode.** All of these must hold on the current head SHA:
 
 - No actionable bot review threads remain.
-- No GitHub Actions checks are failing or pending, with the expected workflows verified to have actually run.
+- No CI checks are failing or pending, across every provider reporting on the PR, with the expected checks verified to have actually run.
 - The AI reviewer has reviewed the current head (head-SHA-anchored check above), and 10 minutes have passed since checks went green with no new reviewer feedback.
 - If the reviewer has not appeared within 30 minutes of the current head going green, stop waiting: report that it never reviewed this head and leave the decision to the operator rather than looping forever.
 
@@ -272,6 +284,6 @@ If it is not met, summarize what is still outstanding — including which signal
 - PR auto-detection fails - ask for `123`, `owner/repo#123`, or a PR URL.
 - PR lookup returns 404 - confirm the repo and access permissions.
 - File fetch returns 404 - treat the review thread as `stale` if the file was renamed or removed.
-- GitHub Actions logs are unavailable - report the run URL and that the logs could not be fetched.
+- CI logs are unavailable, for any provider - report the run URL and that the logs could not be fetched; do not guess a fix from the check name alone.
 - A failing check is still in progress - report it as pending, not fixable.
 - GitHub API rate limits are hit - report the limit and suggest a slower monitoring cadence.
