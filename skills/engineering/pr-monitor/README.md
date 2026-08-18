@@ -1,9 +1,10 @@
 # /pr-monitor
 
-One-pass PR monitoring skill for AI review feedback, GitHub Actions failures, and merge-readiness.
+One-pass PR monitoring skill for AI review feedback, CI failures across every provider reporting on the PR, and merge-readiness.
 
 - Resolves actionable bot review threads with a strict bucket bar: fix only what is directly related or genuinely catastrophic, defer valid-but-unrelated findings to a follow-up issue, push back on invalid ones with a one-line reason
-- Classifies failing CI runs before touching code (rerun/fixable/stale/report-only/ask-first) and never fixes a red check by deleting or skipping a test
+- Watches CI from every provider reporting on the PR (GitHub Actions and external systems like Buildkite or CircleCI), not just GitHub Actions
+- Classifies failing CI runs before touching code (rerun/fixable/stale/report-only/ask-first) and never fixes a red check by deleting or skipping a test, or reruns blindly until it happens to go green
 - Reads "green" correctly: counts which checks actually ran, treats a conflicting PR's missing CI as unknown, and treats unreadable values as not-yet-known
 - Answers "has the AI reviewer reviewed this?" by requiring a review whose `commit_id` equals the current head SHA, never a wall-clock window
 - Two merge bars: PR-review mode (reviewer converged on the current head, 10 minutes quiet, auto-merge never armed) and `--local-converged` (green CI + no conflicts, auto-merge armed on the first pass)
