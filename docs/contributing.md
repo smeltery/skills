@@ -7,6 +7,15 @@ frontmatter containing at minimum `name` and `description`. CI validates
 frontmatter, checks that the directory name matches the `name` field, and
 lints markdown across the repo.
 
+Two optional frontmatter keys control how a skill can be started. Both default
+to permissive, so leave them out unless the skill needs one:
+
+- `disable-model-invocation: true` — the agent will not load the skill on its
+  own; only `/<skill-name>` starts it. Use it when starting the skill uninvited
+  would derail the task at hand.
+- `user-invocable: false` — hides the `/<skill-name>` slash command. Use it for
+  skills that only make sense with a payload the harness supplies.
+
 ## Repository layout
 
 Skills follow a consistent `skills/<category>/<name>/` pattern. Each skill

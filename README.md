@@ -7,7 +7,7 @@
 
 **Portable agent skills from [dotbrains](https://github.com/dotbrains).**
 
-[Why these skills](#why-these-skills) · [Quickstart](#quickstart) · [Choose a skill](#choose-a-skill) · [All skills](#all-skills) · [Guides](#documentation)
+[Why these skills](#why-these-skills) · [Quickstart](#quickstart) · [Choose a skill](#choose-a-skill) · [All skills](#all-skills) · [Invocation](#invocation) · [Guides](#documentation)
 
 ## Why these skills
 
@@ -89,6 +89,32 @@ General workflow, not code-specific.
 | **Author & learn** | [teach](./skills/productivity/teach/README.md) · [write-a-skill](./skills/productivity/write-a-skill/README.md) |
 
 </details>
+
+## Invocation
+
+A skill can start two ways, and most of these support both:
+
+- **Model-invoked** — the agent matches the skill's description against the
+  work in front of it and loads the skill itself. No prompting needed.
+- **User-invoked** — you type `/<skill-name>`, or ask for it by name.
+
+Three skills are deliberately one-sided:
+
+| Skill | Invocation | Why |
+| --- | --- | --- |
+| [`zoom-out`](./skills/engineering/zoom-out/README.md) | user only — `disable-model-invocation: true` | You know when you've lost the thread; the agent doesn't. |
+| [`teach`](./skills/productivity/teach/README.md) | user only — `disable-model-invocation: true` | A teaching session is something you ask for, not something the agent should start mid-task. |
+| [`workon-event`](./skills/engineering/workon-event/README.md) | model only — `user-invocable: false` | Dispatched by the harness with an event payload attached; there is nothing useful to type by hand. |
+
+Of the rest, a handful are written to fire off the operation itself rather than
+wait to be asked — [`git-commit`](./skills/engineering/git-commit/README.md),
+[`git-safety`](./skills/engineering/git-safety/README.md),
+[`branch-conventions`](./skills/engineering/branch-conventions/README.md),
+[`commit-conventions`](./skills/engineering/commit-conventions/README.md), and
+[`simplify`](./skills/engineering/simplify/README.md) trigger on a commit, a
+force-push, a new branch, or a finished diff. Those are the guardrails; install
+them and forget them. Everything else is a workflow you'll usually kick off
+yourself, even though the agent may reach for it when the description fits.
 
 ## Documentation
 

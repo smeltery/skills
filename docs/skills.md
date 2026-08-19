@@ -3,6 +3,13 @@
 Each skill directory contains its own `README.md` (with usage and any diagrams)
 and the canonical `SKILL.md` consumed by the agent.
 
+Unless noted below, every skill works both ways: the agent can load it on its
+own when the description matches the work, and you can invoke it directly with
+`/<skill-name>`. The exceptions are marked inline — **user-invoked only**
+(`disable-model-invocation: true`) or **model-invoked only**
+(`user-invocable: false`). See [Invocation](../README.md#invocation) for the
+reasoning.
+
 ## Engineering
 
 Skills for code work — bug-hunting, design, planning, review, and execution.
@@ -37,8 +44,8 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[verify](../skills/engineering/verify/README.md)** — Prove that a code change meets its acceptance criteria, mapping every `AC-n`/`INV-n` ID to concrete automated or browser evidence.
 - **[wayfinder](../skills/engineering/wayfinder/README.md)** — Plan work too large or unclear for one agent session by creating an issue-tracker map and resolving one frontier decision ticket at a time.
 - **[workon](../skills/engineering/workon/README.md)** — Pick up a Linear ticket end-to-end: worktree, implement, PR, then watch the PR on a 5-minute loop addressing review comments, CI failures, and merge conflicts until merged.
-- **[workon-event](../skills/engineering/workon-event/README.md)** — Event-driven `/workon` companion that handles one ticket event per invocation via a dispatcher.
-- **[zoom-out](../skills/engineering/zoom-out/README.md)** — Tell the agent to zoom out and give a higher-level perspective on an unfamiliar section of code.
+- **[workon-event](../skills/engineering/workon-event/README.md)** — Event-driven `/workon` companion that handles one ticket event per invocation via a dispatcher. _Model-invoked only — the harness supplies the event payload._
+- **[zoom-out](../skills/engineering/zoom-out/README.md)** — Tell the agent to zoom out and give a higher-level perspective on an unfamiliar section of code. _User-invoked only._
 
 ## Productivity
 
@@ -49,7 +56,7 @@ General workflow skills, not code-specific.
 - **[handoff](../skills/productivity/handoff/README.md)** — Compact the current conversation into a handoff document so another agent can pick up the work.
 - **[linear](../skills/productivity/linear/README.md)** — Use the `linear` CLI to search Linear, inspect issues, manage comments, list workspace metadata, and check Linear platform status.
 - **[taste-review](../skills/productivity/taste-review/README.md)** — Get an independent judgment on an ambiguous design, prose, naming, or formatting choice, then weigh and apply the recommendation when authorized.
-- **[teach](../skills/productivity/teach/README.md)** — Teach the user a new skill or concept across multiple sessions, building durable lessons and reference docs in a teaching workspace.
+- **[teach](../skills/productivity/teach/README.md)** — Teach the user a new skill or concept across multiple sessions, building durable lessons and reference docs in a teaching workspace. _User-invoked only._
 - **[track-my-work](../skills/productivity/track-my-work/README.md)** — Personal standup logger: pulls your recent Linear and GitHub activity into a Notion Standup Log, classifies it by impact/type, cross-links PRs to tickets, and prompts for anything not auto-captured.
 - **[unslop](../skills/productivity/unslop/README.md)** — Strip AI writing tells out of a piece of text and put a real voice back in before it ships.
 - **[web-search](../skills/productivity/web-search/README.md)** — Search the web through a local browser daemon, fetch selected results, and extract pages as readable Markdown.
