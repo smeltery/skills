@@ -51,6 +51,7 @@ General workflow skills, not code-specific.
 - **[taste-review](../skills/productivity/taste-review/README.md)** — Get an independent judgment on an ambiguous design, prose, naming, or formatting choice, then weigh and apply the recommendation when authorized.
 - **[teach](../skills/productivity/teach/README.md)** — Teach the user a new skill or concept across multiple sessions, building durable lessons and reference docs in a teaching workspace.
 - **[track-my-work](../skills/productivity/track-my-work/README.md)** — Personal standup logger: pulls your recent Linear and GitHub activity into a Notion Standup Log, classifies it by impact/type, cross-links PRs to tickets, and prompts for anything not auto-captured.
+- **[unslop](../skills/productivity/unslop/README.md)** — Strip AI writing tells out of a piece of text and put a real voice back in before it ships.
 - **[web-search](../skills/productivity/web-search/README.md)** — Search the web through a local browser daemon, fetch selected results, and extract pages as readable Markdown.
 - **[wrap](../skills/productivity/wrap/README.md)** — End-of-session wrap-up: classify completion, persist a `RESUME HERE` handoff before prompting, write durable memory (episodes, reflections, insights), and surface anti-sycophantic highlights.
 - **[wrap-resume](../skills/productivity/wrap-resume/README.md)** — Picker that reads the `RESUME HERE` blocks `/wrap` writes and lets you continue an unfinished session.

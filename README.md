@@ -60,7 +60,7 @@ worth getting right.
 ## All skills
 
 <details>
-<summary><strong>43 skills across two categories</strong> — expand for the full list, or see <a href="./docs/skills.md">docs/skills.md</a> for the annotated catalog.</summary>
+<summary><strong>44 skills across two categories</strong> — expand for the full list, or see <a href="./docs/skills.md">docs/skills.md</a> for the annotated catalog.</summary>
 
 ### Engineering
 
@@ -81,7 +81,7 @@ General workflow, not code-specific.
 
 | Group | Skills |
 | --- | --- |
-| **Communicate** | [caveman](./skills/productivity/caveman/README.md) · [grill-me](./skills/productivity/grill-me/README.md) · [taste-review](./skills/productivity/taste-review/README.md) |
+| **Communicate** | [caveman](./skills/productivity/caveman/README.md) · [grill-me](./skills/productivity/grill-me/README.md) · [taste-review](./skills/productivity/taste-review/README.md) · [unslop](./skills/productivity/unslop/README.md) |
 | **Sessions & continuity** | [handoff](./skills/productivity/handoff/README.md) · [wrap](./skills/productivity/wrap/README.md) · [wrap-resume](./skills/productivity/wrap-resume/README.md) |
 | **Track & report** | [track-my-work](./skills/productivity/track-my-work/README.md) |
 | **Tools** | [linear](./skills/productivity/linear/README.md) |
