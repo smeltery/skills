@@ -167,6 +167,7 @@ Use your normal PR workflow. Required behavior:
 
 - Base branch = repo default branch from §3.2.
 - PR title: `<type>: <short description> [<TICKET-ID>]`.
+- Open the body with a `Why this PR is necessary` section (per `pr-workflow`), before mapping the rest to `.github/pull_request_template.md` when present.
 - Respect `.github/pull_request_template.md` when present.
 - Keep description concise. When local review rounds ran, state the deferrals (with ticket ids) and the invalid findings (with their one-line reasons) upfront — that's what stops the PR-side reviewer re-raising them.
 - Assign to the current user.
