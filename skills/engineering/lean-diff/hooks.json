@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "name": "lean-diff-stat",
+            "type": "command",
+            "command": "bash \"${CLAUDE_SKILL_DIR}/scripts/diff-stat.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

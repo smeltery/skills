@@ -149,8 +149,9 @@ Work inside the worktree (`cd "$WT"`). Run autonomously in this phase — no use
 
 - Apply the conventions and constraints surfaced in §3.4.
 - Reuse existing patterns before introducing new libraries/APIs.
+- Apply the `lean-diff` skill throughout: smallest targeted edits, no drive-by reformatting/renaming, no unrequested abstractions. This is the qualitative discipline the §3.4b scope-budget gate is a backstop for, not a replacement for.
 - Work in small commits using conventional commit types.
-- Run project quality gates locally before pushing.
+- Run the `lean-diff` audit pass (`git diff --stat` + a hunk-by-hunk read) and project quality gates locally before pushing.
 
 If implementation requires a product decision outside ticket scope, stop, leave a WIP commit, notify the user, and exit.
 
@@ -246,7 +247,7 @@ For each new reviewer comment, bucket it — the bar is deliberately strict beca
 
 1. **Fix it** only if it's directly related to this PR's change, or genuinely catastrophic. Those two conditions are the whole test.
 2. **Defer it** if it's valid but unrelated: reply acknowledging it and file a follow-up ticket that carries the real obstacle, not just the finding restated — otherwise whoever picks it up re-derives the analysis. A valid-but-unrelated finding your own diff caused still lands here, with that fact stated, not hidden. **Note it** if it's invalid: reply with the one-line reason why, so the next tick doesn't relitigate it — no code change, no ticket.
-3. Commit fixes.
+3. Commit fixes — apply the `lean-diff` skill's discipline (targeted edits, no drive-by reformatting).
 4. Resolve review threads explicitly after pushing.
 5. Advance the watermark: set `lastAddressedCommentISO` to the newest processed `created_at` and `lastAddressedCommentIds` to the namespaced ids at that timestamp. If the newest timestamp **equals** the existing watermark, union the id sets instead of replacing — so two comments sharing a second aren't dropped or re-processed.
 
