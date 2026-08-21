@@ -449,6 +449,8 @@ ticket_ready_handler(ticket_id, event, state):
                 # Create branch off main (naming: feat/<slug> or fix/<slug>).
                 # Work in GITHUB_WORKSPACE (the runner's checkout root — no sub-worktree
                 # for ticket-ready since there is no existing PR).
+                # Apply the lean-diff skill throughout: targeted edits, no drive-by
+                # reformatting/renaming, no unrequested abstractions.
                 # Run quality gates before opening the PR (typecheck, lint, tests).
                 #
                 # Scope-budget check fires here, before gh pr create:

@@ -50,6 +50,7 @@ Most work starts in one of these places. Ask what result you need next:
 | An independent, high-signal review of a diff or PR | [`review`](./skills/engineering/review/README.md) |
 | Proof that a change meets its stated acceptance criteria | [`verify`](./skills/engineering/verify/README.md) |
 | Cleaner code with the same behavior before merge | [`simplify`](./skills/engineering/simplify/README.md) |
+| The smallest diff that still satisfies the task | [`lean-diff`](./skills/engineering/lean-diff/README.md) |
 | A finished PRD or design turned into a readable HTML doc | [`html-doc`](./skills/engineering/html-doc/README.md) |
 | A durable handoff before ending a session | [`wrap`](./skills/productivity/wrap/README.md) or [`handoff`](./skills/productivity/handoff/README.md) |
 
@@ -60,7 +61,7 @@ worth getting right.
 ## All skills
 
 <details>
-<summary><strong>44 skills across two categories</strong> — expand for the full list, or see <a href="./docs/skills.md">docs/skills.md</a> for the annotated catalog.</summary>
+<summary><strong>45 skills across two categories</strong> — expand for the full list, or see <a href="./docs/skills.md">docs/skills.md</a> for the annotated catalog.</summary>
 
 ### Engineering
 
@@ -72,7 +73,7 @@ Code work — bug-hunting, design, planning, review, and execution.
 | **Plan & shape work** | [wayfinder](./skills/engineering/wayfinder/README.md) · [grill-with-docs](./skills/engineering/grill-with-docs/README.md) · [to-prd](./skills/engineering/to-prd/README.md) · [design](./skills/engineering/design/README.md) · [to-issues](./skills/engineering/to-issues/README.md) · [triage](./skills/engineering/triage/README.md) · [html-doc](./skills/engineering/html-doc/README.md) |
 | **Design & architecture** | [zoom-out](./skills/engineering/zoom-out/README.md) · [architecture](./skills/engineering/architecture/README.md) · [architecture-review](./skills/engineering/architecture-review/README.md) · [prototype](./skills/engineering/prototype/README.md) · [ui-studio](./skills/engineering/ui-studio/README.md) · [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/README.md) · [loc-budget](./skills/engineering/loc-budget/README.md) |
 | **Build & debug** | [tdd](./skills/engineering/tdd/README.md) · [diagnose](./skills/engineering/diagnose/README.md) · [performance-engineer](./skills/engineering/performance-engineer/README.md) |
-| **Review, CI & PRs** | [review](./skills/engineering/review/README.md) · [verify](./skills/engineering/verify/README.md) · [simplify](./skills/engineering/simplify/README.md) · [pr-workflow](./skills/engineering/pr-workflow/README.md) · [pr-monitor](./skills/engineering/pr-monitor/README.md) · [ci-monitoring](./skills/engineering/ci-monitoring/README.md) |
+| **Review, CI & PRs** | [review](./skills/engineering/review/README.md) · [verify](./skills/engineering/verify/README.md) · [simplify](./skills/engineering/simplify/README.md) · [lean-diff](./skills/engineering/lean-diff/README.md) · [pr-workflow](./skills/engineering/pr-workflow/README.md) · [pr-monitor](./skills/engineering/pr-monitor/README.md) · [ci-monitoring](./skills/engineering/ci-monitoring/README.md) |
 | **End-to-end delivery** | [cloud-factory](./skills/engineering/cloud-factory/README.md) · [feature-gap](./skills/engineering/feature-gap/README.md) · [port](./skills/engineering/port/README.md) · [workon](./skills/engineering/workon/README.md) · [workon-event](./skills/engineering/workon-event/README.md) |
 
 ### Productivity

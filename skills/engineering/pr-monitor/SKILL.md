@@ -162,7 +162,7 @@ For `fixed` and `fixed-differently`:
   git pull origin <headRefName>
   ```
 - Fetch the current file from the PR head branch.
-- Apply the smallest correct fix.
+- Apply the smallest correct fix (the `lean-diff` skill's discipline — targeted edits, no drive-by reformatting).
 - Batch nearby fixes in the same file into one commit.
 - When the repo requires verified signatures (or signing is configured), sign every commit and verify with `git log --format='%H %G?'` before pushing — never bypass signing to get a commit through.
 

@@ -13,6 +13,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[git-safety](./git-safety/README.md)** — Guardrails for safe git operations: stash/cherry-pick preference, force-push constraints, and destructive-command avoidance.
 - **[grill-with-docs](./grill-with-docs/README.md)** — Code-aware grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` / ADRs inline.
 - **[improve-codebase-architecture](./improve-codebase-architecture/README.md)** — Surface architectural friction and propose deepening opportunities — refactors that turn shallow modules into deep ones.
+- **[lean-diff](./lean-diff/README.md)** — Keep the net diff as small as possible on every code change — targeted edits over rewrites, no drive-by reformatting, and a running diff-size nudge after every edit.
 - **[loc-budget](./loc-budget/README.md)** — Find large line-count hitters, modularize them into cohesive files, and add file-size and flat-directory budget gates in the repo's idiomatic tooling.
 - **[performance-engineer](./performance-engineer/README.md)** — Measure, diagnose, and improve software performance on a specific critical path with bounded experiments and before/after evidence.
 - **[pr-monitor](./pr-monitor/README.md)** — One-pass PR monitor that processes bot review feedback, CI failures, and merge-readiness signals.

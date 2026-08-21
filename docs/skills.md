@@ -28,6 +28,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[grill-with-docs](../skills/engineering/grill-with-docs/README.md)** — Code-aware grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` / ADRs inline.
 - **[html-doc](../skills/engineering/html-doc/README.md)** — Render a finished Markdown PRD or design into one verified, self-contained static HTML reading view; Markdown stays canonical.
 - **[improve-codebase-architecture](../skills/engineering/improve-codebase-architecture/README.md)** — Surface architectural friction and propose deepening opportunities — refactors that turn shallow modules into deep ones.
+- **[lean-diff](../skills/engineering/lean-diff/README.md)** — Keep the net diff as small as possible on every code change — targeted edits over rewrites, no drive-by reformatting, and a running diff-size nudge after every edit.
 - **[loc-budget](../skills/engineering/loc-budget/README.md)** — Find large line-count hitters, modularize them into cohesive files, and add file-size and flat-directory budget gates in the repo's idiomatic tooling.
 - **[performance-engineer](../skills/engineering/performance-engineer/README.md)** — Measure, diagnose, and improve software performance on a specific critical path with bounded experiments and before/after evidence.
 - **[pr-monitor](../skills/engineering/pr-monitor/README.md)** — One-pass PR monitor that processes bot review feedback, CI failures, and merge-readiness signals.
