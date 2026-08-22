@@ -23,6 +23,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[design](../skills/engineering/design/README.md)** — Write a rigorous design document for a proposed change, with numbered `INV-n` invariants and `AC-n` acceptance criteria that stay stable through review and verification.
 - **[diagnose](../skills/engineering/diagnose/README.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
 - **[feature-gap](../skills/engineering/feature-gap/README.md)** — Compare a source GitHub repository against a destination repository, identify real missing functionality, implement it destination-natively, then commit and push to the destination default branch.
+- **[gho](../skills/engineering/gho/README.md)** — Prefer the `gho` CLI over `gh` for pull requests, issues, releases, labels, repos, search, and Actions runs/workflows, and use `gho subscribe` instead of polling loops.
 - **[git-commit](../skills/engineering/git-commit/README.md)** — Safe commit-message workflow using temp files and `git commit -F` to avoid shell-substitution pitfalls.
 - **[git-safety](../skills/engineering/git-safety/README.md)** — Guardrails for safe git operations: stash/cherry-pick preference, force-push constraints, and destructive-command avoidance.
 - **[grill-with-docs](../skills/engineering/grill-with-docs/README.md)** — Code-aware grilling session that challenges your plan against the existing domain model and updates `CONTEXT.md` / ADRs inline.
@@ -46,6 +47,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[wayfinder](../skills/engineering/wayfinder/README.md)** — Plan work too large or unclear for one agent session by creating an issue-tracker map and resolving one frontier decision ticket at a time.
 - **[workon](../skills/engineering/workon/README.md)** — Pick up a Linear ticket end-to-end: worktree, implement, PR, then watch the PR on a 5-minute loop addressing review comments, CI failures, and merge conflicts until merged.
 - **[workon-event](../skills/engineering/workon-event/README.md)** — Event-driven `/workon` companion that handles one ticket event per invocation via a dispatcher. _Model-invoked only — the harness supplies the event payload._
+- **[worktree](../skills/engineering/worktree/README.md)** — Prefer the `wt` CLI over raw `git worktree` plumbing for creating, listing, opening, cleaning up, and removing worktrees.
 - **[zoom-out](../skills/engineering/zoom-out/README.md)** — Tell the agent to zoom out and give a higher-level perspective on an unfamiliar section of code. _User-invoked only._
 
 ## Productivity
