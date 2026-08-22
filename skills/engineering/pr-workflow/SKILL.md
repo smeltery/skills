@@ -51,6 +51,8 @@ May include an issue reference: `feat: feature name [AI-123]`
 
 The diff already shows *what* changed, so don't restate it.
 
+**Always open with a section titled `Why this PR is necessary`** — one to three bullets on what breaks or stays missing without this, before anything else in the body. Add it even when the repo's own `.github/pull_request_template.md` has no equivalent heading; every other section still maps to that template as usual.
+
 ### What to leave out
 
 A PR description is not a lab report, a commit log, or an explanation of how you arrived at the solution. Strip out:
