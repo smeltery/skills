@@ -3,7 +3,7 @@
 ## Quickstart
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Pick the skills you want, choose the agents to install them on, and you're done.
@@ -15,7 +15,7 @@ agent's skills directory. For Claude Code:
 
 ```bash
 mkdir -p ~/.claude/skills/diagnose
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/diagnose/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/diagnose/SKILL.md \
   -o ~/.claude/skills/diagnose/SKILL.md
 ```
 

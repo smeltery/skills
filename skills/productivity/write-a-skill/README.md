@@ -33,14 +33,14 @@ specific.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/write-a-skill
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/write-a-skill/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/write-a-skill/SKILL.md \
   -o ~/.claude/skills/write-a-skill/SKILL.md
 ```
 

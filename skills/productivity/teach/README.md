@@ -30,14 +30,14 @@ spacing, and interleaving.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/teach
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/teach/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/teach/SKILL.md \
   -o ~/.claude/skills/teach/SKILL.md
 ```
 

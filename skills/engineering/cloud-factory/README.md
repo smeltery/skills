@@ -6,7 +6,7 @@ workflow triggers, labels, and domain-doc placeholders.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills --skill cloud-factory --agent codex --yes
+npx skills@latest add smeltery/skills --skill cloud-factory --agent codex --yes
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ npx skills@latest add dotbrains/skills --skill cloud-factory --agent codex --yes
 ```
 
 The skill installs the reusable assets from
-[dotbrains/cloud-factory](https://github.com/dotbrains/cloud-factory) into the
+[smeltery/cloud-factory](https://github.com/smeltery/cloud-factory) into the
 current repository and verifies the factory scaffold.
 
 ## Factory flow

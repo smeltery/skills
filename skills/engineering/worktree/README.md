@@ -1,6 +1,6 @@
 # /worktree
 
-Prefer the [`wt`](https://github.com/dotbrains/worktree) CLI over raw `git worktree` plumbing.
+Prefer the [`wt`](https://github.com/smeltery/worktree) CLI over raw `git worktree` plumbing.
 
 - Maps worktree create/list/open/cleanup/remove requests onto `wt` commands
 - Falls back to plain `git worktree` when `wt` isn't installed
@@ -9,19 +9,19 @@ Prefer the [`wt`](https://github.com/dotbrains/worktree) CLI over raw `git workt
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/worktree
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/worktree/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/worktree/SKILL.md \
   -o ~/.claude/skills/worktree/SKILL.md
 ```
 
 The skill expects the `wt` binary from
-[`dotbrains/worktree`](https://github.com/dotbrains/worktree). If it's
+[`smeltery/worktree`](https://github.com/smeltery/worktree). If it's
 missing, the skill builds it from source with `cargo build --release`, or
 falls back to plain `git worktree` commands.
 

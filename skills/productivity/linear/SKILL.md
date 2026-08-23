@@ -18,13 +18,13 @@ First check that the CLI exists:
 linear --help
 ```
 
-If it is missing, install it from `dotbrains/linear-cli` before continuing.
+If it is missing, install it from `smeltery/linear-cli` before continuing.
 Prefer the published GitHub Packages install when `npm` is available:
 
 ```bash
-npm config set @dotbrains:registry https://npm.pkg.github.com
+npm config set @smeltery:registry https://npm.pkg.github.com
 npm config set //npm.pkg.github.com/:_authToken "$(gh auth token)"
-npm install -g @dotbrains/linear-cli
+npm install -g @smeltery/linear-cli
 linear --help
 ```
 
@@ -36,7 +36,7 @@ If GitHub Packages installation is unavailable but repository access works,
 install from source:
 
 ```bash
-git clone https://github.com/dotbrains/linear-cli.git
+git clone https://github.com/smeltery/linear-cli.git
 cd linear-cli
 bun install
 bun link

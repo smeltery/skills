@@ -25,14 +25,14 @@ codebase instead of asking.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/grill-me
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/grill-me/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/grill-me/SKILL.md \
   -o ~/.claude/skills/grill-me/SKILL.md
 ```
 

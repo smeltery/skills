@@ -20,14 +20,14 @@ exact terminology — is never abbreviated.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/caveman
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/caveman/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/caveman/SKILL.md \
   -o ~/.claude/skills/caveman/SKILL.md
 ```
 

@@ -12,14 +12,14 @@ model vendor or CLI.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/taste-review
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/taste-review/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/taste-review/SKILL.md \
   -o ~/.claude/skills/taste-review/SKILL.md
 ```
 

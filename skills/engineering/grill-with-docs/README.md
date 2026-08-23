@@ -40,7 +40,7 @@ flowchart LR
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Note: copying just `SKILL.md` will leave the `CONTEXT-FORMAT.md` /

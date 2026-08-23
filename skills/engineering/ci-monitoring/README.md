@@ -9,14 +9,14 @@ Monitor GitHub PR checks, rerun failed jobs when appropriate, and confirm merge-
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/ci-monitoring
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/ci-monitoring/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/ci-monitoring/SKILL.md \
   -o ~/.claude/skills/ci-monitoring/SKILL.md
 ```
 

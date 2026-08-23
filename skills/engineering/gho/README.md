@@ -1,6 +1,6 @@
 # /gho
 
-Prefer the [`gho`](https://github.com/dotbrains/gho) CLI over `gh` for GitHub operations.
+Prefer the [`gho`](https://github.com/smeltery/gho) CLI over `gh` for GitHub operations.
 
 - Maps PR/issue/release/label/repo/search/Actions requests onto `gho` commands
 - Uses `gho subscribe` to wait for PR/issue updates instead of polling loops
@@ -9,19 +9,19 @@ Prefer the [`gho`](https://github.com/dotbrains/gho) CLI over `gh` for GitHub op
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/gho
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/gho/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/gho/SKILL.md \
   -o ~/.claude/skills/gho/SKILL.md
 ```
 
 The skill expects the `gho` binary from
-[`dotbrains/gho`](https://github.com/dotbrains/gho). If it's missing, the
+[`smeltery/gho`](https://github.com/smeltery/gho). If it's missing, the
 skill builds it from source with `cargo build --release`, or falls back to
 `gh` commands.
 

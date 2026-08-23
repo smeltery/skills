@@ -252,7 +252,7 @@ Output rendering rules (used by the §7 `Algorithmic Analysis` section). Pick th
 - only `Optimal` items, or only `low` severity → `Algorithmic Analysis — Code Quality Good`
 - no algorithmic code in the diff → `Algorithmic Analysis — No algorithmic code in diff`
 
-Adapted from [`dotbrains/ticketsmith` — `docs/algorithmic-analysis.md`](https://github.com/dotbrains/ticketsmith/blob/main/docs/algorithmic-analysis.md).
+Adapted from [`smeltery/ticketsmith` — `docs/algorithmic-analysis.md`](https://github.com/smeltery/ticketsmith/blob/main/docs/algorithmic-analysis.md).
 
 ## 7. Produce final review output
 

@@ -72,14 +72,14 @@ All runtime behavior beyond the four core phases is opt-in:
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/wrap
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/wrap/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/wrap/SKILL.md \
   -o ~/.claude/skills/wrap/SKILL.md
 ```
 

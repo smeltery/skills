@@ -9,14 +9,14 @@ Conventional-commit guidance that keeps commit types aligned with branch intent.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/commit-conventions
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/commit-conventions/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/commit-conventions/SKILL.md \
   -o ~/.claude/skills/commit-conventions/SKILL.md
 ```
 

@@ -120,7 +120,7 @@ not already available; see `DOGFOOD.md` for overrides and host prerequisites.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 ## Files

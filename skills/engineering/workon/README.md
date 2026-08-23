@@ -35,17 +35,17 @@ flowchart TD
 
 ## Install
 
-Via the dotbrains skills CLI flow:
+Via the smeltery skills CLI flow:
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/workon
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/workon/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/workon/SKILL.md \
   -o ~/.claude/skills/workon/SKILL.md
 ```
 

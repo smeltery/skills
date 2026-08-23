@@ -21,7 +21,7 @@ end-to-end). Prefer AFK.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 ## Usage

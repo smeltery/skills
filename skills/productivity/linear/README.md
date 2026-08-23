@@ -15,20 +15,20 @@ flowchart LR
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills --skill linear
+npx skills@latest add smeltery/skills --skill linear
 ```
 
 The skill expects the `linear` command from
-[`@dotbrains/linear-cli`](https://github.com/dotbrains/linear-cli). If the CLI
+[`@smeltery/linear-cli`](https://github.com/smeltery/linear-cli). If the CLI
 is missing, the skill installs it from GitHub Packages when possible, or from
 source as a fallback.
 
 ## Setup
 
 ```bash
-npm config set @dotbrains:registry https://npm.pkg.github.com
+npm config set @smeltery:registry https://npm.pkg.github.com
 npm config set //npm.pkg.github.com/:_authToken "$(gh auth token)"
-npm install -g @dotbrains/linear-cli
+npm install -g @smeltery/linear-cli
 linear --help
 linear init
 ```

@@ -37,7 +37,7 @@ the assumption at the top of the prototype.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill (note: `prototype` references companion files, so
@@ -45,7 +45,7 @@ copying just `SKILL.md` will leave dangling links — prefer the npx flow):
 
 ```bash
 mkdir -p ~/.claude/skills/prototype
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/prototype/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/prototype/SKILL.md \
   -o ~/.claude/skills/prototype/SKILL.md
 ```
 

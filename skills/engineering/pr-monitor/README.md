@@ -12,14 +12,14 @@ One-pass PR monitoring skill for AI review feedback, CI failures across every pr
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/pr-monitor
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/pr-monitor/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/pr-monitor/SKILL.md \
   -o ~/.claude/skills/pr-monitor/SKILL.md
 ```
 

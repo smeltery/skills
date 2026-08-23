@@ -22,7 +22,7 @@ flowchart LR
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Then install the locked Mermaid dependency tree once, from this skill's

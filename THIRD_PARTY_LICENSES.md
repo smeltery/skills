@@ -79,7 +79,7 @@ MIT-licensed:
 - `skills/engineering/verify/` (ported from upstream `test`, renamed to avoid confusion with `tdd`)
 
 `html-doc` renames the embedded generator identity (`blueprint/html-doc@1` to
-`dotbrains-skills/html-doc@1`), the npm package name, and a temporary-directory
+`smeltery-skills/html-doc@1`), the npm package name, and a temporary-directory
 prefix away from upstream branding; the generation and verification logic is
 otherwise unchanged.
 

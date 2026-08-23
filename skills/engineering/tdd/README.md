@@ -20,7 +20,7 @@ implementation — produces crap tests. Always go vertical.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill (note: `tdd` references companion files, so copying
@@ -28,7 +28,7 @@ just `SKILL.md` will leave dangling links — prefer the npx flow):
 
 ```bash
 mkdir -p ~/.claude/skills/tdd
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/tdd/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/tdd/SKILL.md \
   -o ~/.claude/skills/tdd/SKILL.md
 ```
 

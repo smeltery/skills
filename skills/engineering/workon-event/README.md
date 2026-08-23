@@ -20,14 +20,14 @@ flowchart LR
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/workon-event
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/workon-event/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/workon-event/SKILL.md \
   -o ~/.claude/skills/workon-event/SKILL.md
 ```
 

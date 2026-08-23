@@ -9,14 +9,14 @@ Create and update pull requests with consistent naming, concise reviewer-focused
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/pr-workflow
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/pr-workflow/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/pr-workflow/SKILL.md \
   -o ~/.claude/skills/pr-workflow/SKILL.md
 ```
 

@@ -11,14 +11,14 @@ invocable to audit and trim whatever is currently uncommitted.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/lean-diff
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/lean-diff/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/lean-diff/SKILL.md \
   -o ~/.claude/skills/lean-diff/SKILL.md
 ```
 

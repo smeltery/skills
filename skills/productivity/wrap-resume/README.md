@@ -37,14 +37,14 @@ The two skills share a single output contract: the `# 🔴 RESUME HERE` block fo
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/wrap-resume
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/wrap-resume/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/wrap-resume/SKILL.md \
   -o ~/.claude/skills/wrap-resume/SKILL.md
 ```
 

@@ -13,7 +13,7 @@ Convert a repository into a software factory.
 From the target repository root, run:
 
 ```sh
-gh api repos/dotbrains/cloud-factory/contents/scripts/install-cloud-factory.sh \
+gh api repos/smeltery/cloud-factory/contents/scripts/install-cloud-factory.sh \
   --jq .content | base64 --decode | bash
 ```
 
@@ -28,7 +28,7 @@ When using the remote installer with multiple agent targets:
 
 ```sh
 CLOUD_FACTORY_AGENT=codex,claude \
-  bash -c "$(gh api repos/dotbrains/cloud-factory/contents/scripts/install-cloud-factory.sh --jq .content | base64 --decode)"
+  bash -c "$(gh api repos/smeltery/cloud-factory/contents/scripts/install-cloud-factory.sh --jq .content | base64 --decode)"
 ```
 
 ## Workflow

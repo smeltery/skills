@@ -9,14 +9,14 @@ Safe commit-message workflow using a temp file and `git commit -F`.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/git-commit
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/git-commit/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/git-commit/SKILL.md \
   -o ~/.claude/skills/git-commit/SKILL.md
 ```
 

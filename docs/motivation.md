@@ -71,7 +71,7 @@ would**.
 The first four failure modes are general — the engineering ideas behind
 them are largely from
 [mattpocock/skills](https://github.com/mattpocock/skills), where most of
-those skills originated. `/workon` and `/review` are dotbrains originals
+those skills originated. `/workon` and `/review` are smeltery originals
 written for our own delivery loop.
 
 ## Further reading

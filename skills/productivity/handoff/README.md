@@ -29,14 +29,14 @@ If no argument is provided, the doc summarises the whole conversation.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/handoff
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/handoff/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/handoff/SKILL.md \
   -o ~/.claude/skills/handoff/SKILL.md
 ```
 

@@ -1,10 +1,10 @@
 # AGENTS.md
 
-Guidance for agents working in `dotbrains/skills`.
+Guidance for agents working in `smeltery/skills`.
 
 ## Scope
 
-This repository is the canonical home for portable dotbrains skills. Each skill
+This repository is the canonical home for portable smeltery skills. Each skill
 lives in its own directory under `skills/<name>/` with a single `SKILL.md`.
 
 Keep changes focused on:

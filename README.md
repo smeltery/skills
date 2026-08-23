@@ -1,11 +1,11 @@
 # skills
 
-[![CI](https://github.com/dotbrains/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/dotbrains/skills/actions/workflows/ci.yml)
+[![CI](https://github.com/smeltery/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/smeltery/skills/actions/workflows/ci.yml)
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-brightgreen.svg)](https://polyformproject.org/licenses/shield/1.0.0)
 
-[![skills.sh](https://skills.sh/b/dotbrains/skills)](https://skills.sh/dotbrains/skills)
+[![skills.sh](https://skills.sh/b/smeltery/skills)](https://skills.sh/smeltery/skills)
 
-**Portable agent skills from [dotbrains](https://github.com/dotbrains).**
+**Portable agent skills from [smeltery](https://github.com/smeltery).**
 
 [Why these skills](#why-these-skills) · [Quickstart](#quickstart) · [Choose a skill](#choose-a-skill) · [All skills](#all-skills) · [Invocation](#invocation) · [Guides](#documentation)
 
@@ -26,7 +26,7 @@ failure-mode breakdown and the four books behind it.
 ## Quickstart
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Pick the skills you want, choose the agents to install them on, and you're done.

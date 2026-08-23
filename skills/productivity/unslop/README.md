@@ -11,14 +11,14 @@ the opinion and specificity that make writing worth reading.
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/unslop
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/productivity/unslop/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/productivity/unslop/SKILL.md \
   -o ~/.claude/skills/unslop/SKILL.md
 ```
 

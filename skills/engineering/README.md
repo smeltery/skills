@@ -56,5 +56,5 @@ Use them à la carte — there's no enforced pipeline.
 ## Attribution
 
 Ported engineering skills retain their upstream attribution. `ui-studio` is a
-dotbrains original. See
+smeltery original. See
 [THIRD_PARTY_LICENSES.md](../../THIRD_PARTY_LICENSES.md) for full attribution.

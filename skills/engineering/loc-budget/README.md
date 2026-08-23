@@ -38,17 +38,17 @@ flowchart LR
 
 ## Install
 
-Via the dotbrains skills CLI flow:
+Via the smeltery skills CLI flow:
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/loc-budget
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/loc-budget/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/loc-budget/SKILL.md \
   -o ~/.claude/skills/loc-budget/SKILL.md
 ```
 
@@ -57,7 +57,7 @@ curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engine
 ```text
 /loc-budget
 /loc-budget ./packages/player
-/loc-budget dotbrains/popcorn
+/loc-budget smeltery/popcorn
 ```
 
 ## Requirements

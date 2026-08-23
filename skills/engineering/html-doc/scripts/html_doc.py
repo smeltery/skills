@@ -21,7 +21,7 @@ import uuid
 import xml.etree.ElementTree as ET
 
 
-GENERATOR = "dotbrains-skills/html-doc@1"
+GENERATOR = "smeltery-skills/html-doc@1"
 MAX_SOURCE_BYTES = 2 * 1024 * 1024
 SKILL_DIR = Path(__file__).resolve().parents[1]
 ASSETS_DIR = SKILL_DIR / "assets"

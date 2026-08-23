@@ -1,6 +1,6 @@
 ---
 name: worktree
-description: "Prefers the `wt` CLI (dotbrains/worktree) over raw `git worktree` plumbing for creating, listing, opening, cleaning up, and removing worktrees. Falls back to plain `git worktree` commands when `wt` isn't installed. Triggers whenever a worktree needs to be created, listed, opened, cleaned up, or removed."
+description: "Prefers the `wt` CLI (smeltery/worktree) over raw `git worktree` plumbing for creating, listing, opening, cleaning up, and removing worktrees. Falls back to plain `git worktree` commands when `wt` isn't installed. Triggers whenever a worktree needs to be created, listed, opened, cleaned up, or removed."
 version: 1.0.0
 user-invocable: true
 category: development
@@ -15,7 +15,7 @@ command -v wt >/dev/null 2>&1 && wt --version
 If missing, install from source (no published binary releases yet):
 
 ```bash
-git clone https://github.com/dotbrains/worktree.git
+git clone https://github.com/smeltery/worktree.git
 cd worktree
 cargo build --release
 cp target/release/wt ~/.local/bin/wt   # or any directory on PATH

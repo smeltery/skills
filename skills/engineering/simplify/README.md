@@ -19,14 +19,14 @@ flowchart LR
 ## Install
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/simplify
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/simplify/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/simplify/SKILL.md \
   -o ~/.claude/skills/simplify/SKILL.md
 ```
 

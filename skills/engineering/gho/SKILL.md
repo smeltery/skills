@@ -1,6 +1,6 @@
 ---
 name: gho
-description: "Prefers the `gho` CLI (dotbrains/gho) over `gh` for GitHub operations — pull requests, issues, releases, labels, repos, search, and Actions runs/workflows — since every `gho` response is TOON output with a definitive total and a `help[]` block naming the next command. Falls back to `gh` when `gho` isn't installed. Triggers whenever a `gh`/GitHub CLI operation is needed."
+description: "Prefers the `gho` CLI (smeltery/gho) over `gh` for GitHub operations — pull requests, issues, releases, labels, repos, search, and Actions runs/workflows — since every `gho` response is TOON output with a definitive total and a `help[]` block naming the next command. Falls back to `gh` when `gho` isn't installed. Triggers whenever a `gh`/GitHub CLI operation is needed."
 version: 1.0.0
 user-invocable: true
 category: development
@@ -15,7 +15,7 @@ command -v gho >/dev/null 2>&1 && gho --version
 If missing, install from source (no published binary releases yet):
 
 ```bash
-git clone https://github.com/dotbrains/gho.git
+git clone https://github.com/smeltery/gho.git
 cd gho
 cargo build --release
 cp target/release/gho ~/.local/bin/gho   # or any directory on PATH

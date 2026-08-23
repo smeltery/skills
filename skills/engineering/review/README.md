@@ -31,17 +31,17 @@ flowchart TD
 
 ## Install
 
-Via the dotbrains skills CLI flow:
+Via the smeltery skills CLI flow:
 
 ```bash
-npx skills@latest add dotbrains/skills
+npx skills@latest add smeltery/skills
 ```
 
 Or copy just this skill:
 
 ```bash
 mkdir -p ~/.claude/skills/review
-curl -fsSL https://raw.githubusercontent.com/dotbrains/skills/main/skills/engineering/review/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/smeltery/skills/main/skills/engineering/review/SKILL.md \
   -o ~/.claude/skills/review/SKILL.md
 ```
 
@@ -93,6 +93,6 @@ The skill returns a fixed-section review:
 ## Attribution
 
 The algorithmic analysis pass is adapted from
-[`dotbrains/ticketsmith` — `docs/algorithmic-analysis.md`](https://github.com/dotbrains/ticketsmith/blob/main/docs/algorithmic-analysis.md).
-Both repos are dotbrains-owned under PolyForm Shield 1.0.0, so no third-party
+[`smeltery/ticketsmith` — `docs/algorithmic-analysis.md`](https://github.com/smeltery/ticketsmith/blob/main/docs/algorithmic-analysis.md).
+Both repos are smeltery-owned under PolyForm Shield 1.0.0, so no third-party
 license entry is required.
