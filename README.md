@@ -1,9 +1,7 @@
 # skills
 
 [![CI](https://github.com/smeltery/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/smeltery/skills/actions/workflows/ci.yml)
-[![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-brightgreen.svg)](https://polyformproject.org/licenses/shield/1.0.0)
-
-[![skills.sh](https://skills.sh/b/smeltery/skills)](https://skills.sh/smeltery/skills)
+[![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg)](https://polyformproject.org/licenses/shield/1.0.0)
 
 **Portable agent skills from [smeltery](https://github.com/smeltery).**
 
