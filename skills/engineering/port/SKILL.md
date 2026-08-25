@@ -26,7 +26,7 @@ Intake. Do not assume the destination owner unless the user stated it.
 
 ## 1. Load state
 
-State file: `~/.claude/port/<source-owner>-<source-repo>.json`.
+State file: `~/.local/share/port/<source-owner>-<source-repo>.json`.
 
 ```json
 {
@@ -45,7 +45,7 @@ State file: `~/.claude/port/<source-owner>-<source-repo>.json`.
 }
 ```
 
-Create `~/.claude/port/` if needed. If no state exists, start at Intake. If
+Create `~/.local/share/port/` if needed. If no state exists, start at Intake. If
 state exists, jump to its phase, then re-check local files and GitHub before
 continuing. State is a cache; GitHub and the filesystem are source of truth.
 
