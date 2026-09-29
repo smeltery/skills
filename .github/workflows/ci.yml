@@ -13,7 +13,7 @@ concurrency:
 jobs:
   markdown:
     name: Markdown
-    runs-on: blacksmith
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
 
   skill-validation:
     name: Skill Validation
-    runs-on: blacksmith
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
