@@ -1,7 +1,39 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import content from "../../../../../docs/motivation.md?raw";
+import Icon from "../../components/Icon.astro";
 import { renderMarkdown } from "../../lib/markdown";
+const [approach, reading] = content.split("## Further reading");
+const bookNotes = [
+  {
+    topic: "Alignment & feedback",
+    idea: "Clarify the problem, then build short feedback loops so you can learn as you go.",
+    skills: ["diagnose"],
+  },
+  {
+    topic: "Shared understanding",
+    idea: "Give your project a shared language so your agent and your team mean the same thing.",
+    skills: ["grill-with-docs"],
+  },
+  {
+    topic: "Everyday design",
+    idea: "Make testing and design part of each small change, rather than a separate phase.",
+    skills: ["tdd", "improve-codebase-architecture"],
+  },
+  {
+    topic: "Managing complexity",
+    idea: "Build modules that hide complexity behind simple interfaces, and improve them deliberately.",
+    skills: ["improve-codebase-architecture", "to-prd"],
+  },
+];
+const books = [
+  ...reading.matchAll(/^- \*\*\[(.*?)\]\((.*?)\)\*\* — ([^.]+)\./gm),
+].map((match, index) => ({
+  title: match[1],
+  href: match[2],
+  author: match[3],
+  ...bookNotes[index],
+}));
 ---
 
 <Layout title="Why these skills exist" active="approach">
@@ -19,8 +51,48 @@ import { renderMarkdown } from "../../lib/markdown";
     </p>
     <div
       class="prose approach-prose"
-      set:html={renderMarkdown(content.replace(/^# .*\n/, ""), "docs")}
+      set:html={renderMarkdown(approach.replace(/^# .*\n/, ""), "docs")}
     />
+    <section class="reading" aria-labelledby="further-reading">
+      <header>
+        <p class="eyebrow">The ideas behind the workflows</p>
+        <h2 id="further-reading">Further reading</h2>
+        <p>
+          Four books that shaped the toolkit. Start with the idea you want to
+          explore.
+        </p>
+      </header>
+      <div class="book-grid">
+        {books.map((book) => (
+          <article class="book-card">
+            <div class="book-topic">
+              <Icon name="book" />
+              <span>{book.topic}</span>
+            </div>
+            <h3>
+              <a href={book.href}>{book.title}</a>
+            </h3>
+            <p class="book-author">{book.author}</p>
+            <p class="book-idea">{book.idea}</p>
+            <div class="book-skills">
+              <span>In practice</span>
+              <div>
+                {book.skills.map((name) => (
+                  <a href={`/skills/${name}/`}>{name}</a>
+                ))}
+              </div>
+            </div>
+            <a
+              class="book-source"
+              href={book.href}
+              aria-label={`About ${book.title} on the publisher or author website`}
+            >
+              About the book <span>Publisher / author site</span>
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
     <a class="button" href="/#library">
       Find your next skill →
     </a>
@@ -44,6 +116,110 @@ import { renderMarkdown } from "../../lib/markdown";
   .approach-prose {
     max-width: none;
     margin: 24px 0;
+  }
+  .reading {
+    margin: 36px 0;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .reading header h2 {
+    margin: 10px 0 12px;
+    font-size: 32px;
+  }
+  .reading header > p:last-child {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .book-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: white;
+  }
+  .book-topic {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .book-card h3 {
+    font-size: 23px;
+    letter-spacing: -0.035em;
+    line-height: 1.25;
+  }
+  .book-card h3 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .book-author {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .book-idea {
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 18px 0 22px;
+  }
+  .book-skills {
+    margin-top: auto;
+  }
+  .book-skills > span {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .book-skills > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 9px 0 20px;
+  }
+  .book-skills a {
+    font: 11px var(--mono);
+    background: #eef1e7;
+    border-radius: 6px;
+    padding: 7px 9px;
+    overflow-wrap: anywhere;
+  }
+  .book-skills a:hover {
+    background: #dfe6d4;
+  }
+  .book-source {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .book-source:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .book-source span {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  @media (max-width: 600px) {
+    .book-grid {
+      grid-template-columns: 1fr;
+    }
+    .book-card {
+      padding: 20px;
+    }
   }
   @media (max-width: 780px) {
     .approach-page {
