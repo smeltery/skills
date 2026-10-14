@@ -4,9 +4,36 @@ import SkillFinder from "../components/SkillFinder";
 import CopyCommand from "../components/CopyCommand.astro";
 import Icon from "../components/Icon.astro";
 import { skills, previews, groups, installCommand } from "../lib/catalog";
+const site = Astro.site;
 ---
 
 <Layout title="Better workflows for your coding agent" active="explore">
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Smeltery Skills library",
+      url: site,
+      description:
+        "Portable workflows for planning, building, reviewing, and communicating with coding agents.",
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: skills.length,
+        itemListElement: skills.map((skill, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "CreativeWork",
+            name: skill.name,
+            description: skill.summary,
+            url: new URL(`/skills/${skill.name}/`, site),
+            license: "https://github.com/smeltery/skills/blob/main/LICENSE",
+          },
+        })),
+      },
+    })}
+  />
   <section class="wrap hero">
     <div class="hero-copy">
       <p class="eyebrow">
