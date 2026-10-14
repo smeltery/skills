@@ -5,7 +5,7 @@ import { installCommand, repository } from "../../lib/catalog";
 ---
 
 <Layout title="Getting started" active="start">
-  <div class="wrap guide-page">
+  <div class="wrap guide-page installation-page">
     <p class="eyebrow">A small addition to your workflow</p>
     <h1>
       Your next skill.
@@ -61,46 +61,56 @@ import { installCommand, repository } from "../../lib/catalog";
           checkout, this repository also includes{" "}
           <code>scripts/link-skills.sh</code>.
         </p>
-        <h2 id="questions">Common questions</h2>
-        <details>
-          <summary>Which agent can I use?</summary>
-          <p>
-            The skills installer supports agents including Claude Code, Codex,
-            and Cursor. The instructions are portable Markdown, but individual
-            skills may require additional tools. Read each skill’s instructions
-            before using it.
+        <section class="faq" aria-labelledby="questions">
+          <h2 id="questions">Common questions</h2>
+          <p class="faq-intro">A few useful answers before you get started.</p>
+          <div class="faq-list">
+            <details>
+              <summary>Which agent can I use?</summary>
+              <p>
+                The skills installer supports agents including Claude Code,
+                Codex, and Cursor. The instructions are portable Markdown, but
+                individual skills may require additional tools. Read each
+                skill’s instructions before using it.
+              </p>
+            </details>
+            <details>
+              <summary>Should I install every skill?</summary>
+              <p>
+                Start with a specific task. Install a skill for that task, learn
+                its workflow, and expand your toolkit when it helps.
+              </p>
+            </details>
+            <details>
+              <summary>What if my agent doesn’t find the skill?</summary>
+              <p>
+                Check that you installed it for the agent and scope you’re
+                using. Start a new session if your agent requires it, then name
+                the skill explicitly. Review the installer’s output for the
+                destination directory.
+              </p>
+            </details>
+            <details>
+              <summary>How is the repository licensed?</summary>
+              <p>
+                The repository uses the PolyForm Shield 1.0.0 license. Some
+                skills include third-party material with separate attribution.
+                Review the{" "}
+                <a href={`${repository}/blob/main/LICENSE`}>license</a> and{" "}
+                <a href={`${repository}/blob/main/THIRD_PARTY_LICENSES.md`}>
+                  third-party notices
+                </a>
+                .
+              </p>
+            </details>
+          </div>
+          <p class="faq-help">
+            Still stuck?{" "}
+            <a href={`${repository}/issues`}>Ask a question on GitHub</a>.
           </p>
-        </details>
-        <details>
-          <summary>Should I install every skill?</summary>
-          <p>
-            Start with a specific task. Install a skill for that task, learn its
-            workflow, and expand your toolkit when it helps.
-          </p>
-        </details>
-        <details>
-          <summary>What if my agent doesn’t find the skill?</summary>
-          <p>
-            Check that you installed it for the agent and scope you’re using.
-            Start a new session if your agent requires it, then name the skill
-            explicitly. Review the installer’s output for the destination
-            directory.
-          </p>
-        </details>
-        <details>
-          <summary>How is the repository licensed?</summary>
-          <p>
-            The repository uses the PolyForm Shield 1.0.0 license. Some skills
-            include third-party material with separate attribution. Review the{" "}
-            <a href={`${repository}/blob/main/LICENSE`}>license</a> and{" "}
-            <a href={`${repository}/blob/main/THIRD_PARTY_LICENSES.md`}>
-              third-party notices
-            </a>
-            .
-          </p>
-        </details>
+        </section>
       </article>
-      <aside class="guide-aside">
+      <aside class="guide-aside" aria-label="Guide navigation">
         <p class="eyebrow">On this page</p>
         <a href="#install">Choose and install</a>
         <a href="#invoke">Use a skill</a>
@@ -116,3 +126,146 @@ import { installCommand, repository } from "../../lib/catalog";
     </div>
   </div>
 </Layout>
+
+<style>
+  .installation-page {
+    max-width: 1100px;
+    padding-block: 40px 56px;
+  }
+  .installation-page h1 {
+    font-size: clamp(38px, 4.2vw, 58px);
+    margin: 14px 0 18px;
+  }
+  .installation-page .lead {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+  .guide-grid {
+    grid-template-columns: minmax(0, 1fr) 200px;
+    gap: 40px;
+    margin-top: 28px;
+  }
+  .prose > h2:first-child {
+    margin-top: 0;
+  }
+  .guide-aside {
+    margin-top: 0;
+    padding-left: 20px;
+  }
+  .faq {
+    margin-top: 32px;
+  }
+  .faq h2 {
+    margin-bottom: 8px;
+  }
+  .faq .faq-intro {
+    margin: 0 0 18px;
+  }
+  .faq-list {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--white);
+  }
+  .faq details {
+    border: 0;
+    padding: 0;
+  }
+  .faq details + details {
+    border-top: 1px solid var(--line);
+  }
+  .faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 58px;
+    padding: 15px 20px;
+    list-style: none;
+    cursor: pointer;
+    line-height: 1.5;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq summary::after {
+    content: "";
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    background:
+      linear-gradient(var(--accent), var(--accent)) center / 12px 1.5px
+        no-repeat,
+      linear-gradient(var(--accent), var(--accent)) center / 1.5px 12px
+        no-repeat;
+  }
+  .faq details[open] summary::after {
+    background: linear-gradient(var(--accent), var(--accent)) center / 12px
+      1.5px no-repeat;
+  }
+  .faq summary:hover,
+  .faq details[open] summary {
+    background: #eef1e7;
+  }
+  .faq summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -4px;
+    border-radius: 8px;
+  }
+  .faq details > p {
+    margin: 0;
+    padding: 14px 20px 20px;
+    line-height: 1.75;
+    max-width: 70ch;
+  }
+  .faq .faq-help {
+    font-size: 13px;
+    margin-top: 16px;
+  }
+  @media (max-width: 780px) {
+    .installation-page {
+      padding-block: 28px 40px;
+    }
+    .installation-page h1 {
+      font-size: clamp(34px, 8vw, 46px);
+    }
+    .installation-page .lead {
+      font-size: 16px;
+    }
+    .guide-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .guide-aside {
+      grid-row: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 0 18px;
+      border-top: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .guide-aside .eyebrow {
+      width: 100%;
+    }
+    .guide-aside > a:not(.button) {
+      margin: 0;
+      padding: 6px 10px;
+      background: #eceee5;
+      border-radius: 7px;
+    }
+    .guide-aside hr,
+    .guide-aside > p:not(.eyebrow),
+    .guide-aside .button {
+      display: none;
+    }
+    .faq summary {
+      padding-inline: 16px;
+    }
+    .faq details > p {
+      padding-inline: 16px;
+    }
+  }
+</style>
