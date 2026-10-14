@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import content from "../../../../../docs/motivation.md?raw";
+import { renderMarkdown } from "../../lib/markdown";
+---
+
+<Layout title="Why these skills exist" active="approach">
+  <div class="wrap guide-page">
+    <p class="eyebrow">The thinking behind the toolkit</p>
+    <h1>
+      Capability needs
+      <br />
+      <em>a little direction.</em>
+    </h1>
+    <p class="lead">
+      Every skill starts with a problem we kept running into.
+      <br />
+      The workflow is the lesson, written down.
+    </p>
+    <div
+      class="prose approach-prose"
+      set:html={renderMarkdown(content.replace(/^# .*\n/, ""), "docs")}
+    />
+    <a class="button" href="/#library">
+      Find your next skill →
+    </a>
+  </div>
+</Layout>

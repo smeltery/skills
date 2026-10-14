@@ -147,3 +147,18 @@ jobs:
             skills/engineering/ui-studio/scripts/dogfood-portability.sh \
             skills/engineering/ui-studio/scripts/sandbox-reference.sh
           skills/engineering/ui-studio/scripts/dogfood-portability.sh
+
+  website:
+    name: Website
+    runs-on: blacksmith
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build

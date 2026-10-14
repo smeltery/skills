@@ -1,0 +1,118 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CopyCommand from "../../components/CopyCommand.astro";
+import { installCommand, repository } from "../../lib/catalog";
+---
+
+<Layout title="Getting started" active="start">
+  <div class="wrap guide-page">
+    <p class="eyebrow">A small addition to your workflow</p>
+    <h1>
+      Your next skill.
+      <br />
+      <em>Ready when you are.</em>
+    </h1>
+    <p class="lead">
+      Skills are plain Markdown instructions your agent can follow.
+      <br />
+      Install the ones you need, then put them to work.
+    </p>
+    <div class="guide-grid">
+      <article class="prose">
+        <h2 id="install">1. Choose and install</h2>
+        <p>
+          With Node.js and npm installed, open a terminal in your project and
+          run:
+        </p>
+        <CopyCommand command={installCommand()} />
+        <p>
+          The installer lets you pick skills and choose which supported agents
+          to install them for. Follow its prompts to select the installation
+          scope.
+        </p>
+        <p>Already know the skill you want? Install just that one:</p>
+        <CopyCommand command={installCommand("diagnose")} />
+        <h2 id="invoke">2. Ask your agent to use it</h2>
+        <p>Start with a real task and name the skill:</p>
+        <CopyCommand
+          command="Use the diagnose skill to investigate this failing test."
+          label="Copy example prompt"
+        />
+        <p>
+          Most skills can also load automatically when an agent recognizes a
+          matching task. Some run only when you ask; others require a harness
+          event. Every skill page explains its invocation mode.
+        </p>
+        <h2 id="adapt">3. Make the workflow yours</h2>
+        <p>
+          Read the installed SKILL.md. Keep the instructions that help, and
+          adapt the workflow to your project. You can begin with one skill and
+          add more as you need them.
+        </p>
+        <h2 id="manual">Prefer a manual install?</h2>
+        <p>
+          Copy the entire skill directory from the repository into your agent’s
+          skills directory. Include bundled scripts, references, and assets when
+          present. Check your agent’s documentation for its supported location.
+        </p>
+        <p>
+          For Claude Code, a personal skill directory can live at{" "}
+          <code>~/.claude/skills/&lt;skill-name&gt;/</code>. For a local
+          checkout, this repository also includes{" "}
+          <code>scripts/link-skills.sh</code>.
+        </p>
+        <h2 id="questions">Common questions</h2>
+        <details>
+          <summary>Which agent can I use?</summary>
+          <p>
+            The skills installer supports agents including Claude Code, Codex,
+            and Cursor. The instructions are portable Markdown, but individual
+            skills may require additional tools. Read each skill’s instructions
+            before using it.
+          </p>
+        </details>
+        <details>
+          <summary>Should I install every skill?</summary>
+          <p>
+            Start with a specific task. Install a skill for that task, learn its
+            workflow, and expand your toolkit when it helps.
+          </p>
+        </details>
+        <details>
+          <summary>What if my agent doesn’t find the skill?</summary>
+          <p>
+            Check that you installed it for the agent and scope you’re using.
+            Start a new session if your agent requires it, then name the skill
+            explicitly. Review the installer’s output for the destination
+            directory.
+          </p>
+        </details>
+        <details>
+          <summary>How is the repository licensed?</summary>
+          <p>
+            The repository uses the PolyForm Shield 1.0.0 license. Some skills
+            include third-party material with separate attribution. Review the{" "}
+            <a href={`${repository}/blob/main/LICENSE`}>license</a> and{" "}
+            <a href={`${repository}/blob/main/THIRD_PARTY_LICENSES.md`}>
+              third-party notices
+            </a>
+            .
+          </p>
+        </details>
+      </article>
+      <aside class="guide-aside">
+        <p class="eyebrow">On this page</p>
+        <a href="#install">Choose and install</a>
+        <a href="#invoke">Use a skill</a>
+        <a href="#adapt">Make it yours</a>
+        <a href="#manual">Manual installation</a>
+        <a href="#questions">Common questions</a>
+        <hr />
+        <p>Have a task in mind?</p>
+        <a class="button" href="/#library">
+          Find a skill →
+        </a>
+      </aside>
+    </div>
+  </div>
+</Layout>

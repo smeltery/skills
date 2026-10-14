@@ -1,0 +1,146 @@
+---
+import SiteOverlays from "../components/SiteOverlays.astro";
+import "../styles/overlays.css";
+import Icon from "../components/Icon.astro";
+import { repository } from "../lib/catalog";
+import "@fontsource-variable/dm-sans";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "../styles/global.css";
+interface Props {
+  title: string;
+  description?: string;
+  active?: string;
+}
+const {
+  title,
+  description = "Practical skills for coding agents. Find the right workflow, install it in one command, and get back to building.",
+  active = "",
+} = Astro.props;
+const links = [
+  ["Explore skills", "/", "explore"],
+  ["Getting started", "/guides/installation/", "start"],
+  ["Our approach", "/guides/approach/", "approach"],
+];
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site)
+  : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title} · smeltery skills</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f7f2" />
+    <link rel="icon" href="/mark.svg" type="image/svg+xml" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:title" content={`${title} · smeltery skills`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    {canonical && <meta property="og:url" content={canonical} />}
+  </head>
+  <body id="top">
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="/" class="brand" aria-label="smeltery skills home">
+          <img src="/mark.svg" width="32" height="32" alt="" />
+          <span>
+            smeltery<span class="brand-sub"> / skills</span>
+          </span>
+        </a>
+        <nav class="desktop-nav" aria-label="Main navigation">
+          {links.map(([label, href, key]) => (
+            <a href={href} aria-current={active === key ? "page" : undefined}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <button
+          type="button"
+          class="header-search-trigger"
+          data-open-search
+          aria-haspopup="dialog"
+          aria-controls="site-search"
+          aria-label="Search skills and guides"
+          hidden
+        >
+          <Icon name="search" />
+          <span>Search</span>
+          <kbd data-search-shortcut>⌘ K</kbd>
+        </button>
+        <a class="github-link" href={repository} aria-label="GitHub repository">
+          <Icon name="github" />
+          <span>GitHub</span>
+        </a>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+          hidden
+        >
+          Menu <span aria-hidden="true">☰</span>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="/" class="brand">
+              <img src="/mark.svg" width="32" height="32" alt="" />
+              smeltery / skills
+            </a>
+            <p>
+              A little structure.
+              <br />A lot better work.
+            </p>
+            <span>Portable workflows for thoughtful builders.</span>
+          </div>
+          <nav aria-label="Footer library">
+            <h2>The library</h2>
+            <a href="/#library">All skills</a>
+            <a href="/?category=engineering#library">Engineering</a>
+            <a href="/?category=productivity#library">Productivity</a>
+          </nav>
+          <nav aria-label="Footer resources">
+            <h2>Resources</h2>
+            <a href="/guides/installation/">Getting started</a>
+            <a href="/guides/approach/">Why these skills exist</a>
+            <a href={`${repository}/blob/main/docs/contributing.md`}>
+              Contributing{" "}
+            </a>
+          </nav>
+          <nav aria-label="Footer project">
+            <h2>In the open</h2>
+            <a href={repository} class="icon-link">
+              <Icon name="github" /> GitHub repository
+            </a>
+            <a href={`${repository}/issues`}>Feedback & issues</a>
+            <a href={`${repository}/blob/main/THIRD_PARTY_LICENSES.md`}>
+              Credits & acknowledgments
+            </a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <span>© {new Date().getFullYear()} Smeltery Labs</span>
+          <a href={`${repository}/blob/main/LICENSE`}>
+            PolyForm Shield license
+          </a>
+          <span class="footer-note">Built for the way you work.</span>
+          <a href="#top">Back to top ↑</a>
+        </div>
+      </div>
+    </footer>
+    <SiteOverlays active={active} />
+  </body>
+</html>

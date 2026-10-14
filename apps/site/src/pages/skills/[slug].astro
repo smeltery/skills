@@ -1,0 +1,136 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CopyCommand from "../../components/CopyCommand.astro";
+import Icon from "../../components/Icon.astro";
+import { skills, repository, installCommand } from "../../lib/catalog";
+import { renderMarkdown } from "../../lib/markdown";
+export function getStaticPaths() {
+  return skills.map((skill) => ({
+    params: { slug: skill.name },
+    props: { skill },
+  }));
+}
+const { skill } = Astro.props;
+const related = skills
+  .filter((item) => item.group === skill.group && item.name !== skill.name)
+  .slice(0, 3);
+const usage =
+  skill.invocation === "Agent only"
+    ? "This skill is dispatched by an agent harness. It is not intended to be invoked by hand."
+    : skill.invocation === "User only"
+      ? `Ask your agent to use ${skill.name}. This skill runs only when you request it.`
+      : `Ask your agent to use ${skill.name}, or let it load the skill when your task matches the description.`;
+---
+
+<Layout title={skill.name} description={skill.summary} active="explore">
+  <div class="wrap detail-page">
+    <a class="back-link" href="/#library">
+      ← Back to all skills
+    </a>
+    <div class="detail-grid">
+      <article>
+        <p class="eyebrow">
+          {skill.category} / {skill.group}
+        </p>
+        <h1 class="skill-title">{skill.name}</h1>
+        <p class="lead">{skill.summary}</p>
+        <div class="skill-facts">
+          <span>Markdown workflow</span>
+          <span>{skill.invocation}</span>
+        </div>
+        <nav class="jump-links" aria-label="On this page">
+          <a href="#overview">Overview</a>
+          <a href="#use">How to use</a>
+          <a href="#instructions">Full instructions</a>
+        </nav>
+        <section id="use" class="usage-section">
+          <h2>Put it to work.</h2>
+          <p>{usage}</p>
+          {skill.invocation !== "Agent only" && (
+            <CopyCommand
+              command={`Use the ${skill.name} skill${skill.argumentHint ? ` ${skill.argumentHint}` : ""}`}
+              label="Copy example prompt"
+            />
+          )}
+          <p class="small">
+            Invocation syntax varies by agent. Use the skill name in your
+            prompt, or your agent’s supported slash command.
+          </p>
+        </section>
+        <section id="overview">
+          <h2>About this skill</h2>
+          <div
+            class="prose"
+            set:html={renderMarkdown(
+              skill.readme.replace(/^# .*\n/, ""),
+              skill.sourcePath,
+            )}
+          />
+        </section>
+        <section id="instructions" class="instructions">
+          <details>
+            <summary>
+              Read the full SKILL.md <span aria-hidden="true">＋</span>
+            </summary>
+            <div
+              class="prose"
+              set:html={renderMarkdown(skill.content, skill.sourcePath)}
+            />
+          </details>
+        </section>
+      </article>
+      <aside class="detail-install">
+        <p class="eyebrow">Add to your toolkit</p>
+        <h2>Install {skill.name}</h2>
+        <p>Run this in your terminal, then choose the agent you use.</p>
+        <CopyCommand command={installCommand(skill.name)} />
+        <a href="/guides/installation/" class="text-link">
+          Installation guide
+        </a>
+        <hr />
+        <dl>
+          <div>
+            <dt>Category</dt>
+            <dd>{skill.category}</dd>
+          </div>
+          <div>
+            <dt>Invocation</dt>
+            <dd>{skill.invocation}</dd>
+          </div>
+          <div>
+            <dt>Format</dt>
+            <dd>SKILL.md</dd>
+          </div>
+        </dl>
+        <a
+          href={`${repository}/tree/main/${skill.sourcePath}`}
+          class="icon-link"
+        >
+          <Icon name="github" /> View source on GitHub
+        </a>
+      </aside>
+    </div>
+    {related.length > 0 && (
+      <section class="related">
+        <p class="eyebrow">Keep the work moving</p>
+        <h2>Good company for this skill.</h2>
+        <div class="skill-grid">
+          {related.map((item) => (
+            <a class="skill-card" href={`/skills/${item.name}/`}>
+              <div class="card-top">
+                <span class="card-category">{item.group}</span>
+              </div>
+              <h3>{item.name}</h3>
+              <p>{item.summary}</p>
+              <div class="card-bottom">View skill</div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</Layout>
+
+<script>
+  import "../../client/diagrams";
+</script>

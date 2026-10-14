@@ -1,0 +1,18 @@
+{
+  "name": "smeltery-skills",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/site"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @smeltery/skills-site",
+    "build": "npm run build --workspace @smeltery/skills-site",
+    "check": "npm run check --workspace @smeltery/skills-site",
+    "preview": "npm run preview --workspace @smeltery/skills-site",
+    "test": "npm run test --workspace @smeltery/skills-site"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

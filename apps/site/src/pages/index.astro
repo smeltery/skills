@@ -1,0 +1,135 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SkillFinder from "../components/SkillFinder";
+import CopyCommand from "../components/CopyCommand.astro";
+import Icon from "../components/Icon.astro";
+import { skills, previews, groups, installCommand } from "../lib/catalog";
+---
+
+<Layout title="Better workflows for your coding agent" active="explore">
+  <section class="wrap hero">
+    <div class="hero-copy">
+      <p class="eyebrow">
+        <span class="status-dot"></span> The smeltery skill library
+      </p>
+      <h1>
+        Good agents.
+        <br />
+        <em>Better instincts.</em>
+      </h1>
+      <p class="lead">
+        Give your coding agent a proven way to work.
+        <br class="desktop-break" /> Practical skills for the thinking,
+        building, and shipping.
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="#library">
+          Find your next skill <Icon />
+        </a>
+        <a class="text-link" href="/guides/installation/">
+          How it works{" "}
+        </a>
+      </div>
+      <div class="hero-meta">
+        <span>{skills.length} focused skills</span>
+        <span>Plain Markdown</span>
+        <span>Yours to adapt</span>
+      </div>
+    </div>
+    <aside class="hero-install" aria-labelledby="install-title">
+      <div class="install-heading">
+        <span class="eyebrow">Less prompting. More progress.</span>
+      </div>
+      <div class="terminal-mark" aria-hidden="true">
+        &gt;_
+      </div>
+      <h2 id="install-title">
+        A better workflow.
+        <br />
+        One command away.
+      </h2>
+      <p>
+        Choose your skills. Pick your agent.
+        <br />
+        Get back to the work that matters.
+      </p>
+      <CopyCommand command={installCommand()} />
+      <div class="install-foot">
+        <span class="status-dot"></span> Works with agents that support skills
+      </div>
+    </aside>
+  </section>
+  <div class="principles wrap">
+    <p>
+      Small files.
+      <br />
+      <strong>Real improvements.</strong>
+    </p>
+    <span>
+      <span aria-hidden="true">◇</span> Plan with clarity
+    </span>
+    <span>
+      <span aria-hidden="true">⌘</span> Build with confidence
+    </span>
+    <span>
+      <span aria-hidden="true">✓</span> Ship with care
+    </span>
+  </div>
+  <section
+    class="wrap library-section"
+    id="library"
+    aria-labelledby="library-heading"
+  >
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">A skill for the next step</p>
+        <h2 id="library-heading">What are you working on?</h2>
+      </div>
+      <p>
+        Start with the outcome.
+        <br />
+        Find the workflow that gets you there.
+      </p>
+    </div>
+    <SkillFinder skills={previews} groups={Object.keys(groups)} client:load />
+  </section>
+  <section class="getting-started">
+    <div class="wrap">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">From discovery to doing</p>
+          <h2>Three steps. Then it’s yours.</h2>
+        </div>
+        <a class="text-link" href="/guides/installation/">
+          Read the getting started guide
+        </a>
+      </div>
+      <ol class="steps">
+        <li>
+          <span>01</span>
+          <h3>Find your starting point.</h3>
+          <p>
+            Pick a skill for the work in front of you. A stubborn bug, a new
+            idea, or a diff that needs another look.
+          </p>
+        </li>
+        <li>
+          <span>02</span>
+          <h3>Make it available.</h3>
+          <p>
+            Copy the install command. Choose your agent in the installer, and
+            add the skill to your project.
+          </p>
+        </li>
+        <li>
+          <span>03</span>
+          <h3>Put it to work.</h3>
+          <p>
+            Ask your agent to use the skill. It follows the workflow, and you
+            stay in control of the result.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+</Layout>

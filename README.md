@@ -122,6 +122,13 @@ yourself, even though the agent may reach for it when the description fits.
 - **[Installation](./docs/installation.md)** — quickstart and manual install.
 - **[Contributing](./docs/contributing.md)** — skill layout, conventions, and repository structure.
 
+## Website
+
+An Astro website in `apps/site/` provides searchable skill discovery, individual
+skill pages, and installation guidance. Run `npm ci` and `npm run dev` to preview
+it locally. See [website development](./docs/website.md) for architecture, checks,
+and static hosting instructions.
+
 ## Attributions
 
 Several skills are ported from

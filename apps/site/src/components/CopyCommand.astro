@@ -1,0 +1,40 @@
+---
+import { highlightCommand } from "../lib/highlight";
+interface Props {
+  command: string;
+  label?: string;
+}
+const { command, label = "Copy command" } = Astro.props;
+---
+
+<div class="command">
+  <code set:html={highlightCommand(command)} />
+  <button type="button" data-copy={command} aria-label={label} hidden>
+    Copy <span aria-hidden="true">⧉</span>
+  </button>
+</div>
+<p class="copy-status sr-only" role="status"></p>
+<script>
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-copy]")
+    .forEach((button) => {
+      button.hidden = false;
+      button.addEventListener("click", async () => {
+        const status = button.parentElement?.nextElementSibling;
+        try {
+          await navigator.clipboard.writeText(button.dataset.copy!);
+          button.textContent = "Copied ✓";
+          if (status) status.textContent = "Command copied to clipboard.";
+          window.setTimeout(() => {
+            button.textContent = "Copy ⧉";
+          }, 2000);
+        } catch {
+          if (status) {
+            status.classList.remove("sr-only");
+            status.textContent =
+              "Clipboard unavailable. Select and copy the command above.";
+          }
+        }
+      });
+    });
+</script>

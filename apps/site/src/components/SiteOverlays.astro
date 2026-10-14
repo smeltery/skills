@@ -1,0 +1,260 @@
+---
+import Icon from "./Icon.astro";
+import { groups, skills, repository } from "../lib/catalog";
+import type { SearchEntry } from "../lib/search";
+interface Props {
+  active: string;
+}
+const { active } = Astro.props;
+const recommended = [
+  "diagnose",
+  "tdd",
+  "review",
+  "design",
+  "zoom-out",
+  "handoff",
+];
+const entries: SearchEntry[] = [
+  {
+    title: "Getting started",
+    description: "Install your first skill and put it to work.",
+    keywords: "installation setup agents command help",
+    kind: "guides",
+    href: "/guides/installation/",
+  },
+  {
+    title: "Explore all skills",
+    description: `Find your next workflow in the ${skills.length}-skill library.`,
+    keywords: "browse library catalog filters",
+    kind: "guides",
+    href: "/#library",
+  },
+  {
+    title: "Our approach",
+    description: "The problems these workflows are designed to solve.",
+    keywords: "about philosophy why motivation",
+    kind: "guides",
+    href: "/guides/approach/",
+  },
+  ...[...skills]
+    .sort(
+      (a, b) =>
+        (recommended.includes(a.name) ? recommended.indexOf(a.name) : 99) -
+        (recommended.includes(b.name) ? recommended.indexOf(b.name) : 99),
+    )
+    .map((skill) => ({
+      title: skill.name,
+      description: skill.summary,
+      keywords: `${skill.description} ${skill.category} ${skill.group}`,
+      kind: "skills" as const,
+      href: `/skills/${skill.name}/`,
+    })),
+];
+const taskIcons: Record<string, string> = {
+  "Plan & design": "compass",
+  "Build & debug": "code",
+  "Review & improve": "check",
+  "Git & commits": "branch",
+  "Work & communicate": "chat",
+};
+---
+
+<dialog id="site-search" class="search-dialog" aria-labelledby="search-title">
+  <div class="overlay-heading">
+    <div>
+      <p class="eyebrow">The Smeltery library</p>
+      <h2 id="search-title">Find your next step.</h2>
+    </div>
+    <button
+      type="button"
+      class="close-overlay"
+      data-close-overlay
+      aria-label="Close search"
+    >
+      <Icon name="close" />
+    </button>
+  </div>
+  <div class="panel-search">
+    <Icon name="search" />
+    <label class="sr-only" for="global-search">
+      Search skills and guides
+    </label>
+    <input
+      id="global-search"
+      type="search"
+      placeholder="Search skills, tasks, or guides…"
+      autocomplete="off"
+      spellcheck="false"
+      aria-controls="search-results"
+    />
+    <button type="button" data-clear-search hidden aria-label="Clear search">
+      <Icon name="close" />
+    </button>
+  </div>
+  <div class="search-scopes" role="group" aria-label="Search within">
+    {[
+      ["all", "Everything"],
+      ["skills", "Skills"],
+      ["guides", "Guides"],
+    ].map(([scope, label]) => (
+      <button
+        type="button"
+        data-search-scope={scope}
+        aria-pressed={scope === "all"}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+  <div class="search-results-scroll">
+    <p class="search-section-title" id="search-section-title">
+      Good places to start
+    </p>
+    <nav id="search-results" aria-label="Search results">
+      {entries.map((entry) => (
+        <a
+          href={entry.href}
+          class="search-result"
+          data-search-entry={JSON.stringify(entry)}
+        >
+          <span class="result-icon">
+            <Icon name={entry.kind === "skills" ? "code" : "book"} />
+          </span>
+          <span class="result-copy">
+            <strong>{entry.title}</strong>
+            <small>{entry.description}</small>
+          </span>
+          <span class="result-kind">
+            {entry.kind === "skills" ? "Skill" : "Guide"}
+          </span>
+        </a>
+      ))}
+    </nav>
+    <div class="search-no-results" hidden>
+      <Icon name="search" />
+      <h3>No matches this time.</h3>
+      <p>
+        Try “debug”, “review”, or “install”.
+        <br />
+        You can also explore the full skill library.
+      </p>
+      <button type="button" class="button secondary" data-reset-search>
+        Reset search
+      </button>
+    </div>
+  </div>
+  <div class="search-panel-footer">
+    <p role="status" aria-live="polite" data-search-status></p>
+    <span class="search-key-help">
+      <span>
+        <kbd>↑</kbd>
+        <kbd>↓</kbd> Move
+      </span>
+      <span>
+        <kbd>↵</kbd> Open
+      </span>
+      <span>
+        <kbd>esc</kbd> Close
+      </span>
+    </span>
+  </div>
+</dialog>
+<dialog id="mobile-menu" class="mobile-dialog" aria-labelledby="mobile-title">
+  <div class="mobile-panel-heading">
+    <a class="brand" href="/">
+      <img src="/mark.svg" width="30" height="30" alt="" />
+      smeltery<span class="brand-sub"> / skills</span>
+    </a>
+    <button
+      type="button"
+      class="close-overlay"
+      data-close-overlay
+      autofocus
+      aria-label="Close navigation"
+    >
+      <Icon name="close" />
+    </button>
+  </div>
+  <div class="mobile-panel-body">
+    <p class="eyebrow">A little direction goes a long way</p>
+    <h2 id="mobile-title">What’s next?</h2>
+    <button class="mobile-search-trigger" data-open-search type="button">
+      <Icon name="search" />
+      <span>Search skills & guides</span>
+      <kbd data-search-shortcut>⌘ K</kbd>
+    </button>
+    <nav class="mobile-primary" aria-label="Mobile navigation">
+      <a
+        class="mobile-feature-card"
+        href="/#library"
+        aria-current={active === "explore" ? "page" : undefined}
+      >
+        <span class="nav-card-icon">
+          <Icon name="grid" />
+        </span>
+        <span>
+          <strong>Explore skills</strong>
+          <small>Find a workflow for the work ahead.</small>
+        </span>
+        <span class="nav-count">{skills.length}</span>
+      </a>
+      <div class="mobile-resource-grid">
+        <a
+          href="/guides/installation/"
+          aria-current={active === "start" ? "page" : undefined}
+        >
+          <Icon name="book" />
+          <strong>Getting started</strong>
+          <small>From install to your first task.</small>
+        </a>
+        <a
+          href="/guides/approach/"
+          aria-current={active === "approach" ? "page" : undefined}
+        >
+          <Icon name="compass" />
+          <strong>Our approach</strong>
+          <small>Good workflows, written down.</small>
+        </a>
+      </div>
+    </nav>
+    <section class="mobile-tasks" aria-labelledby="mobile-tasks-title">
+      <div class="mobile-section-label">
+        <h3 id="mobile-tasks-title">Browse by task</h3>
+        <span>Start with an outcome</span>
+      </div>
+      <nav aria-label="Skill categories">
+        {Object.keys(groups).map((group) => (
+          <a href={`/?category=${encodeURIComponent(group)}#library`}>
+            <span class="nav-card-icon">
+              <Icon name={taskIcons[group]} />
+            </span>
+            <span>{group}</span>
+            <small>
+              {skills.filter((skill) => skill.group === group).length} skills
+            </small>
+          </a>
+        ))}
+      </nav>
+    </section>
+    <aside class="mobile-starter">
+      <p class="eyebrow">Not sure where to begin?</p>
+      <h3>A stubborn bug is a good start.</h3>
+      <p>
+        Meet diagnose: a clear path from “something’s broken” to a fix you can
+        prove.
+      </p>
+      <a href="/skills/diagnose/">Explore diagnose</a>
+    </aside>
+  </div>
+  <div class="mobile-panel-footer">
+    <a href={repository} class="icon-link">
+      <Icon name="github" />
+      GitHub
+    </a>
+    <a href={`${repository}/issues`}>Feedback & issues</a>
+    <span class="mobile-footer-note">Made to fit your day.</span>
+  </div>
+</dialog>
+<script>
+  import "../client/navigation";
+</script>

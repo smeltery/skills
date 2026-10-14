@@ -1,0 +1,151 @@
+.workflow-diagram {
+  margin: 25px 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: white;
+}
+.diagram-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 16px;
+  background: #f1f3eb;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+}
+.diagram-toolbar > span {
+  font-weight: 550;
+}
+.diagram-toolbar button {
+  background: white;
+  border: 1px solid #cbd3c1;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 11px;
+}
+.diagram-toolbar button:hover {
+  background: var(--sage);
+}
+.diagram-canvas {
+  padding: 22px 16px;
+  overflow-x: auto;
+  text-align: center;
+}
+.diagram-canvas svg {
+  display: block;
+  height: auto;
+  margin: auto;
+}
+.workflow-diagram details {
+  padding: 12px 16px;
+  border-bottom: 0;
+}
+.workflow-diagram details summary {
+  font-size: 11px;
+  color: var(--muted);
+}
+.workflow-diagram details pre {
+  font-size: 11px;
+  margin-bottom: 0;
+}
+.diagram-status {
+  padding: 18px;
+  font-size: 12px;
+}
+.diagram-dialog {
+  width: min(1200px, calc(100% - 40px));
+  max-width: none;
+  height: min(850px, calc(100dvh - 40px));
+  max-height: none;
+  margin: auto;
+  border-radius: 20px;
+}
+.diagram-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.diagram-dialog-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 26px;
+  border-bottom: 1px solid var(--line);
+}
+.diagram-dialog-heading h2 {
+  font-size: 26px;
+  margin-top: 6px;
+}
+.diagram-dialog .close-overlay {
+  font-size: 25px;
+}
+.diagram-viewer-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 26px;
+}
+.diagram-viewer-controls button {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-width: 36px;
+  min-height: 36px;
+  padding-inline: 10px;
+  font-size: 12px;
+}
+.diagram-viewer-controls button:hover {
+  background: var(--sage);
+}
+.diagram-viewer-controls output {
+  min-width: 44px;
+  text-align: center;
+  font: 11px var(--mono);
+}
+.diagram-expanded {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: white;
+  margin: 0 20px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.diagram-expanded svg {
+  display: block;
+  height: auto;
+}
+.diagram-viewer-hint {
+  font-size: 11px;
+  padding: 12px 26px 18px;
+}
+@media (max-width: 780px) {
+  .diagram-dialog {
+    width: calc(100% - 20px);
+    height: calc(100dvh - 20px);
+    border-radius: 16px;
+  }
+  .diagram-dialog-heading {
+    padding: 18px;
+  }
+  .diagram-dialog-heading h2 {
+    font-size: 24px;
+  }
+  .diagram-expanded {
+    margin-inline: 12px;
+    padding: 14px;
+  }
+  .diagram-viewer-controls {
+    padding-inline: 18px;
+  }
+  .diagram-canvas svg {
+    min-width: 540px;
+  }
+  .diagram-canvas {
+    padding: 16px;
+  }
+}
