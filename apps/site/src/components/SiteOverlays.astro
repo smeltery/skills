@@ -1,4 +1,5 @@
 ---
+import { taskIcons } from "../lib/icons";
 import Icon from "./Icon.astro";
 import { groups, skills, repository } from "../lib/catalog";
 import type { SearchEntry } from "../lib/search";
@@ -50,13 +51,6 @@ const entries: SearchEntry[] = [
       href: `/skills/${skill.name}/`,
     })),
 ];
-const taskIcons: Record<string, string> = {
-  "Plan & design": "compass",
-  "Build & debug": "code",
-  "Review & improve": "check",
-  "Git & commits": "branch",
-  "Work & communicate": "chat",
-};
 ---
 
 <dialog id="site-search" class="search-dialog" aria-labelledby="search-title">

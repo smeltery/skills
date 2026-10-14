@@ -1,14 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import type { SkillPreview } from "../lib/catalog";
+import { iconPaths, taskIcons } from "../lib/icons";
 import { filterSkills } from "../lib/filter";
 
-const symbols: Record<string, string> = {
-  "Plan & design": "◇",
-  "Build & debug": "⌘",
-  "Review & improve": "✓",
-  "Git & commits": "⑂",
-  "Work & communicate": "≡",
-};
+function TaskIcon({ group }: { group: string }) {
+  return (
+    <svg
+      className="icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      dangerouslySetInnerHTML={{
+        __html: iconPaths[taskIcons[group] || "grid"],
+      }}
+    />
+  );
+}
 const featured = [
   "diagnose",
   "tdd",
@@ -105,7 +116,7 @@ export default function SkillFinder({
             >
               <span>
                 <span className="filter-symbol" aria-hidden="true">
-                  {symbols[group] || "▦"}
+                  <TaskIcon group={group} />
                 </span>
                 {group}
               </span>
@@ -192,7 +203,7 @@ export default function SkillFinder({
                   className={`skill-symbol tone-${groups.indexOf(skill.group)}`}
                   aria-hidden="true"
                 >
-                  {symbols[skill.group] || "◇"}
+                  <TaskIcon group={skill.group} />
                 </span>
                 <span className="card-category">{skill.group}</span>
               </div>

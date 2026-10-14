@@ -105,6 +105,7 @@ svg {
   vertical-align: middle;
 }
 svg.icon {
+  display: inline-block;
   width: 19px;
   height: 19px;
   flex-shrink: 0;
@@ -492,9 +493,11 @@ button[hidden],
   color: var(--ink);
 }
 .filter-symbol {
-  font-size: 17px;
-  width: 18px;
-  text-align: center;
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
   color: #64775d;
 }
 .filter-count {
@@ -637,7 +640,6 @@ button[hidden],
   height: 29px;
   display: grid;
   place-items: center;
-  font-size: 19px;
   border-radius: 5px;
   background: #e9ede2;
   flex-shrink: 0;
@@ -1259,7 +1261,6 @@ summary {
   .skill-symbol {
     width: 25px;
     height: 25px;
-    font-size: 17px;
   }
   .skill-card > p {
     font-size: 11px;
@@ -1500,4 +1501,12 @@ body {
 }
 .prose pre.shiki:focus-visible {
   outline-offset: -3px;
+}
+
+.skill-symbol .icon {
+  width: 17px;
+  height: 17px;
+}
+.menu-toggle .icon {
+  margin-left: 6px;
 }
