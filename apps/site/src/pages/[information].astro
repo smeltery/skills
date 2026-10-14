@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import { informationPages } from "../lib/information";
 export function getStaticPaths() {
   return Object.entries(informationPages)
-    .filter(([name]) => name !== "contact")
+    .filter(([name]) => !["contact", "privacy"].includes(name))
     .map(([information, page]) => ({
       params: { information },
       props: { page },
