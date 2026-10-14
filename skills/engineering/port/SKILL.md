@@ -1,6 +1,6 @@
 ---
 name: port
-description: Port an upstream GitHub repository into a fresh private destination repository with a new identity, clean single-commit history, detailed docs, CI/pre-commit/Flox setup, structure cleanup, and upstream-reference sanitization. Use when the user types `/port <source-github-url>` or asks to port one repo into a private org repo.
+description: Port an upstream GitHub repository into a fresh private destination repository with a new identity, clean initial history, detailed docs, CI/pre-commit/Flox setup, structure cleanup, and upstream-reference sanitization. Use when the user types `/port <source-github-url>` or asks to port one repo into a private org repo.
 argument-hint: "<SOURCE-GITHUB-URL>"
 ---
 
@@ -41,6 +41,8 @@ State file: `~/.local/share/port/<source-owner>-<source-repo>.json`.
   "legalHold": false,
   "nameApproved": false,
   "repoCreated": false,
+  "runnerProvider": null,
+  "ciRunIds": [],
   "finalCommitSha": null
 }
 ```
@@ -102,6 +104,22 @@ Read license files and notice files before sanitizing identity. If the license
 requires attribution or preserving notices, set `legalHold: true`, summarize the
 obligation, and stop for user approval. Do not silently remove legally required
 notices.
+
+### 3.4 Runner choice
+
+Ask whether to use Blacksmith or GitHub-hosted Actions runners unless the user
+already chose. Record `runnerProvider` in state and confirm available labels,
+platforms, and organization access before writing workflows. Both choices use
+GitHub Actions; do not silently substitute providers.
+
+### 3.5 Destination license
+
+Copy [assets/LICENSE](assets/LICENSE) byte-for-byte to the destination `LICENSE`.
+Do not substitute a similarly named standard license, change the copyright, or
+mention the template's originating project in generated files or the handoff.
+Preserve required upstream and third-party notices separately. If the source
+license conflicts with applying this license, stop and explain the conflict;
+user approval alone does not remove license obligations.
 
 Set `phase: "name"` when Intake is complete.
 
@@ -211,8 +229,9 @@ git branch -M "$DESTINATION_DEFAULT_BRANCH"
 git remote add origin "git@github.com:$DESTINATION_OWNER/$DESTINATION_NAME.git"
 ```
 
-Do not fork. Do not preserve upstream commits. The final repository must have
-exactly one fresh commit after completion.
+Do not fork. Do not preserve upstream commits. The initial push must contain
+exactly one fresh commit. Subsequent CI repairs may add focused commits; never
+rewrite published history merely to restore a one-commit count.
 
 Set `phase: "sanitize"`.
 
@@ -276,12 +295,16 @@ Create detailed user-facing and contributor-facing docs.
 
 ### 10.1 Root README
 
-Use the destination identity and include the project name, description, badges,
-status, quick start, installation, usage examples, subproject table, common
-tasks, docs links, and license.
+Keep the root README slim: project purpose, high-level capabilities, a working
+quick start, technology/runtime badges, CI/release/license badges, and a link to
+`docs/`. Include a subproject table only for a monorepo. Link badges to real
+destination workflows, releases, and tools; omit unsupported claims.
 
-The shape should be comparable to a mature monorepo README: badge block, clear
-quick start, subproject table, and concrete commands.
+Put detailed installation, configuration, usage, troubleshooting, architecture,
+and contributor guidance in focused pages under `docs/`, with `docs/README.md`
+as their index. Organize around user tasks, split large topics into linked
+subdirectories, and verify examples against actual behavior. Include Mermaid
+diagrams for meaningful architecture or workflow explanations.
 
 ### 10.2 Subproject READMEs
 
@@ -309,8 +332,7 @@ Make the migrated repo crisp and enforceable before generic tooling work.
 ### 11.1 README and docs
 
 - Slim the root README into a scannable entry point: concise description,
-  destination badges, status, quick start, install/usage, monorepo table, common
-  commands, docs links, and license.
+  destination badges, quick start, `docs/` index, and license.
 - Move long architecture, API, operations, release, configuration, and
   contribution detail into focused docs or subproject READMEs.
 - Normalize docs filenames to lowercase kebab-case with `git mv`, then update
@@ -325,11 +347,14 @@ Make the migrated repo crisp and enforceable before generic tooling work.
 
 ### 11.2 LOC budgets and deflatting
 
-- Install or adapt the `loc-budget` pattern: file-size checker,
+- Use the `loc-budget` skill when available, or implement its equivalent: file-size checker,
   flat-directory checker, budget data files, justified exceptions, and
   pre-commit/CI wiring.
 - Use the destination repo's idiomatic tooling: Python, Node/Bun/Deno, Ruby, Go,
   Rust, shell, or an existing repo-native command.
+- Record a LOC baseline and explicit budgets for handwritten code; prefer deleting
+  duplication and unnecessary abstractions before splitting files. Track net LOC
+  change and avoid satisfying budgets by minifying code or moving it to exclusions.
 - Modularize the worst large-file hitters and reorganize mixed-responsibility
   flat directories before adding exceptions.
 - Keep framework-conventional flat directories only when justified in the
@@ -349,46 +374,67 @@ Configure CI for the destination repo.
 
 Requirements:
 
-- Use Blacksmith runners instead of GitHub-hosted Ubuntu runners.
-- Do not leave `ubuntu-latest` or `ubuntu-*` runners unless the user explicitly
-  approves an exception.
-- Include applicable jobs for formatting, linting, type checking, tests, builds,
-  docs, release smoke checks, and lockfile validation.
-- Use concurrency and least-privilege permissions.
-
-Preferred runner examples:
-
-```yaml
-runs-on: blacksmith-4vcpu-ubuntu-2404
-```
-
-or for small jobs:
-
-```yaml
-runs-on: blacksmith-2vcpu-ubuntu-2404
-```
+- Use the runner provider selected at Intake; validate labels for every OS and
+  architecture, including release jobs. Ask about platform-specific exceptions.
+- Include applicable formatting, lint, typecheck, test, build, dependency/security,
+  shell, Actions syntax, docs-link, LOC/flat-directory, and lockfile checks.
+- Validate Markdown and every Mermaid block in Markdown using a pinned Mermaid
+  parser or renderer; Markdown lint alone does not validate diagram syntax.
+- Share check commands with local hooks and run them in Flox. Use frozen/locked
+  dependency installs, cache keys tied to lockfiles, job timeouts, concurrency,
+  pinned actions, and least-privilege permissions. Avoid duplicate checks/jobs.
 
 ### 12.2 Pre-commit
 
-Configure stack-appropriate hooks. Prefer local hooks for repo-specific checks
-and include checks for shell scripts, GitHub Actions, markdown/docs, file size
-budgets, flat directory budgets, formatting, linting, and tests where useful.
+Configure hooks that invoke the same scripts, versions, configs, and Flox
+environment as CI, including Markdown, Mermaid, and budget checks. Fast checks
+run at commit time; expensive full suites can run at pre-push with a documented
+full local command. Publishing and credentials-dependent checks remain CI-only;
+document those exceptions. A missing tool must fail clearly, not skip a gate.
 
-Document:
+Document and verify `pre-commit install`, any pre-push installation, and
+`pre-commit run --all-files` from a clean checkout.
 
-```bash
-pre-commit install
-pre-commit run --all-files
-```
+### 12.3 Flox and Bun
 
-### 12.3 Flox
+Make Flox the shared development and CI toolchain: commit the environment
+manifest and lockfile, declare runtimes and validation/release tools, and expose
+consistent build, test, lint, docs, and budget commands. Document activation,
+hook setup, and running the same checks locally and in CI. Validate a clean
+activation and document platform limitations rather than silently bypassing it.
 
-Use Flox where practical for toolchain reproducibility:
+Prefer Bun for compatible JavaScript/TypeScript dependency installation,
+scripts, tests, and docs tooling. Check framework and lifecycle-script
+compatibility before migrating; retain required Node runtimes. Pin Bun through
+Flox, commit its lockfile, use frozen installs in CI, and remove obsolete
+lockfiles only after validating the migration. Do not introduce a JS toolchain
+solely to replace adequate native tooling.
 
-- Add `.flox/env/manifest.toml` when the project has enough tooling to benefit.
-- Pin major runtimes and CLIs where possible.
-- Add activation instructions to README/docs.
-- Use Flox in CI for common hygiene gates when practical.
+### 12.4 Automatic releases
+
+Implement `.github/workflows/auto-release.yml` and `release.yml` adapted to the
+destination stack and artifacts:
+
+- Trigger auto-release on successful completion of the named CI workflow for a
+  push to the destination default branch, never a pull request or fork run.
+- Check out and tag the successful run's exact `head_sha`, not a newer untested
+  branch head. Serialize tagging; fetch tags and reuse an existing semantic
+  version tag on that SHA. Start at `v0.1.0`, then increment the latest stable
+  patch version unless the project has an established versioning policy.
+- Explicitly dispatch `release.yml` with the tag after pushing it: do not rely
+  on a tag pushed with `GITHUB_TOKEN` triggering another workflow. Grant only
+  the auto-release job the required contents/actions write permissions.
+- Support tag-push and manual tag-input release triggers. Validate the tag,
+  build from its immutable commit, run preflight checks, package appropriate
+  platform artifacts with checksums, and publish generated release notes.
+- Serialize release runs by tag across both triggers. Verify expected assets
+  and checksums; retries must reuse tags and complete missing release work,
+  including dispatch recovery when tag creation succeeded on an earlier run.
+- Adapt package names, version injection, targets, secrets, and badge URLs to
+  the destination. Do not copy unrelated integrations or project references.
+
+Document triggers, versioning, permissions, artifacts, and retry procedures in
+`docs/releasing.md`; validate packaging locally without publishing.
 
 Set `phase: "validate"`.
 
@@ -404,7 +450,7 @@ Run repository audits:
 
 ```bash
 rg -n "$SOURCE_OWNER|$SOURCE_REPO|github.com/$SOURCE_OWNER/$SOURCE_REPO" .
-rg -n "ubuntu-latest|runs-on: ubuntu-" .github/workflows || true
+rg -n "runs-on:" .github/workflows
 find docs -type f 2>/dev/null | rg '/[A-Z][^/]*$' || true
 git log --oneline
 git remote -v
@@ -414,8 +460,9 @@ Confirm no disallowed upstream references/history remain, the destination remote
 is correct, README is slim and linked to detail docs, docs filenames are
 lowercase except conventional files, Mermaid diagrams are useful and valid,
 badges point to the destination repo, LOC/flat-directory budgets pass, >1000 LOC
-files and flat directories are improved or justified, CI uses Blacksmith
-runners, and pre-commit/Flox are documented.
+files and flat directories are improved or justified, CI uses the selected
+runner provider, the license matches the bundled asset exactly, and shared
+pre-commit/Flox checks and automatic releases are documented.
 
 If a validation failure cannot be fixed, document it in the handoff and stop for
 user approval before committing.
@@ -426,7 +473,9 @@ Set `phase: "commit"`.
 
 ## 14. Final Commit
 
-Create exactly one fresh commit.
+On the first push, create exactly one fresh commit. On resume, inspect the
+remote and recorded SHA first; if already pushed, continue monitoring or add
+only necessary repair commits.
 
 Requirements: conventional commit format, human-written message, no upstream
 mention, no AI attribution, no `Co-Authored-By`, and no generated-by footer.
@@ -446,19 +495,34 @@ git log --oneline
 git push -u origin HEAD
 ```
 
-Verify there is exactly one commit:
+Before the initial push, verify there is exactly one commit:
 
 ```bash
 test "$(git rev-list --count HEAD)" -eq 1
 ```
 
-Set `phase: "handoff"`.
+### 14.1 Monitor CI and releases
+
+After every push, discover runs for the pushed SHA and watch them to completion
+with `gh run watch <run-id> --exit-status`. Also track the downstream auto-release
+and release runs for that commit/tag; a green build alone is insufficient.
+Record run IDs and the final SHA in state so monitoring can resume.
+
+Inspect failed logs, fix actionable failures, run affected checks locally, push
+focused repair commits, and repeat until all required CI and release checks are
+green for the final SHA. Do not disable gates to obtain green status or force-push
+over published commits/tags. If credentials, unavailable runners, or an external
+outage prevents progress, report the exact blocker and run URLs; leave the phase
+at `commit` and do not claim completion. Resume monitoring after resolution.
+
+Set `phase: "handoff"` only after confirming green runs and expected release
+artifacts.
 
 ---
 
 ## 15. Handoff
 
-Report the destination URL, privacy, name, final SHA, one-commit confirmation,
+Report the destination URL, privacy, name, final SHA, initial-history confirmation, final CI/release run URLs,
 major identity/structure/refactor changes, README/docs hardening, lowercase docs
 renames, Mermaid diagrams, badges, LOC/flat-directory budget setup,
 CI/pre-commit/Flox setup, validation commands, and any approved legal notices or
@@ -471,7 +535,7 @@ unless required for legal or user-approved context.
 
 - User approved the new destination name.
 - Private destination repository exists.
-- Repository has exactly one fresh commit.
+- Initial push has one fresh commit; any CI repair commits are identified.
 - No upstream Git history remains.
 - No disallowed upstream references remain.
 - Required legal notices are preserved or approved.
@@ -481,9 +545,13 @@ unless required for legal or user-approved context.
 - Mermaid diagrams are added where they clarify architecture or workflow.
 - README badges point to the destination repo.
 - Each monorepo subproject has a useful README.
-- CI uses Blacksmith runners.
+- CI uses the selected Blacksmith or GitHub-hosted runners.
 - Pre-commit hooks are configured and documented.
-- Flox is used where practical.
+- Flox provides the shared local/CI toolchain; Bun is used where compatible.
+- The destination license matches the bundled license byte-for-byte.
+- Markdown and Mermaid validation run in CI and local hooks.
+- Automatic releases are retry-safe and build the CI-validated commit.
+- Required CI and release runs are green for the final SHA.
 - LOC and flat-directory budget gates are installed or equivalent gates exist.
 - Flat directories and >1000 LOC files are addressed or justified in budgets.
 - Validation passes or exceptions are explicitly approved.

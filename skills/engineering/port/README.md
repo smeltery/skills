@@ -13,9 +13,11 @@ tooling, and validation.
    files where useful, and write detailed docs.
 6. Slim the README, lowercase docs filenames, add useful Mermaid diagrams,
    update badges, and install LOC/flat-directory budget gates.
-7. Configure CI with Blacksmith runners, pre-commit hooks, and Flox where
-   practical.
-8. Validate the repo and push exactly one fresh initial commit.
+7. Ask for Blacksmith or GitHub-hosted runners; share CI and hook checks through
+   Flox, use Bun where compatible, and validate Markdown and Mermaid.
+   Apply the bundled license exactly and configure retry-safe automatic releases.
+8. Validate and push one fresh initial commit, then monitor CI and releases until
+   green, adding focused repair commits if needed.
 
 ## Lifecycle
 
@@ -32,7 +34,9 @@ flowchart LR
   I --> J[Tool]
   J --> K[Validate]
   K --> L[Commit]
-  L --> M[Handoff]
+  L --> N[Monitor CI and releases]
+  N --> M[Handoff]
+  N --> K
 ```
 
 The skill is stateful and resumable. Re-running the same invocation resumes from
@@ -53,7 +57,9 @@ stateDiagram-v2
   Harden --> Tool
   Tool --> Validate
   Validate --> Commit
-  Commit --> Handoff
+  Commit --> Monitor
+  Monitor --> Validate: repair failed checks
+  Monitor --> Handoff: CI and releases green
   Handoff --> [*]
 
   Intake --> Blocked: missing access or legal issue
@@ -97,3 +103,4 @@ until the user approves the new repository name.
 ## Files
 
 - [`SKILL.md`](./SKILL.md) — canonical skill definition consumed by the agent.
+- [`assets/LICENSE`](./assets/LICENSE) — exact license copied into ported projects.
