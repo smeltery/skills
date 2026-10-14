@@ -3,9 +3,14 @@
 Each skill lives in its own directory under
 `skills/<category>/<name>/SKILL.md`, where `<category>` is one of
 `engineering`, `productivity`, or `misc`. Every `SKILL.md` must start with YAML
-frontmatter containing at minimum `name` and `description`. CI validates
+frontmatter containing `name`, `description`, and `argument-hint`. CI validates
 frontmatter, checks that the directory name matches the `name` field, and
 lints markdown across the repo.
+
+For a new skill, follow [Adding a skill](adding-a-skill.md), including catalog
+links and the generated website page. Run `npm run skill:check -- <name>` and
+inspect the production page before finishing. The website build checks page
+and discovery coverage automatically.
 
 Two optional frontmatter keys control how a skill can be started. Both default
 to permissive, so leave them out unless the skill needs one:

@@ -32,6 +32,8 @@ The catalog reads `skills/<category>/<name>/SKILL.md` and its sibling `README.md
 at build time. Names, descriptions, category, and invocation modes come from those
 files. Adding a canonical skill automatically adds a catalog entry and detail page.
 Run commands through the root npm scripts so the source paths resolve consistently.
+Follow [Adding a skill](adding-a-skill.md) and run
+`npm run skill:check -- <name>` to verify registration and the generated page.
 
 Task group assignments and recommended ordering live in `src/lib/catalog.ts` and
 `src/components/SkillFinder.tsx`, relative to `apps/site/`. Unassigned engineering
@@ -92,7 +94,8 @@ installation, build, and output paths. Connect the repository and configure
 
 `npm run check` checks Astro and TypeScript. `npm test` covers source discovery,
 search intersections, invocation modes, installation commands, and safe Markdown
-rendering. `npm run build` generates all routes. The website CI job runs these checks.
+rendering. `npm run build` generates all routes and verifies page/discovery
+coverage for every canonical skill. The website CI job runs these checks.
 
 For browser changes, use Maestri portals to check desktop and mobile navigation,
 search, no-results recovery, filters, sort, pagination, detail pages, clipboard

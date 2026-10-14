@@ -10,7 +10,8 @@
     "build": "npm run build --workspace @smeltery/skills-site",
     "check": "npm run check --workspace @smeltery/skills-site",
     "preview": "npm run preview --workspace @smeltery/skills-site",
-    "test": "npm run test --workspace @smeltery/skills-site"
+    "test": "npm run test --workspace @smeltery/skills-site",
+    "skill:check": "node scripts/check-skill.mjs"
   },
   "engines": {
     "node": ">=24"

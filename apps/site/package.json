@@ -5,7 +5,7 @@
   "scripts": {
     "brand": "node scripts/generate-brand.mjs",
     "dev": "astro dev --host 127.0.0.1 --port 4321",
-    "build": "astro build",
+    "build": "astro build && node scripts/check-built-skills.ts",
     "check": "astro check",
     "preview": "astro preview --host 127.0.0.1 --port 4321",
     "test": "node --experimental-strip-types --test tests/*.test.ts"

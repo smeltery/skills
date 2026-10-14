@@ -26,6 +26,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[triage](./triage/README.md)** — Move issues through a small state machine of triage roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`).
 - **[ui-studio](./ui-studio/README.md)** — Use Playwright CLI to investigate live websites, runnable repository UIs, or curated references such as Mobbin, then create an original, named UI kit with reusable components and a hostable showcase.
 - **[wayfinder](./wayfinder/README.md)** — Plan work too large or unclear for one agent session by creating an issue-tracker map and resolving one frontier decision ticket at a time.
+- **[website-studio](./website-studio/README.md)** — Build a complete polished website from a brief or repository, with autonomous evidence gates for design, content, UX, accessibility, and production verification.
 - **[workon](./workon/README.md)** — Pick up a Linear ticket end-to-end: worktree, implement, PR, then watch the PR on a 5-minute loop addressing review comments, CI failures, and merge conflicts until merged.
 - **[workon-event](./workon-event/README.md)** — Event-driven `/workon` companion that handles one ticket event per invocation via a dispatcher.
 - **[zoom-out](./zoom-out/README.md)** — Tell the agent to zoom out and give a higher-level perspective on an unfamiliar section of code.

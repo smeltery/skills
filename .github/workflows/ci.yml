@@ -111,6 +111,8 @@ jobs:
 
           print(f"\nAll {len(skill_files)} skill(s) validated.")
           PY
+      - name: Validate Website Studio gate recovery
+        run: python -m unittest discover -s skills/engineering/website-studio/tests -v
       - name: Validate UI Studio tooling
         run: |
           python skills/engineering/ui-studio/scripts/validate-kit.py \

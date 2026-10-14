@@ -14,8 +14,7 @@ recursively and surfaces every `SKILL.md` it finds.
 
 ## Adding a skill
 
-1. Pick the right category (or create one — see top-level [AGENTS.md](../AGENTS.md)).
-2. Create `skills/<category>/<name>/SKILL.md` with frontmatter (`name`, `description`).
-3. Add a per-skill `README.md` with usage, any diagrams, and attribution if ported.
-4. Add an entry to the category's `README.md` and to the root [README](../README.md).
-5. Run `../scripts/list-skills.sh` to confirm discovery, then push — CI validates frontmatter and category.
+Follow [Adding a skill](../docs/adding-a-skill.md) for the canonical files,
+catalog registration, generated website page, and browser review. Before
+finishing, run `npm run skill:check -- <name>` from the repository root and
+the skill's own tests. Publishing follows the user's authorization.

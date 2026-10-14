@@ -29,6 +29,7 @@ export const groups: Record<string, string[]> = {
     "cloud-factory",
     "feature-gap",
     "port",
+    "website-studio",
   ],
   "Review & improve": [
     "review",
