@@ -5,3 +5,4 @@ __pycache__/
 # Generated website output
 apps/site/dist/
 apps/site/.astro/
+.vercel
