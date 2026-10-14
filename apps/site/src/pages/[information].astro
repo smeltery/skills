@@ -2,10 +2,12 @@
 import Layout from "../layouts/Layout.astro";
 import { informationPages } from "../lib/information";
 export function getStaticPaths() {
-  return Object.entries(informationPages).map(([information, page]) => ({
-    params: { information },
-    props: { page },
-  }));
+  return Object.entries(informationPages)
+    .filter(([name]) => name !== "contact")
+    .map(([information, page]) => ({
+      params: { information },
+      props: { page },
+    }));
 }
 const { page } = Astro.props;
 ---

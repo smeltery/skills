@@ -1,0 +1,316 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Icon from "../components/Icon.astro";
+import { repository } from "../lib/catalog";
+const issueLink = (title: string, body: string) =>
+  `${repository}/issues/new?${new URLSearchParams({ title, body })}`;
+const options = [
+  {
+    icon: "code",
+    title: "Something isn’t working",
+    description:
+      "A broken page, an installation issue, or a skill that doesn’t behave as expected.",
+    action: "Report a problem",
+    href: issueLink(
+      "[Bug] ",
+      "## Page URL or skill name\n\n\n## What I expected\n\n\n## What happened\n\n\n## Steps to reproduce\n\n\n## Agent, browser, or device\n\n",
+    ),
+    note: "Include the steps that led to the problem.",
+  },
+  {
+    icon: "compass",
+    title: "There’s a better way",
+    description:
+      "Suggest a new workflow or help make an existing skill clearer and more useful.",
+    action: "Suggest an improvement",
+    href: issueLink(
+      "[Idea] ",
+      "## The task or problem\n\n\n## Proposed improvement\n\n\n## Example of when this would help\n\n",
+    ),
+    note: "Start with the problem you want to solve.",
+  },
+  {
+    icon: "chat",
+    title: "I have a question",
+    description:
+      "Ask about a skill, how to use the toolkit, or where your contribution would help.",
+    action: "Ask a question",
+    href: issueLink(
+      "[Question] ",
+      "## My question\n\n\n## Skill or guide I’m using\n\n\n## What I’ve tried\n\n",
+    ),
+    note: "A little context makes it easier to help.",
+  },
+];
+---
+
+<Layout
+  title="Contact & feedback"
+  description="Report a problem, suggest a skill, or ask the Smeltery maintainers a question. Find the right place to start and what to include."
+>
+  <div class="wrap contact-page">
+    <header class="contact-intro">
+      <p class="eyebrow">Contact & feedback</p>
+      <h1>
+        Help make the toolkit
+        <br />
+        <em>a little better.</em>
+      </h1>
+      <p>
+        Found a rough edge or have an idea? Choose a starting point below. We
+        keep project conversations together on GitHub.
+      </p>
+    </header>
+    <div class="existing">
+      <div>
+        <strong>Someone may have asked already.</strong>
+        <p>
+          Check existing conversations for an answer or add your experience.
+        </p>
+      </div>
+      <a href={`${repository}/issues`}>Browse issues</a>
+    </div>
+    <section class="contact-options" aria-label="Ways to get in touch">
+      {options.map((option) => (
+        <article>
+          <span class="contact-icon">
+            <Icon name={option.icon} />
+          </span>
+          <h2>{option.title}</h2>
+          <p>{option.description}</p>
+          <small>{option.note}</small>
+          <a class="button secondary" href={option.href}>
+            {option.action}
+          </a>
+        </article>
+      ))}
+    </section>
+    <p class="github-note">
+      <Icon name="github" /> These links open a draft on GitHub. You can review
+      it before posting. A GitHub account is required.
+    </p>
+    <section class="contact-details" aria-label="Helpful information">
+      <div>
+        <p class="eyebrow">Make it easy to help</p>
+        <h2>A useful report starts small.</h2>
+        <ul>
+          <li>Name the skill or share the page URL.</li>
+          <li>Explain what you expected and what happened.</li>
+          <li>Add the smallest example that reproduces the issue.</li>
+        </ul>
+        <p class="public-note">
+          Issues are public. Remove credentials, private code, and personal
+          information before posting.
+        </p>
+      </div>
+      <aside>
+        <p class="eyebrow">Prefer to build the fix?</p>
+        <h2>Contributions welcome.</h2>
+        <p>
+          Read the contribution guide, then propose a focused change through a
+          pull request.
+        </p>
+        <a href={`${repository}/blob/main/docs/contributing.md`}>
+          Read the contribution guide
+        </a>
+        <hr />
+        <p class="response-note">
+          Maintainers review community feedback as time allows. There’s no
+          guaranteed response time.
+        </p>
+      </aside>
+    </section>
+    <nav class="contact-resources" aria-label="Self-service resources">
+      <span>Looking for a quick answer?</span>
+      <a href="/guides/installation/">Installation guide</a>
+      <a href="/guides/installation/#questions">Common questions</a>
+      <a href="/#library">Find a skill</a>
+    </nav>
+  </div>
+</Layout>
+<style>
+  .contact-page {
+    max-width: 1100px;
+    padding-block: 40px 56px;
+  }
+  .contact-intro {
+    max-width: 720px;
+  }
+  .contact-intro h1 {
+    font-size: clamp(36px, 4.2vw, 58px);
+    margin: 14px 0 18px;
+  }
+  .contact-intro > p:last-child {
+    font-size: 17px;
+    line-height: 1.7;
+    max-width: 620px;
+  }
+  .existing {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px 24px;
+    background: #e9eddf;
+    border-radius: 14px;
+    margin: 28px 0 18px;
+  }
+  .existing strong {
+    font-size: 14px;
+  }
+  .existing p {
+    font-size: 13px;
+    margin-top: 5px;
+    line-height: 1.6;
+  }
+  .existing > a {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .contact-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .contact-options article {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+  .contact-icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    background: #eef1e7;
+    color: var(--accent);
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .contact-options h2 {
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+  }
+  .contact-options p {
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 14px 0 18px;
+  }
+  .contact-options small {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-top: auto;
+    margin-bottom: 18px;
+  }
+  .contact-options .button {
+    font-size: 12px;
+    justify-content: center;
+  }
+  .github-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 16px 0 32px;
+  }
+  .contact-details {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 48px;
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+  }
+  .contact-details h2 {
+    font-size: 25px;
+    margin: 12px 0 16px;
+  }
+  .contact-details li {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .contact-details ul {
+    padding-left: 20px;
+  }
+  .contact-details p:not(.eyebrow) {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .public-note {
+    margin-top: 18px;
+  }
+  .contact-details aside {
+    padding: 24px;
+    border-radius: 14px;
+    background: #eeefe8;
+  }
+  .contact-details aside > a {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13px;
+  }
+  .contact-details hr {
+    margin: 20px 0;
+  }
+  .contact-resources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    margin-top: 28px;
+    font-size: 12px;
+  }
+  .contact-resources > span {
+    color: var(--muted);
+  }
+  .existing > a,
+  .contact-details aside > a,
+  .contact-resources a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .contact-page a:not(.button):hover {
+    color: var(--accent);
+  }
+  @media (max-width: 780px) {
+    .contact-page {
+      padding-block: 28px 40px;
+    }
+    .contact-options {
+      grid-template-columns: 1fr;
+    }
+    .contact-options article {
+      padding: 20px;
+    }
+    .contact-icon {
+      margin-bottom: 14px;
+    }
+    .contact-details {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .existing {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px;
+    }
+    .github-note {
+      align-items: flex-start;
+    }
+    .contact-options .button {
+      align-self: flex-start;
+    }
+    .contact-resources > span {
+      width: 100%;
+    }
+  }
+</style>
