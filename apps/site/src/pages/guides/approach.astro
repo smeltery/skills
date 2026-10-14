@@ -5,7 +5,7 @@ import { renderMarkdown } from "../../lib/markdown";
 ---
 
 <Layout title="Why these skills exist" active="approach">
-  <div class="wrap guide-page">
+  <div class="wrap guide-page approach-page">
     <p class="eyebrow">The thinking behind the toolkit</p>
     <h1>
       Capability needs
@@ -26,3 +26,34 @@ import { renderMarkdown } from "../../lib/markdown";
     </a>
   </div>
 </Layout>
+
+<style>
+  .approach-page {
+    max-width: 960px;
+    padding-block: 40px 56px;
+  }
+  .approach-page h1 {
+    font-size: clamp(38px, 4.2vw, 58px);
+    margin: 14px 0 18px;
+  }
+  .approach-page .lead {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+  .approach-prose {
+    max-width: none;
+    margin: 24px 0;
+  }
+  @media (max-width: 780px) {
+    .approach-page {
+      padding-block: 28px 40px;
+    }
+    .approach-page h1 {
+      font-size: clamp(34px, 8vw, 46px);
+    }
+    .approach-page .lead {
+      font-size: 16px;
+    }
+  }
+</style>
