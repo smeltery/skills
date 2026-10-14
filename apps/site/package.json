@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "brand": "node scripts/generate-brand.mjs",
     "dev": "astro dev --host 127.0.0.1 --port 4321",
     "build": "astro build",
     "check": "astro check",
@@ -32,6 +33,7 @@
     "@types/sanitize-html": "^2.16.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",
+    "sharp": "^0.35.5",
     "typescript": "^5.9.3"
   }
 }

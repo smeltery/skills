@@ -33,11 +33,46 @@ const canonical = Astro.site
     <meta name="viewport" content="width=device-width" />
     <title>{title} · smeltery skills</title>
     <meta name="description" content={description} />
+    <meta name="is-agentic-site-type" content="content" />
     <meta name="theme-color" content="#f7f7f2" />
     <link rel="icon" href="/mark.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link
+      rel="alternate"
+      type="text/plain"
+      href="/llms.txt"
+      title="Agent reading guide"
+    />
     {canonical && <link rel="canonical" href={canonical} />}
     <meta property="og:title" content={`${title} · smeltery skills`} />
     <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Smeltery Skills" />
+    <meta property="og:image" content={new URL("/brand/og.png", Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Smeltery skills. Good workflows. Written down. Portable skills for thoughtful builders and their agents."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL("/brand/og.png", Astro.site)} />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Smeltery Skills",
+        url: Astro.site,
+        description,
+        publisher: {
+          "@type": "Organization",
+          name: "Smeltery",
+          url: "https://github.com/smeltery",
+          logo: new URL("/mark.svg", Astro.site),
+        },
+      })}
+    />
     <meta property="og:type" content="website" />
     {canonical && <meta property="og:url" content={canonical} />}
   </head>
@@ -114,6 +149,8 @@ const canonical = Astro.site
           </nav>
           <nav aria-label="Footer resources">
             <h2>Resources</h2>
+            <a href="/brand/">Brand & assets</a>
+            <a href="/llms.txt">For agents</a>
             <a href="/guides/installation/">Getting started</a>
             <a href="/guides/approach/">Why these skills exist</a>
             <a href={`${repository}/blob/main/docs/contributing.md`}>
@@ -122,6 +159,9 @@ const canonical = Astro.site
           </nav>
           <nav aria-label="Footer project">
             <h2>In the open</h2>
+            <a href="/about/">About Smeltery</a>
+            <a href="/contact/">Contact</a>
+            <a href="/privacy/">Privacy</a>
             <a href={repository} class="icon-link">
               <Icon name="github" /> GitHub repository
             </a>

@@ -1,0 +1,53 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { informationPages } from "../lib/information";
+export function getStaticPaths() {
+  return Object.entries(informationPages).map(([information, page]) => ({
+    params: { information },
+    props: { page },
+  }));
+}
+const { page } = Astro.props;
+---
+
+<Layout title={page.title} description={page.paragraphs[0]}>
+  <article class="wrap information">
+    <p class="eyebrow">Smeltery / Project information</p>
+    <h1>{page.title}</h1>
+    {page.paragraphs.map((p) => (
+      <p>{p}</p>
+    ))}
+    <nav aria-label="Project information">
+      <a href="/about/">About</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="https://github.com/smeltery/skills/issues">GitHub issues</a>
+    </nav>
+  </article>
+</Layout>
+<style>
+  .information {
+    max-width: 850px;
+    padding-block: 75px;
+  }
+  .information h1 {
+    font-size: clamp(38px, 6vw, 60px);
+    margin: 25px 0 35px;
+  }
+  .information > p:not(.eyebrow) {
+    font-size: 17px;
+    line-height: 1.9;
+    margin-bottom: 24px;
+    overflow-wrap: anywhere;
+  }
+  .information nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .information a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

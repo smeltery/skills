@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 
 export default defineConfig({
-  site: process.env.SITE_URL || undefined,
+  site: process.env.SITE_URL || "https://smeltery-skills.vercel.app",
   output: "static",
   trailingSlash: "always",
   integrations: [

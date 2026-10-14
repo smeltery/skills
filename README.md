@@ -1,7 +1,11 @@
 # skills
 
+[![Smeltery skills — Good workflows. Written down.](apps/site/public/brand/og.png)](https://smeltery-skills.vercel.app/)
+
 [![CI](https://github.com/smeltery/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/smeltery/skills/actions/workflows/ci.yml)
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg)](https://polyformproject.org/licenses/shield/1.0.0)
+
+[Website](https://smeltery-skills.vercel.app/) · [Brand & assets](https://smeltery-skills.vercel.app/brand/)
 
 **Portable agent skills from [smeltery](https://github.com/smeltery).**
 

@@ -98,3 +98,21 @@ For browser changes, use Maestri portals to check desktop and mobile navigation,
 search, no-results recovery, filters, sort, pagination, detail pages, clipboard
 feedback, and horizontal overflow. Check the rendered production build as well as
 local development when changing the catalog pipeline.
+
+## Brand assets and agent access
+
+The `/brand/` page contains the mark, palette, typography, social artwork,
+favicon, and Apple touch icon. Regenerate the checked-in image assets with
+`npm run brand --workspace @smeltery/skills-site`. The 1200×630 PNG is also
+used in the README and Open Graph metadata.
+
+Vercel middleware serves generated Markdown for requests with
+`Accept: text/markdown`, including recoverable 404 responses. Ordinary requests
+receive the static Astro pages. Both representations declare `Vary: Accept`.
+The agent guides at `/llms.txt` and `/llms-full.txt` and the XML sitemap are
+generated from the canonical skill catalog.
+
+Run `npx is-agentic smeltery-skills.vercel.app --json` for the latest public
+audit. Reports can be cached for six hours. Search-engine indexing and
+incorrect attribution of the shared Vercel domain are external to this site;
+do not fabricate business information or MCP services to satisfy those checks.
