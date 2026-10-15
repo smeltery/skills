@@ -1,4 +1,5 @@
 ---
+import Brand from "./Brand.astro";
 import { taskIcons } from "../lib/icons";
 import Icon from "./Icon.astro";
 import { groups, skills, repository } from "../lib/catalog";
@@ -163,10 +164,7 @@ const entries: SearchEntry[] = [
 </dialog>
 <dialog id="mobile-menu" class="mobile-dialog" aria-labelledby="mobile-title">
   <div class="mobile-panel-heading">
-    <a class="brand" href="/">
-      <img src="/mark.svg" width="30" height="30" alt="" />
-      smeltery<span class="brand-sub"> / skills</span>
-    </a>
+    <Brand />
     <button
       type="button"
       class="close-overlay"

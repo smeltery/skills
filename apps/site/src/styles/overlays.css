@@ -271,9 +271,6 @@ kbd {
 .mobile-panel-heading .brand {
   gap: 8px;
 }
-.mobile-panel-heading .brand-sub {
-  margin-left: -4px;
-}
 .mobile-panel-body {
   overflow-y: auto;
   overscroll-behavior: contain;
