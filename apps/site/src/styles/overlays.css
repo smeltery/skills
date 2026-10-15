@@ -103,8 +103,9 @@ kbd {
   flex-shrink: 0;
 }
 .panel-search:focus-within {
-  outline: 2px solid #a5b394;
-  outline-offset: 2px;
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
 }
 .panel-search input {
   width: 100%;
