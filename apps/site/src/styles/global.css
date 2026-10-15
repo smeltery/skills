@@ -771,9 +771,6 @@ button[hidden],
   grid-template-columns: 1.6fr 1fr 1fr 1.1fr;
   gap: 40px;
 }
-.site-footer .brand {
-  font-size: 17px;
-}
 .site-footer .brand img {
   object-fit: contain;
 }
