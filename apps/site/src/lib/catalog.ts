@@ -30,6 +30,7 @@ export const groups: Record<string, string[]> = {
     "feature-gap",
     "port",
     "website-studio",
+    "docs-site",
   ],
   "Review & improve": [
     "review",
