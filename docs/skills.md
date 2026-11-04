@@ -22,6 +22,7 @@ Skills for code work — bug-hunting, design, planning, review, and execution.
 - **[commit-conventions](../skills/engineering/commit-conventions/README.md)** — Keep commit messages aligned with branch intent using conventional commit types.
 - **[design](../skills/engineering/design/README.md)** — Write a rigorous design document for a proposed change, with numbered `INV-n` invariants and `AC-n` acceptance criteria that stay stable through review and verification.
 - **[diagnose](../skills/engineering/diagnose/README.md)** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
+- **[docs-site](../skills/engineering/docs-site/README.md)** — Create a branded documentation site for an application from the quire template, with approval gates for scope, brand, outline, content, and release.
 - **[feature-gap](../skills/engineering/feature-gap/README.md)** — Compare a source GitHub repository against a destination repository, identify real missing functionality, implement it destination-natively, then commit and push to the destination default branch.
 - **[gho](../skills/engineering/gho/README.md)** — Prefer the `gho` CLI over `gh` for pull requests, issues, releases, labels, repos, search, and Actions runs/workflows, and use `gho subscribe` instead of polling loops.
 - **[git-commit](../skills/engineering/git-commit/README.md)** — Safe commit-message workflow using temp files and `git commit -F` to avoid shell-substitution pitfalls.

@@ -63,7 +63,7 @@ worth getting right.
 ## All skills
 
 <details>
-<summary><strong>47 skills across two categories</strong> — expand for the full list, or see <a href="./docs/skills.md">docs/skills.md</a> for the annotated catalog.</summary>
+<summary><strong>49 skills across two categories</strong> — expand for the full list, or see <a href="./docs/skills.md">docs/skills.md</a> for the annotated catalog.</summary>
 
 ### Engineering
 
@@ -76,7 +76,7 @@ Code work — bug-hunting, design, planning, review, and execution.
 | **Design & architecture** | [zoom-out](./skills/engineering/zoom-out/README.md) · [architecture](./skills/engineering/architecture/README.md) · [architecture-review](./skills/engineering/architecture-review/README.md) · [prototype](./skills/engineering/prototype/README.md) · [ui-studio](./skills/engineering/ui-studio/README.md) · [improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/README.md) · [loc-budget](./skills/engineering/loc-budget/README.md) |
 | **Build & debug** | [tdd](./skills/engineering/tdd/README.md) · [diagnose](./skills/engineering/diagnose/README.md) · [performance-engineer](./skills/engineering/performance-engineer/README.md) |
 | **Review, CI & PRs** | [review](./skills/engineering/review/README.md) · [verify](./skills/engineering/verify/README.md) · [simplify](./skills/engineering/simplify/README.md) · [lean-diff](./skills/engineering/lean-diff/README.md) · [pr-workflow](./skills/engineering/pr-workflow/README.md) · [pr-monitor](./skills/engineering/pr-monitor/README.md) · [ci-monitoring](./skills/engineering/ci-monitoring/README.md) · [gho](./skills/engineering/gho/README.md) |
-| **End-to-end delivery** | [website-studio](./skills/engineering/website-studio/README.md) · [cloud-factory](./skills/engineering/cloud-factory/README.md) · [feature-gap](./skills/engineering/feature-gap/README.md) · [port](./skills/engineering/port/README.md) · [workon](./skills/engineering/workon/README.md) · [workon-event](./skills/engineering/workon-event/README.md) |
+| **End-to-end delivery** | [website-studio](./skills/engineering/website-studio/README.md) · [docs-site](./skills/engineering/docs-site/README.md) · [cloud-factory](./skills/engineering/cloud-factory/README.md) · [feature-gap](./skills/engineering/feature-gap/README.md) · [port](./skills/engineering/port/README.md) · [workon](./skills/engineering/workon/README.md) · [workon-event](./skills/engineering/workon-event/README.md) |
 
 ### Productivity
 
